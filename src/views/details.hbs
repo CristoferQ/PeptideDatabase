@@ -1,0 +1,388 @@
+<div id="all" class="card">
+    <h5 class="card-header">Description of {{#each statistics}}{{Name}}{{/each}}</h5>
+    <div class="card-body">
+        <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Molestias explicabo, asperiores sunt vitae enim fugit fugiat. Nisi omnis quam vitae?</p>
+    </div>
+    <h5 class="card-header">General statistics</h5>
+    <div class="card-body">
+    <h5 class="card-title">Total number of records:</h5>
+    <p class="card-text">{{#each statistics}}{{'Total_sequences'}}{{/each}}</p>
+    <h5 class="card-title">Total Uniprot codes:</h5>
+    <p class="card-text">{{#each statistics}}{{'Total_uniprot'}}{{/each}}</p>
+    <h5 class="card-title">Total PDB codes:</h5>
+    <p class="card-text">{{#each statistics}}{{'Total_pdb'}}{{/each}}</p>
+    <h5 class="card-title">Total number of organism:</h5>
+    <p class="card-text">{{#each statistics}}{{'Total_organisms'}}{{/each}}</p>
+  </div>
+
+    <h5 class="card-header">Histograms of properties</h5>
+    <div class="row mb-2">
+        <div class="card-body col-6">
+            <div id="Hist_molecular_weigth"></div>
+        </div>
+        <div class="card-body col-6">
+            <div id="Hist_charge"></div>
+        </div>
+        <div class="card-body col-6">
+            <div id="Hist_charge_density"></div>
+        </div>
+        <div class="card-body col-6">
+            <div id="Hist_isoelectric"></div>
+        </div>
+        <div class="card-body col-6">
+            <div id="Hist_inestability"></div>
+        </div>
+        <div class="card-body col-6">
+            <div id="Hist_aromaticity"></div>
+        </div>
+        <div class="card-body col-6">
+            <div id="Hist_aliphatic_index"></div>
+        </div>
+        <div class="card-body col-6">
+            <div id="Hist_hydrophobic_ratio"></div>
+        </div>
+        <div class="card-body col-6">
+            <div id="Hist_hydrophobicity_profile"></div>
+        </div>
+        <div class="card-body col-6">
+            <div id="Hist_hydrophobic_profile"></div>
+        </div>
+    </div>
+    <h5 class="card-header">Average property values ​​for each activity</h5>
+    <div class="card-body">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                <th scope="col">Property</th>
+                <th scope="col">Mean</th>
+                <th scope="col">Maximum</th>
+                <th scope="col">Minimum</th>
+                <th scope="col">Standard deviation</th>
+                <th scope="col">Variance</th>
+                <th scope="col">Quartile 1 (0.25)</th>
+                <th scope="col">Quartile 3 (0.75)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                <th scope="row">Molecular Weigth</th>
+                <td>{{#each statistics}}{{calculation_matrix_id Mean 0}}{{/each}}</td>
+                <td>{{#each statistics}}{{calculation_matrix_id Max 0}}{{/each}}</td>
+                <td>{{#each statistics}}{{calculation_matrix_id Min 0}}{{/each}}</td>
+                <td>{{#each statistics}}{{calculation_matrix_id Std 0}}{{/each}}</td>
+                <td>{{#each statistics}}{{calculation_matrix_id Variance 0}}{{/each}}</td>
+                <td>{{#each statistics}}{{calculation_matrix_id Quartile1 0}}{{/each}}</td>
+                <td>{{#each statistics}}{{calculation_matrix_id Quartile3 0}}{{/each}}</td>
+                </tr>
+                <tr>
+                <th scope="row">Charge</th>
+                <td>{{#each statistics}}{{calculation_matrix_id Mean 1}}{{/each}}</td>
+                <td>{{#each statistics}}{{calculation_matrix_id Max 1}}{{/each}}</td>
+                <td>{{#each statistics}}{{calculation_matrix_id Min 1}}{{/each}}</td>
+                <td>{{#each statistics}}{{calculation_matrix_id Std 1}}{{/each}}</td>
+                <td>{{#each statistics}}{{calculation_matrix_id Variance 1}}{{/each}}</td>
+                <td>{{#each statistics}}{{calculation_matrix_id Quartile1 1}}{{/each}}</td>
+                <td>{{#each statistics}}{{calculation_matrix_id Quartile3 1}}{{/each}}</td>
+                </tr>
+                <tr>
+                <th scope="row">Charge Density</th>
+                <td>{{#each statistics}}{{calculation_matrix_id Mean 2}}{{/each}}</td>
+                <td>{{#each statistics}}{{calculation_matrix_id Max 2}}{{/each}}</td>
+                <td>{{#each statistics}}{{calculation_matrix_id Min 2}}{{/each}}</td>
+                <td>{{#each statistics}}{{calculation_matrix_id Std 2}}{{/each}}</td>
+                <td>{{#each statistics}}{{calculation_matrix_id Variance 2}}{{/each}}</td>
+                <td>{{#each statistics}}{{calculation_matrix_id Quartile1 2}}{{/each}}</td>
+                <td>{{#each statistics}}{{calculation_matrix_id Quartile3 2}}{{/each}}</td>
+                </tr>
+                <tr>
+                <th scope="row">Isoelectric</th>
+                <td>{{#each statistics}}{{calculation_matrix_id Mean 3}}{{/each}}</td>
+                <td>{{#each statistics}}{{calculation_matrix_id Max 3}}{{/each}}</td>
+                <td>{{#each statistics}}{{calculation_matrix_id Min 3}}{{/each}}</td>
+                <td>{{#each statistics}}{{calculation_matrix_id Std 3}}{{/each}}</td>
+                <td>{{#each statistics}}{{calculation_matrix_id Variance 3}}{{/each}}</td>
+                <td>{{#each statistics}}{{calculation_matrix_id Quartile1 3}}{{/each}}</td>
+                <td>{{#each statistics}}{{calculation_matrix_id Quartile3 3}}{{/each}}</td>
+                </tr>
+                <tr>
+                <th scope="row">Inestability</th>
+                <td>{{#each statistics}}{{calculation_matrix_id Mean 4}}{{/each}}</td>
+                <td>{{#each statistics}}{{calculation_matrix_id Max 4}}{{/each}}</td>
+                <td>{{#each statistics}}{{calculation_matrix_id Min 4}}{{/each}}</td>
+                <td>{{#each statistics}}{{calculation_matrix_id Std 4}}{{/each}}</td>
+                <td>{{#each statistics}}{{calculation_matrix_id Variance 4}}{{/each}}</td>
+                <td>{{#each statistics}}{{calculation_matrix_id Quartile1 4}}{{/each}}</td>
+                <td>{{#each statistics}}{{calculation_matrix_id Quartile3 4}}{{/each}}</td>
+                </tr>
+                <tr>
+                <th scope="row">Aromaticity</th>
+                <td>{{#each statistics}}{{calculation_matrix_id Mean 5}}{{/each}}</td>
+                <td>{{#each statistics}}{{calculation_matrix_id Max 5}}{{/each}}</td>
+                <td>{{#each statistics}}{{calculation_matrix_id Min 5}}{{/each}}</td>
+                <td>{{#each statistics}}{{calculation_matrix_id Std 5}}{{/each}}</td>
+                <td>{{#each statistics}}{{calculation_matrix_id Variance 5}}{{/each}}</td>
+                <td>{{#each statistics}}{{calculation_matrix_id Quartile1 5}}{{/each}}</td>
+                <td>{{#each statistics}}{{calculation_matrix_id Quartile3 5}}{{/each}}</td>
+                </tr>
+                <tr>
+                <th scope="row">Aliphatic Index</th>
+                <td>{{#each statistics}}{{calculation_matrix_id Mean 6}}{{/each}}</td>
+                <td>{{#each statistics}}{{calculation_matrix_id Max 6}}{{/each}}</td>
+                <td>{{#each statistics}}{{calculation_matrix_id Min 6}}{{/each}}</td>
+                <td>{{#each statistics}}{{calculation_matrix_id Std 6}}{{/each}}</td>
+                <td>{{#each statistics}}{{calculation_matrix_id Variance 6}}{{/each}}</td>
+                <td>{{#each statistics}}{{calculation_matrix_id Quartile1 6}}{{/each}}</td>
+                <td>{{#each statistics}}{{calculation_matrix_id Quartile3 6}}{{/each}}</td>
+                </tr>
+                <tr>
+                <th scope="row">Hydrophobic Ratio</th>
+                <td>{{#each statistics}}{{calculation_matrix_id Mean 7}}{{/each}}</td>
+                <td>{{#each statistics}}{{calculation_matrix_id Max 7}}{{/each}}</td>
+                <td>{{#each statistics}}{{calculation_matrix_id Min 7}}{{/each}}</td>
+                <td>{{#each statistics}}{{calculation_matrix_id Std 7}}{{/each}}</td>
+                <td>{{#each statistics}}{{calculation_matrix_id Variance 7}}{{/each}}</td>
+                <td>{{#each statistics}}{{calculation_matrix_id Quartile1 7}}{{/each}}</td>
+                <td>{{#each statistics}}{{calculation_matrix_id Quartile3 7}}{{/each}}</td>
+                </tr>
+                <tr>
+                <th scope="row">Hydrophobicity Profile</th>
+                <td>{{#each statistics}}{{calculation_matrix_id Mean 8}}{{/each}}</td>
+                <td>{{#each statistics}}{{calculation_matrix_id Max 8}}{{/each}}</td>
+                <td>{{#each statistics}}{{calculation_matrix_id Min 8}}{{/each}}</td>
+                <td>{{#each statistics}}{{calculation_matrix_id Std 8}}{{/each}}</td>
+                <td>{{#each statistics}}{{calculation_matrix_id Variance 8}}{{/each}}</td>
+                <td>{{#each statistics}}{{calculation_matrix_id Quartile1 8}}{{/each}}</td>
+                <td>{{#each statistics}}{{calculation_matrix_id Quartile3 8}}{{/each}}</td>
+                </tr>
+                <tr>
+                <th scope="row">Hydrophobic Profile</th>
+                <td>{{#each statistics}}{{calculation_matrix_id Mean 9}}{{/each}}</td>
+                <td>{{#each statistics}}{{calculation_matrix_id Max 9}}{{/each}}</td>
+                <td>{{#each statistics}}{{calculation_matrix_id Min 9}}{{/each}}</td>
+                <td>{{#each statistics}}{{calculation_matrix_id Std 9}}{{/each}}</td>
+                <td>{{#each statistics}}{{calculation_matrix_id Variance 9}}{{/each}}</td>
+                <td>{{#each statistics}}{{calculation_matrix_id Quartile1 9}}{{/each}}</td>
+                <td>{{#each statistics}}{{calculation_matrix_id Quartile3 9}}{{/each}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    </div>
+    <h5 class="card-header">Database of {{#each statistics}}{{Name}}{{/each}}</h5>
+    <div class="card-body">
+        <a id="dl_csv"  target="_blank" class="btn btn-secondary btn-lg">Download in CSV</a>
+        <a id="dl_json" target="_blank" class="btn btn-secondary btn-lg">Download in JSON</a>
+        <a id="dl_fasta"  target="_blank" class="btn btn-secondary btn-lg">Download in FASTA</a>
+        <br>
+        <br>
+        <table id="example" class="display" style="width:100%">
+                <thead>
+                    <tr>
+                        <th>Sequence</th>
+                        <th>View more</th>
+                        <th>Length</th>
+                        <th>Uniprot_code</th>
+                        <th>Pdb_code</th>
+                    </tr>
+                </thead>
+                <tfoot>
+                    <tr>
+                        <th>Sequence</th>
+                        <th>View more</th>
+                        <th>Length</th>
+                        <th>Uniprot_code</th>
+                        <th>Pdb_code</th>
+                    </tr>
+                </tfoot>
+            </table>  
+    </div>
+    <h5 class="card-header">Activities</h5>
+    <div class="card-body">
+        <div class="row mb-2">
+        {{#each statistics_full}}
+        <div class="card col-3">
+                <div class="card-body">
+                    <h5 class="card-title activity_names">{{matrix Name Name}}</h5>
+                    <p class="card-text">{{matrix Name Description}}</p>
+                    <a id="{{matrix Name Name}}" class="btn btn-primary" onclick="myFunction(this)" >See details</a>
+                </div>
+            </div>
+        {{/each}}
+        </div>
+    </div>
+</div>
+<script>
+function myFunction(elem) {
+        //location.href = 'details?activity='+elem.id;
+        if(elem.id == 'Signal Peptide'){
+            elem.id = 'SignalPeptide'
+        }
+        location.href = './'+elem.id;
+} 
+var trace = {
+    x: [{{#each statistics}}{{'Hist_molecular_weigth'}}{{/each}}],
+    type: 'histogram',
+  };
+var data = [trace];
+var layout = {
+  title: "Molecular Weigth", 
+  xaxis: {title: "Value"}, 
+  yaxis: {title: "Count"}
+};
+Plotly.newPlot('Hist_molecular_weigth', data, layout);
+
+var trace = {
+    x: [{{#each statistics}}{{'Hist_charge'}}{{/each}}],
+    type: 'histogram',
+  };
+var data = [trace];
+var layout = {
+  title: "Charge", 
+  xaxis: {title: "Value"}, 
+  yaxis: {title: "Count"}
+};
+Plotly.newPlot('Hist_charge', data, layout);
+
+var trace = {
+    x: [{{#each statistics}}{{'Hist_charge_density'}}{{/each}}],
+    type: 'histogram',
+  };
+var data = [trace];
+var layout = {
+  title: "Charge density", 
+  xaxis: {title: "Value"}, 
+  yaxis: {title: "Count"}
+};
+Plotly.newPlot('Hist_charge_density', data, layout);
+
+var trace = {
+    x: [{{#each statistics}}{{'Hist_isoelectric'}}{{/each}}],
+    type: 'histogram',
+  };
+var data = [trace];
+var layout = {
+  title: "Isoelectric", 
+  xaxis: {title: "Value"}, 
+  yaxis: {title: "Count"}
+};
+Plotly.newPlot('Hist_isoelectric', data, layout);
+
+var trace = {
+    x: [{{#each statistics}}{{'Hist_inestability'}}{{/each}}],
+    type: 'histogram',
+  };
+var data = [trace];
+var layout = {
+  title: "Inestability", 
+  xaxis: {title: "Value"}, 
+  yaxis: {title: "Count"}
+};
+Plotly.newPlot('Hist_inestability', data, layout);
+
+var trace = {
+    x: [{{#each statistics}}{{'Hist_aromaticity'}}{{/each}}],
+    type: 'histogram',
+  };
+var data = [trace];
+var layout = {
+  title: "Aromaticity", 
+  xaxis: {title: "Value"}, 
+  yaxis: {title: "Count"}
+};
+Plotly.newPlot('Hist_aromaticity', data, layout);
+
+var trace = {
+    x: [{{#each statistics}}{{'Hist_aliphatic_index'}}{{/each}}],
+    type: 'histogram',
+  };
+var data = [trace];
+var layout = {
+  title: "Aliphatic index", 
+  xaxis: {title: "Value"}, 
+  yaxis: {title: "Count"}
+};
+Plotly.newPlot('Hist_aliphatic_index', data, layout);
+
+var trace = {
+    x: [{{#each statistics}}{{'Hist_hydrophobic_ratio'}}{{/each}}],
+    type: 'histogram',
+  };
+var data = [trace];
+var layout = {
+  title: "Hydrophobic ratio", 
+  xaxis: {title: "Value"}, 
+  yaxis: {title: "Count"}
+};
+Plotly.newPlot('Hist_hydrophobic_ratio', data, layout);
+
+var trace = {
+    x: [{{#each statistics}}{{'Hist_hydrophobicity_profile'}}{{/each}}],
+    type: 'histogram',
+  };
+var data = [trace];
+var layout = {
+  title: "Hydrophobicity profile", 
+  xaxis: {title: "Value"}, 
+  yaxis: {title: "Count"}
+};
+Plotly.newPlot('Hist_hydrophobicity_profile', data, layout);
+
+var trace = {
+    x: [{{#each statistics}}{{'Hist_hydrophobic_profile'}}{{/each}}],
+    type: 'histogram',
+  };
+var data = [trace];
+var layout = {
+  title: "Hydrophobic profile", 
+  xaxis: {title: "Value"}, 
+  yaxis: {title: "Count"}
+};
+Plotly.newPlot('Hist_hydrophobic_profile', data, layout);
+actual_url = window.location.href.split('/')
+
+if(actual_url[actual_url.length-1] == 'SignalPeptide'){
+  actual_url[actual_url.length-1] = 'Signal Peptide'
+}
+
+$.ajax({
+    'url': "http://localhost/api/database/"+actual_url[actual_url.length-1],
+    'method': "GET",
+    'contentType': 'application/json'
+}).done( function(data) {
+    var example = $('#example').DataTable( {
+        "scrollX": true,
+        "aaData": data,
+        "columns": [
+            { "data": "sequence" },
+            { "defaultContent": "<button id='b_results' type='button' class='btn btn-success'><i class='fa fa-file'></i></button>"},
+            { "data": "length" },
+            { "data": "uniprot_code" },
+            { "data": "pdb_code" },
+        ]
+    })
+    getSecForDetail("#example tbody", example);
+});
+var getSecForDetail = function(tbody, table){
+    $(tbody).on("click", "#b_results", function(){
+		var data = table.row( $(this).parents("tr") ).data();		
+        if (data != undefined){
+            window.open("../sequence?sec="+data.sequence, "_blank");
+            //location.href="../sequence?sec="+data.sequence;
+        }
+	});
+}
+    if(actual_url[actual_url.length-1] == 'Signal Peptide'){
+      actual_url[actual_url.length-1] = 'SignalPeptide'
+    }
+    var dlAnchorElem = document.getElementById('dl_csv');
+    dlAnchorElem.setAttribute("href", '/attachment/activities/'+actual_url[actual_url.length-1]+'/'+actual_url[actual_url.length-1]+'.csv');
+    dlAnchorElem.setAttribute("download", actual_url[actual_url.length-1]+'.csv');
+    
+    var dlAnchorElem = document.getElementById('dl_json');
+    dlAnchorElem.setAttribute("href", '/attachment/activities/'+actual_url[actual_url.length-1]+'/'+actual_url[actual_url.length-1]+'.json');
+    dlAnchorElem.setAttribute("download", actual_url[actual_url.length-1]+'.json');
+
+    var dlAnchorElem = document.getElementById('dl_fasta');
+    dlAnchorElem.setAttribute("href", '/attachment/activities/'+actual_url[actual_url.length-1]+'/'+actual_url[actual_url.length-1]+'.fasta');
+    dlAnchorElem.setAttribute("download", actual_url[actual_url.length-1]+'.fasta');
+</script>

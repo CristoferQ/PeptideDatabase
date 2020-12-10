@@ -1,0 +1,112 @@
+<div class="jumbotron mt-4">
+    <h1 class="display-4">Frequency</h1>
+    <p class="lead">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ipsum enim, dignissimos iusto sunt placeat quisquam minus repudiandae voluptates ipsa mollitia inventore, eligendi consequuntur dolorem consequatur ad nulla accusantium blanditiis non!</p>
+    <hr class="my-4">
+    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Nemo omnis ratione natus est non ex animi molestiae atque sed ab.</p>
+</div>
+
+
+<div class="card">
+    <h5 class="card-header">Description</h5>    
+    <div class="card-body">
+        <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Molestias explicabo, asperiores sunt vitae enim fugit fugiat. Nisi omnis quam vitae?</p>
+    </div>
+    <h5 class="card-header">Inputs</h5>    
+    <div class="card-body">
+        <form>
+            <div class="form-group">
+                <label for="exampleFormControlTextarea1">Sequences in FASTA format</label>
+                <textarea class="form-control" id="exampleFormControlTextarea1" rows="8"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="exampleFormControlSelect1">Select</label>
+                <select class="form-control" id="exampleFormControlSelect1">
+                <option value="1">%</option>
+                <option value="2">Count</option>
+                
+                </select>
+            </div>
+            <div class="text-center">
+                <button id="btn1" type='button' class="btn btn-success btn-lg">Submit!</button>
+                <button type='button' class="btn btn-dark btn-lg" onclick="javascript:eraseText();">Clear</button>
+            </div>
+            
+        </form>
+    </div>
+    <div hidden id="wait" class="text-center">
+    <h2>The results are being processed, this will take a few seconds</h2>
+    <i class="fa-5x fas fa-cog fa-spin"></i>
+    <br>
+    <br>
+    </div>
+    <div hidden id="all" class="card">
+    <h5 class="card-header">Results</h5>    
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-striped" id="tabla">
+                <thead>
+                    <tr>
+                    <th scope="col">Sequence id</th>
+                    <th scope="col">A</th>
+                    <th scope="col">R</th>
+                    <th scope="col">N</th>
+                    <th scope="col">D</th>
+                    <th scope="col">C</th>
+                    <th scope="col">Q</th>
+                    <th scope="col">E</th>
+                    <th scope="col">G</th>
+                    <th scope="col">H</th>
+                    <th scope="col">I</th>
+                    <th scope="col">L</th>
+                    <th scope="col">K</th>
+                    <th scope="col">M</th>
+                    <th scope="col">F</th>
+                    <th scope="col">P</th>
+                    <th scope="col">S</th>
+                    <th scope="col">T</th>
+                    <th scope="col">W</th>
+                    <th scope="col">Y</th>
+                    <th scope="col">V</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+    </div>
+</div>
+
+
+
+<script>
+$("#btn1").click(function(){
+    var now = new Date().getTime();
+    $('#wait').attr('hidden', false);       
+    $('#all').attr('hidden', true);     
+        $.ajax({
+            'url': "http://localhost/frequency/results",
+            'method': 'POST',
+            'data' : { "sequences" : $("#exampleFormControlTextarea1").val(), "time": now, "option" : $("#exampleFormControlSelect1").val()}
+        }).done( function(data) {
+            $('#wait').attr('hidden', true);
+            $("#tabla td").remove(); 
+            //console.log(data)
+            $('#all').attr('hidden', false);   
+            var json = jQuery.parseJSON(data);
+            for (element in json.data){
+                $('#tabla').append('<tr id=row'+element+'>'+'</tr>');
+                for (i in json.data[element]){
+                    $('#row'+element).append('<td>'+json.data[element][i]+'</td>');    
+                }
+            }
+        });          
+});
+    
+function eraseText() {
+    document.getElementById("exampleFormControlTextarea1").value = "";
+    $("#exampleFormControlTextarea1").focus();
+}
+
+</script>
+
+

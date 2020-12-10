@@ -1,0 +1,196 @@
+<div class="jumbotron mt-4">
+    <h1 class="display-4">Characterization</h1>
+    <p class="lead">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ipsum enim, dignissimos iusto sunt placeat quisquam minus repudiandae voluptates ipsa mollitia inventore, eligendi consequuntur dolorem consequatur ad nulla accusantium blanditiis non!</p>
+    <hr class="my-4">
+    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Nemo omnis ratione natus est non ex animi molestiae atque sed ab.</p>
+</div>
+
+
+<div class="card">
+    <h5 class="card-header">Description</h5>    
+    <div class="card-body">
+        <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Molestias explicabo, asperiores sunt vitae enim fugit fugiat. Nisi omnis quam vitae?</p>
+    </div>
+    <h5 class="card-header">Inputs</h5>    
+    <div class="card-body">
+        <form>
+            <div class="form-group">
+                <label for="exampleFormControlTextarea1">Sequences in FASTA format</label>
+                <textarea class="form-control" id="exampleFormControlTextarea1" rows="8"></textarea>
+            </div>
+            <div class="text-center">
+                <button id="btn1" type='button' class="btn btn-dark btn-lg">Submit!</button>
+            </div>
+        </form>
+    </div>
+    <div hidden id="wait" class="text-center">
+    <h2>The results are being processed, this will take a few seconds</h2>
+    <i class="fa-5x fas fa-cog fa-spin"></i>
+    <br>
+    <br>
+    </div>
+    <div hidden id="all" class="card">
+    <h5 class="card-header">Results</h5>    
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-dark" id="tabla">
+                <thead>
+                    <tr>
+                    <th scope="col">Sequence id</th>
+                    <th scope="col">Aliphatic index</th>
+                    <th scope="col">Aromaticity</th>
+                    <th scope="col">Boman index</th>
+                    <th scope="col">Calculate moment</th>
+                    <th scope="col">Charge</th>
+                    <th scope="col">Charge density</th>
+                    <th scope="col">Formula</th>
+                    <th scope="col">Hydrophobic profile</th>
+                    <th scope="col">Hydrophobic ratio</th>
+                    <th scope="col">Hydrophobicity profile</th>
+                    <th scope="col">Instability index</th>
+                    <th scope="col">Isoelectric point</th>
+                    <th scope="col">Length</th>
+                    <th scope="col">Molecular weigth</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+    </div>
+    <div hidden id="allb" class="card-group">
+        <div class="card">
+            <h5 class="card-header">Sequence information</h5>    
+            <div class="card-body">
+            <h5 class="card-title">Sequence id:</h5><p id="p_sequence_id" class="card-text"></p>
+            <h5 class="card-title">Charge:</h5><p id="p_charge" class="card-text"></p>
+            <h5 class="card-title">Charge density:</h5><p id="p_charge_density" class="card-text"></p>
+            <h5 class="card-title">Formula:</h5><p id="p_formula" class="card-text"></p>
+            <h5 class="card-title">Length:</h5><p id="p_length" class="card-text"></p>
+            <h5 class="card-title">Molecular weigth:</h5><p id="p_molecular_weigth" class="card-text"></p>
+            <h5 class="card-title">Isoelectric point:</h5><p id="p_isoelectric_point" class="card-text"></p>
+            </div>
+        </div>
+        <div class="card">
+            <h5 class="card-header">Indices and physicochemical properties</h5>    
+            <div class="card-body">
+                <h5 class="card-title">Aliphatic index:</h5><p id="p_aliphatic_index" class="card-text"></p>
+                <h5 class="card-title">Aromaticity:</h5><p id="p_aromaticity" class="card-text"></p>
+                <h5 class="card-title">Boman index:</h5><p id="p_boman_index" class="card-text"></p>
+                <h5 class="card-title">Calculate moment:</h5><p id="p_calculate_moment" class="card-text"></p>
+                <h5 class="card-title">Hydrophobic profile:</h5><p id="p_hydrophobic_profile" class="card-text"></p>
+                <h5 class="card-title">Hydrophobic ratio:</h5><p id="p_hydrophobic_ratio" class="card-text"></p>
+                <h5 class="card-title">Hydrophobicity profile:</h5><p id="p_hydrophobicity_profile" class="card-text"></p>
+                <h5 class="card-title">Instability index:</h5><p id="p_instability_index" class="card-text"></p>
+            </div>
+        </div>
+  </div>
+   
+    <div hidden id="images" class="card">
+        <h5 class="card-header">Helical</h5>    
+        <div class="col-sm-12">
+            <div class="card">
+                <div style="text-align: center;">
+                    <img id="helical" class="card-img-top" src="" alt="Card image cap" style="max-width: 50%;">
+                <div class="card-body">
+                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                </div>
+                </div>
+            </div>
+        </div>
+        <h5 class="card-header">Profile</h5>    
+        <div class="col-sm-12">
+            <div class="card">
+                <div style="text-align: center;">
+                <img id="profile" class="card-img-top" src="" alt="Card image cap" style="max-width: 70%;">
+                <div class="card-body">
+                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                </div>
+            </div>
+        </div>
+        </div>
+    </div>
+    </div>
+</div>
+
+
+
+<script>
+$("#btn1").click(function(){
+    var now = new Date().getTime();
+    $('#wait').attr('hidden', false);  
+     $('#images').attr('hidden', true);
+     $('#all').attr('hidden', true);
+        $.ajax({
+            'url': "http://localhost/characterization/results",
+            'method': 'POST',
+            'data' : { "sequences" : $("#exampleFormControlTextarea1").val(), "time": now}
+        }).done( function(data) {
+            $('#wait').attr('hidden', true);
+            $("#tabla td").remove(); 
+            //console.log(data)
+            $("#helical").attr("src", "/jobs/service1/"+now+"/helical.png");
+            $("#profile").attr("src", "/jobs/service1/"+now+"/profile.png");
+            var keys = Object.keys(data)
+            var values = Object.values(data[keys[0]])
+            //console.log(values)
+            //console.log(keys[0])
+            //console.log(data[keys[0]])
+            //console.log(data[keys[0]]['aliphatic_index'])
+
+
+
+            //if(keys.length == 1){
+            //    $('#images').attr('hidden', false);
+            //    for (element in keys){
+            //        flag = Object.values(data[keys[element]])
+            //        $('#tabla').append('<tr id=row'+element+'>'+'</tr>');    
+            //        $('#row'+element).append('<td>'+keys[element]+'</td>');
+            //        for (element2 in flag){
+            //            $('#row'+element).append('<td>'+flag[element2]+'</td>');    
+            //        }
+            //    }
+            //}
+
+            if(keys.length == 1){
+                $('#allb').attr('hidden', false);
+                $('#images').attr('hidden', false);
+                console.log(data[keys[0]]['aliphatic_index'])
+                $('#p_sequence_id').text(keys[0]);
+                $('#p_charge').text(data[keys[0]]['charge']);
+                $('#p_charge_density').text(data[keys[0]]['charge_density']);
+                $('#p_formula').text(data[keys[0]]['formula']);
+                $('#p_length').text(data[keys[0]]['length']);
+                $('#p_molecular_weigth').text(data[keys[0]]['molecular_weigth']);
+                $('#p_isoelectric_point').text(data[keys[0]]['isoelectric_point']);
+                
+                $('#p_aliphatic_index').text(data[keys[0]]['aliphatic_index']);
+                $('#p_aromaticity').text(data[keys[0]]['aromaticity']);
+                $('#p_boman_index').text(data[keys[0]]['boman_index']);
+                $('#p_calculate_moment').text(data[keys[0]]['calculate_moment']);
+                $('#p_hydrophobic_profile').text(data[keys[0]]['hydrophobic_profile']);
+                $('#p_hydrophobic_ratio').text(data[keys[0]]['hydrophobic_ratio']);
+                $('#p_hydrophobicity_profile').text(data[keys[0]]['hydrophobicity_profile']);
+                $('#p_instability_index').text(data[keys[0]]['instability_index']);
+            }
+
+            if(keys.length > 1){
+                $('#allb').attr('hidden', true);
+                $('#all').attr('hidden', false);
+                $('#images').attr('hidden', true);
+                for (element in keys){
+                    flag = Object.values(data[keys[element]])
+                    $('#tabla').append('<tr id=row'+element+'>'+'</tr>');
+                    $('#row'+element).append('<td>'+keys[element]+'</td>');
+                    for (element2 in flag){
+                        $('#row'+element).append('<td>'+flag[element2]+'</td>');    
+                    }
+                }
+            }
+        });          
+    });
+    
+
+
+</script>
+

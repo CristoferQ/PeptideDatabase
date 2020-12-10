@@ -1,0 +1,125 @@
+<link href="css/bstreeview.css" rel="stylesheet">
+<div class="jumbotron mt-4">
+    <h1 class="display-4">Classification</h1>
+    <p class="lead">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ipsum enim, dignissimos iusto sunt placeat quisquam minus repudiandae voluptates ipsa mollitia inventore, eligendi consequuntur dolorem consequatur ad nulla accusantium blanditiis non!</p>
+    <hr class="my-4">
+    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Nemo omnis ratione natus est non ex animi molestiae atque sed ab.</p>
+</div>
+
+
+<div class="card">
+    <h5 class="card-header">Description</h5>    
+    <div class="card-body">
+        <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Molestias explicabo, asperiores sunt vitae enim fugit fugiat. Nisi omnis quam vitae?</p>
+    </div>
+    <h5 class="card-header">Inputs</h5>    
+    <div class="card-body">
+        <form>
+            <div class="form-group">
+                <label for="exampleFormControlTextarea1">Sequences in FASTA format</label>
+                <textarea class="form-control" id="exampleFormControlTextarea1" rows="8"></textarea>
+            </div>
+            <div class="text-center">
+                <button id="btn1" type='button' class="btn btn-dark btn-lg">Submit!</button>
+            </div>
+        </form>
+    </div>
+    <div id="wait" class="text-center">
+    <h2>The results are being processed, this will take a few seconds</h2>
+    <i class="fa-5x fas fa-cog fa-spin"></i>
+    <br>
+    <br>
+    </div>
+    <div id="all" class="card">
+    <h5 class="card-header">Results</h5>    
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-dark" id="tabla">
+                <thead>
+                    <tr>
+                    <th scope="col">Sequence id</th>
+                    <th scope="col">Probability of belonging to activity</th>
+                    <th scope="col">View more</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <th>Test</th>
+                    <th><div id="tree"></div></th>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    </div>
+    <div id="images" class="card">
+        <h5 class="card-header">Images</h5>    
+        <div class="row">
+        <div class="col-sm-12">
+            <div class="card">
+                <img id="helical" class="card-img-top" src="" alt="Card image cap">
+                <div class="card-body">
+                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                </div>
+            </div>
+        </div>
+        </div>
+    </div>
+    </div>
+    
+
+
+<div id="tree"></div>
+</div>
+<script src="js/bstreeview.js"></script>
+<script>
+			var json = [
+				{
+					text: "Inbox",
+					icon: "fa fa-inbox fa-fw",
+					nodes: [
+						{
+							text: "Office",
+							icon: "fa fa-inbox fa-fw",
+							nodes: [
+								{
+									icon: "fa fa-inbox fa-fw",
+									text: "Customers"
+								},
+								{
+									icon: "fa fa-inbox fa-fw",
+									text: "Co-Workers"
+								}
+							]
+						},
+						{
+							icon: "fa fa-inbox fa-fw",
+							text: "Others"
+						}
+					]
+				},
+				{
+					icon: "fa fa-archive fa-fw",
+					text: "Drafts"
+				},
+				{
+					icon: "fa fa-calendar fa-fw",
+					text: "Calendar"
+				},
+				{
+					icon: "fa fa-address-book fa-fw",
+					text: "Contacts"
+				},
+				{
+					icon: "fa fa-trash fa-fw",
+					text: "Deleted Items"
+				}
+			];
+
+			$('#tree').bstreeview({
+				data: json,
+                expandIcon: 'fa fa-angle-down fa-fw',
+                collapseIcon: 'fa fa-angle-right fa-fw',
+                indent: 1.25,
+                parentsMarginLeft: '1.25rem',
+                openNodeLinkOnNewTab: true
+			});
+</script>
