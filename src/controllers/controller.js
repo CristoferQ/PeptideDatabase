@@ -1295,5 +1295,42 @@ indexCtrl.getFrequency = async(req,response) =>{
     req.write(postData);    
     req.end();
 };
+indexCtrl.renderEncoding = async(req,res) =>{
+    res.render('encoding');
+};
+indexCtrl.getEncoding = async(req,response) =>{
+    postData = JSON.stringify({
+        'sequences': req.body.sequences,
+        'option': req.body.option,
+        'time': req.body.time
+    });    
+    const options = {
+        host: 'localhost',
+        port: 4000,
+        method: 'POST',
+        path: '/api/encoding/',
+        headers: {
+            'Content-Type': 'application/json',
+            'Content-Length': Buffer.byteLength(postData)
+        }
+    };
+    var req = http.request(options, (res) => {
+        var data = ''
+        res.on('data', (chunk) => {
+            data = JSON.parse(chunk);
+        });
+        res.on('end', () => {
+            console.log('No more data in response.');
+            var str2 = JSON.parse(JSON.stringify(data));
+            response.send(str2)
+        });
+    });
+    
+    req.on('error', (e) => {
+        console.error(`problem with request: ${e.message}`);
+    });
+    req.write(postData);    
+    req.end();
+};
 module.exports = indexCtrl;
 

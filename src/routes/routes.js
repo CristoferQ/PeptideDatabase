@@ -1,7 +1,7 @@
 const {Router} = require('express');
 const router = Router();
 
-const {getFrequency, renderFrequency, getAlignment, getCharacterization, renderAlignment, renderClassification, renderCharacterization, renderDatabaseInformation,renderSequence, getSearch, getDatabasePerActivity, renderDetails, renderAbout, renderSearch, renderTools, renderIndex, renderDatabase, getDatabase} = require('../controllers/controller');
+const {getEncoding, renderEncoding, getFrequency, renderFrequency, getAlignment, getCharacterization, renderAlignment, renderClassification, renderCharacterization, renderDatabaseInformation,renderSequence, getSearch, getDatabasePerActivity, renderDetails, renderAbout, renderSearch, renderTools, renderIndex, renderDatabase, getDatabase} = require('../controllers/controller');
 
 router.get('/', renderIndex); 
 router.get('/about', renderAbout);
@@ -21,6 +21,8 @@ router.get('/alignment', renderAlignment);
 router.post('/alignment/results', getAlignment);
 router.get('/frequency', renderFrequency);
 router.post('/frequency/results', getFrequency);
+router.get('/encoding', renderEncoding);
+router.post('/encoding/results', getEncoding);
 
 
 module.exports = router;

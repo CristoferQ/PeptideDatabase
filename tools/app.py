@@ -2,6 +2,7 @@ from flask import Flask, jsonify, request
 import service1
 import service3
 import service4
+import service5
 app = Flask(__name__) #se crea el obj
 
 
@@ -16,10 +17,16 @@ def execAlignment():
     return service3.exec(request_data['sequences'], request_data['time'])
 
 @app.route('/api/frequency/', methods=['POST']) #no es necesario poner get
-def execFrequency():
-    print("sisisi")
+def execFrequency():    
     request_data = request.get_json()
     return jsonify(service4.exec(request_data['sequences'], request_data['time'], request_data['option']))
+
+@app.route('/api/encoding/', methods=['POST']) #no es necesario poner get
+def execEncoding():    
+    request_data = request.get_json()
+    service5.createJob(request_data['time'])
+    return jsonify(service5.exec(request_data['sequences'], request_data['time'], request_data['option']))
+
 
  
 

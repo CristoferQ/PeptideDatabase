@@ -1,0 +1,83 @@
+<div class="jumbotron mt-4">
+    <h1 class="display-4">Encoding</h1>
+    <p class="lead">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ipsum enim, dignissimos iusto sunt placeat quisquam minus repudiandae voluptates ipsa mollitia inventore, eligendi consequuntur dolorem consequatur ad nulla accusantium blanditiis non!</p>
+    <hr class="my-4">
+    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Nemo omnis ratione natus est non ex animi molestiae atque sed ab.</p>
+</div>
+
+
+<div class="card">
+    <h5 class="card-header">Description</h5>    
+    <div class="card-body">
+        <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Molestias explicabo, asperiores sunt vitae enim fugit fugiat. Nisi omnis quam vitae?</p>
+    </div>
+    <h5 class="card-header">Inputs</h5>    
+    <div class="card-body">
+        <form>
+            <div class="form-group">
+                <label for="exampleFormControlTextarea1">Sequences in FASTA format</label>
+                <textarea class="form-control" id="exampleFormControlTextarea1" rows="8"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="exampleFormControlSelect1">Select</label>
+                <select class="form-control" id="exampleFormControlSelect1">
+                <option value="2">Encoding using one hot encoding</option>
+                <option value="3">Encoding using frequency</option>
+                <option value="4">Encoding using physicochemical properties</option>
+                <option value="5">Encoding using digital signal processing</option>
+                <option value="6">Encoding using TAPE</option>
+                </select>
+            </div>
+            <div class="text-center">
+                <button id="btn1" type='button' class="btn btn-success btn-lg">Submit!</button>
+                <button type='button' class="btn btn-dark btn-lg" onclick="javascript:eraseText();">Clear</button>
+            </div>
+            
+        </form>
+    </div>
+    <div hidden id="wait" class="text-center">
+    <h2>The results are being processed, this will take a few seconds</h2>
+    <i class="fa-5x fas fa-cog fa-spin"></i>
+    <br>
+    <br>
+    </div>
+    <div hidden id="all" class="card text-center">
+    <h5 class="card-header">Results</h5>    
+    <div class="card-body">
+        <a id="download" target="_blank">
+            <i class="fa fa-download fa-5x" style="color:black"></i>
+        </a>
+        <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Molestias explicabo, asperiores sunt vitae enim fugit fugiat. Nisi omnis quam vitae?</p>
+    </div>
+    </div>
+</div>
+
+
+
+<script>
+$("#btn1").click(function(){
+    var now = new Date().getTime();
+    $('#wait').attr('hidden', false);       
+    $('#all').attr('hidden', true);     
+        $.ajax({
+            'url': "http://localhost/encoding/results",
+            'method': 'POST',
+            'data' : { "sequences" : $("#exampleFormControlTextarea1").val(), "time": now, "option" : $("#exampleFormControlSelect1").val()}
+        }).done( function(data) {
+            $('#wait').attr('hidden', true);
+            var dlAnchorElem = document.getElementById('download');
+            dlAnchorElem.setAttribute("href", "jobs/service5/"+now+".tar.gz");
+            dlAnchorElem.setAttribute("download",now+".tar.gz");
+            console.log(data)
+            $('#all').attr('hidden', false);
+        });          
+});
+    
+function eraseText() {
+    document.getElementById("exampleFormControlTextarea1").value = "";
+    $("#exampleFormControlTextarea1").focus();
+}
+
+</script>
+
+
