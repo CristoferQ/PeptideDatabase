@@ -31,10 +31,10 @@ for i in range(len(dataset)):
 
 	encoding_avg = [dataset['id_sequence_by_algorithm'][i]]
 
-	for i in range(len(matrix_data[0])):
+	for k in range(len(matrix_data[0])):
 		array_value = []
 		for j in range(len(matrix_data)):
-			array_value.append(matrix_data[j][i])
+			array_value.append(matrix_data[j][k])
 
 		encoding_avg.append(np.mean(array_value))	
 	matrix_encoding.append(encoding_avg)
