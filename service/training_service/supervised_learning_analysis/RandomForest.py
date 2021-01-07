@@ -8,7 +8,7 @@ Dependences:
 '''
 
 from sklearn.ensemble import RandomForestClassifier
-import responseTraining
+from supervised_learning_analysis import responseTraining
 
 class RandomForest(object):
     def __init__(self, dataset,target,n_estimators,criterion, min_samples_split, min_samples_leaf, bootstrap, validation):

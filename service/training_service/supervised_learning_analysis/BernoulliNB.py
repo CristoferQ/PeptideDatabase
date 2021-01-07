@@ -8,7 +8,7 @@ Dependences:
 '''
 
 from sklearn.naive_bayes import BernoulliNB
-import responseTraining
+from supervised_learning_analysis import responseTraining
 
 class Bernoulli (object):
 

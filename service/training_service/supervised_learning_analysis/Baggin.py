@@ -8,7 +8,7 @@ Dependences:
 '''
 
 from sklearn.ensemble import BaggingClassifier
-import responseTraining
+from supervised_learning_analysis import responseTraining
 
 class Baggin(object):
 

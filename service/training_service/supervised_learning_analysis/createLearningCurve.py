@@ -17,16 +17,14 @@ from sklearn.model_selection import ShuffleSplit
 
 class curveLearning(object):
 
-    def __init__(self, dataSet, target, modelData, cv_values, user, job, path):
+    def __init__(self, dataSet, target, modelData, cv_values, path):
 
         self.dataSet = dataSet
         self.target = target
         self.modelData = modelData
-        self.cv_values = 10
-        self.job = job
-        self.path = path
-        self.user = user
-        self.pathResponse = self.path+self.user+"/"+self.job+"/curveLearning_"+self.job+".svg"
+        self.cv_values = cv_values        
+        self.path = path        
+        self.pathResponse = self.path+"curveLearning.svg"
 
     def createLearningCurve(self):
 

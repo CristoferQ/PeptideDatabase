@@ -8,7 +8,7 @@ Dependences:
 '''
 
 from sklearn import tree
-import responseTraining
+from supervised_learning_analysis import responseTraining
 
 class DecisionTree(object):
 

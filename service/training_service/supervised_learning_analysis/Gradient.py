@@ -8,7 +8,7 @@ Dependences:
 '''
 
 from sklearn.ensemble import GradientBoostingClassifier
-import responseTraining
+from supervised_learning_analysis import responseTraining
 
 class Gradient(object):
 

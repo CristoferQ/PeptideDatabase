@@ -8,7 +8,7 @@ Dependences:
 '''
 
 from sklearn.neural_network import MLPClassifier
-import responseTraining
+from supervised_learning_analysis import responseTraining
 
 class MLP(object):
 

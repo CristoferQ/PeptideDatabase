@@ -9,7 +9,7 @@ Dependences:
 
 #modules import
 from sklearn.svm import NuSVC
-import responseTraining
+from supervised_learning_analysis import responseTraining
 
 class NuSVM(object):
 

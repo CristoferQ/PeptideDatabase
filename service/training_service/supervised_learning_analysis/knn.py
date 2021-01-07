@@ -9,7 +9,7 @@ Dependences:
 
 #modules import
 from sklearn.neighbors import KNeighborsClassifier
-import responseTraining
+from supervised_learning_analysis import responseTraining
 
 class knn(object):
 

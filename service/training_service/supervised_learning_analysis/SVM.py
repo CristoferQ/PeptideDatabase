@@ -9,7 +9,7 @@ Dependences:
 
 #modules import
 from sklearn import svm
-import responseTraining
+from supervised_learning_analysis import responseTraining
 
 class SVM(object):
 
