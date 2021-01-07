@@ -8,6 +8,7 @@ import encoding_ordinal
 import encoding_propiedades
 import encoding_tape
 import launcher_classification_models
+import launcher_prediction_models
 from sklearn.preprocessing import MinMaxScaler
 
 from Bio import SeqIO
@@ -104,11 +105,12 @@ with open(config_file_parameters) as json_file:
 
 		if type_response == 1:
 			print("Process Classification")
-			launcher_class = launcher_classification_models.launcher_classification(data_encodings, response_data, algorithm, path_output)
+			launcher_class = launcher_classification_models.launcher_classification(data_encodings, response_data['response'], algorithm, path_output)
 			launcher_class.apply_algorithm()
 		else:
 			print("Process Regression")
-
+			launcher_class = launcher_prediction_models.launcher_prediction(data_encodings, response_data['response'], algorithm, path_output)
+			launcher_class.apply_algorithm()
 
 
 
