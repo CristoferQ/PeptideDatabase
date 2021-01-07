@@ -6,15 +6,17 @@ const Peptide = require('../models/Peptide'); //modelo de base de datos
 const Statistic = require('../models/Statistic');
 const Activity = require('../models/Activity');
 const Organism = require('../models/Organism');
-indexCtrl.renderIndex = (req,res) =>{ //ruta de index
-    res.render('index');
+
+indexCtrl.renderIndex = async(req,res) =>{ //ruta de index
+    const statistics_full = await Statistic.find({$and:[{'Name': {$ne : "Total number of records"}},{'Name': {$ne : "Total number of organism"}},{'Name': {$ne : "Total PDB codes"}},{'Name': {$ne : "Histogram1"}},{'Name': {$ne : "PieChart1"}},{'Name': {$ne : "Total Uniprot codes"}},{'Sequences in FASTA format': {$ne : "test"}}]}).lean();
+    res.render('index', {statistics_full});
 };
 indexCtrl.renderAbout = (req,res) =>{ //ruta de about
     res.render('about');
 };
 indexCtrl.renderDatabase = async(req,res) =>{ //ruta de about
     const statistics = await Statistic.find().lean();
-    const activities = await Statistic.find({$and:[{'Name': {$ne : "Total number of records"}},{'Name': {$ne : "Total number of organism"}},{'Name': {$ne : "Total PDB codes"}},{'Name': {$ne : "Histogram1"}},{'Name': {$ne : "PieChart1"}},{'Name': {$ne : "Total Uniprot codes"}}]}).lean();
+    const activities = await Statistic.find({$and:[{'Name': {$ne : "Total number of records"}},{'Name': {$ne : "Total number of organism"}},{'Name': {$ne : "Total PDB codes"}},{'Name': {$ne : "Histogram1"}},{'Name': {$ne : "PieChart1"}},{'Name': {$ne : "Total Uniprot codes"}},{'Sequences in FASTA format': {$ne : "test"}}]}).lean();
     res.render('database', {statistics, activities});
 };
 indexCtrl.renderSearch = async(req,res) =>{ //ruta de about
@@ -25,24 +27,31 @@ indexCtrl.renderTools = (req,res) =>{ //ruta de about
     res.render('tools');
 };
 indexCtrl.renderDetails = async(req,res) =>{ //ruta de about
-    if (req.params.id == 'Antimicrobial' || 
-    req.params.id == 'Anticancer' || 
-    req.params.id == 'Toxic' ||
-    req.params.id == 'Metabolic' ||
-    req.params.id == 'Bioactive' ||
-    req.params.id == 'Immunological' ||
-    req.params.id == 'Sensorial' ||
-    req.params.id == 'Neurological' ||
-    req.params.id == 'SignalPeptide' ||
+    if (req.params.id == 'Propeptide' || 
+    req.params.id == 'Signal' || 
     req.params.id == 'Transit' ||
-    req.params.id == 'Propeptide' ||
-    req.params.id == 'Other'
+    req.params.id == 'Sensorial' ||
+    req.params.id == 'Drugdeliveryvehicle' ||
+    req.params.id == 'Therapeutic' ||
+    req.params.id == 'Otheractivity' ||
+    req.params.id == 'Neurologicalactivity' ||
+    req.params.id == 'Immunologicalactivity' ||
+    req.params.id == 'non_activity'
     ){
-        if(req.params.id == 'SignalPeptide'){
-            req.params.id = 'Signal Peptide'
+        if(req.params.id == 'Drugdeliveryvehicle'){
+            req.params.id = 'Drug delivery vehicle'
+        }
+        if(req.params.id == 'Otheractivity'){
+            req.params.id = 'Other activity'
+        }
+        if(req.params.id == 'Neurologicalactivity'){
+            req.params.id = 'Neurological activity'
+        }
+        if(req.params.id == 'Immunologicalactivity'){
+            req.params.id = 'Immunological activity'
         }
         const statistics = await Statistic.find({"Name": req.params.id}).lean();
-        const statistics_full = await Statistic.find({$and:[{'Name': {$ne : "Total number of records"}},{'Name': {$ne : "Total number of organism"}},{'Name': {$ne : "Total PDB codes"}},{'Name': {$ne : "Histogram1"}},{'Name': {$ne : "PieChart1"}},{'Name': {$ne : "Total Uniprot codes"}}]}).lean();
+        const statistics_full = await Statistic.find({$and:[{'Name': {$ne : "Total number of records"}},{'Name': {$ne : "Total number of organism"}},{'Name': {$ne : "Total PDB codes"}},{'Name': {$ne : "Histogram1"}},{'Name': {$ne : "PieChart1"}},{'Name': {$ne : "Total Uniprot codes"}},{'Sequences in FASTA format': {$ne : "test"}}]}).lean();
         res.render('details', {statistics, statistics_full});
     }else{
         res.redirect('../');
@@ -101,574 +110,178 @@ async function exportQueryCSV(data, nameFile){
 }
 
 indexCtrl.getSearch = async(req, res) =>{
-    var activity_lvl_1 = req.query.activities1.split(',');
-    var activity_lvl_2 = req.query.activities2.split(',');
-    var activity_lvl_3 = req.query.activities3.split(',');
-    for (let index = 0; index < activity_lvl_3.length; index++) {
-        if (activity_lvl_3[index] == "Anti Gram( )"){
-            activity_lvl_3[index] = "Anti Gram(+)"
+    //console.log(req.body['activity_lvl_1[]'])   
+    all_activities = []
+    if (!Array.isArray(req.body['activity_lvl_1[]'])){
+        if (req.body['activity_lvl_1[]'] != undefined){
+            all_activities.push(req.body['activity_lvl_1[]']);
         }
     }
-    var organisms_list = req.query.organisms.split(',');
-    var interval_list = req.query.interval.split(','); //trae el minimo y max de length
+    if (Array.isArray(req.body['activity_lvl_1[]'])){
+        all_activities = all_activities.concat(req.body['activity_lvl_1[]']);
+    }
+    if (!Array.isArray(req.body['activity_lvl_2[]'])){
+        if (req.body['activity_lvl_2[]'] != undefined){
+            all_activities.push(req.body['activity_lvl_2[]']);
+        }
+    }
+    if (Array.isArray(req.body['activity_lvl_2[]'])){
+        all_activities = all_activities.concat(req.body['activity_lvl_2[]']);
+    }
+    if (!Array.isArray(req.body['activity_lvl_3[]'])){
+        if (req.body['activity_lvl_3[]'] != undefined){
+            all_activities.push(req.body['activity_lvl_3[]']);
+        }
+    }
+    if (Array.isArray(req.body['activity_lvl_3[]'])){
+        all_activities = all_activities.concat(req.body['activity_lvl_3[]']);
+    }
+    if (!Array.isArray(req.body['activity_lvl_4[]'])){
+        if (req.body['activity_lvl_4[]'] != undefined){
+            all_activities.push(req.body['activity_lvl_4[]']);
+        }
+    }
+    if (Array.isArray(req.body['activity_lvl_4[]'])){
+        all_activities = all_activities.concat(req.body['activity_lvl_4[]']);
+    }
+    if (!Array.isArray(req.body['activity_lvl_5[]'])){
+        if (req.body['activity_lvl_5[]'] != undefined){
+            all_activities.push(req.body['activity_lvl_5[]']);
+        }
+    }
+    if (Array.isArray(req.body['activity_lvl_5[]'])){
+        all_activities = all_activities.concat(req.body['activity_lvl_5[]']);
+    }
+    console.log(all_activities)
+    for (let index = 0; index < all_activities.length; index++) {
+        console.log(all_activities[index])
+        if (all_activities[index] == 'Quorum sensing' || all_activities[index] == 'Chemotactic' || all_activities[index] == 'Cell-cell communication' || all_activities[index] == 'Defense'){    
+            var flag = all_activities.indexOf('Sensorial');
+            delete all_activities[flag];
+        }
+        if (all_activities[index] == 'Cell-penetrating' || all_activities[index] == "Blood-brain barrier crossing"){    
+            var flag = all_activities.indexOf('Drug delivery vehicle');
+            delete all_activities[flag];
+        }
+        if (all_activities[index] == 'Antimicrobial' || all_activities[index] == "Toxic" || all_activities[index] == "Metabolic" || all_activities[index] == "Anticancer" || all_activities[index] == "Bioactive"){    
+            var flag = all_activities.indexOf('Therapeutic');
+            delete all_activities[flag];
+        }
+        if (all_activities[index] == 'Cancer cell' || all_activities[index] == "Mammallian cell" || all_activities[index] == "Proteolytic" || all_activities[index] == "Surface-immobilized"){    
+            var flag = all_activities.indexOf('Other activity');
+            delete all_activities[flag];
+        }
+        if (all_activities[index] == 'Neuropeptide' || all_activities[index] == "Antinociceptive" || all_activities[index] == "Brain peptide"){    
+            var flag = all_activities.indexOf('Neurological activity');
+            delete all_activities[flag];
+        }
+        if (all_activities[index] == 'Allergen' || all_activities[index] == 'Immunomodulatory'){    
+            var flag = all_activities.indexOf('Immunological activity');
+            delete all_activities[flag];
+        }
+        if (all_activities[index] == 'Antiviral' || all_activities[index] == 'Antibacterial/antibiotic' || all_activities[index] == 'Antifungal' || all_activities[index] == 'Antiprotozoal' || all_activities[index] == 'Anuro defense'){    
+            var flag = all_activities.indexOf('Antimicrobial');
+            delete all_activities[flag];
+        }
+        if (all_activities[index] == 'Antiparasitic' || all_activities[index] == 'Cytolytic' || all_activities[index] == 'Insecticidal'){    
+            var flag = all_activities.indexOf('Toxic');
+            delete all_activities[flag];
+        }
+        if (all_activities[index] == 'Antihypertensive' || all_activities[index] == 'Anti Diabetic' || all_activities[index] == 'Antiinflammatory' || all_activities[index] == 'Enzyme inhibitor' || all_activities[index] == 'Regulatory' || all_activities[index] == 'Anti Angiogenic'){    
+            var flag = all_activities.indexOf('Metabolic');
+            delete all_activities[flag];
+        }
+        if (all_activities[index] == 'Antitumour'){    
+            var flag = all_activities.indexOf('Anticancer');
+            delete all_activities[flag];
+        }
+        if (all_activities[index] == 'Antioxidant'){    
+            var flag = all_activities.indexOf('Bioactive');
+            delete all_activities[flag];
+        }
+        if (all_activities[index] == 'Wound healing'){    
+            var flag = all_activities.indexOf('Immunomodulatory');
+            delete all_activities[flag];
+        }
+        if (all_activities[index] == 'Anti HIV' || all_activities[index] == 'Anti HSV'){    
+            var flag = all_activities.indexOf('Antiviral');
+            delete all_activities[flag];
+        }
+        if (all_activities[index] == 'Antibiofilm' || all_activities[index] == 'Anti Gram(+)' || all_activities[index] == 'Anti Gram(-)' || all_activities[index] == 'Anti TB' || all_activities[index] == 'Bacteriocins'){    
+            var flag = all_activities.indexOf('Antibacterial/antibiotic');
+            delete all_activities[flag];
+        }
+        if (all_activities[index] == 'Anti Yeast'){    
+            var flag = all_activities.indexOf('Antifungal');
+            delete all_activities[flag];
+        }
+        if (all_activities[index] == 'Antimalarial/antiplasmodial'){    
+            var flag = all_activities.indexOf('Antiprotozoal');
+            delete all_activities[flag];
+        }
+        if (all_activities[index] == 'Hemolytic'){    
+            var flag = all_activities.indexOf('Cytolytic');
+            delete all_activities[flag];
+        }
+        if (all_activities[index] == 'Antilisterial' || all_activities[index] == 'Anti MRSA'){    
+            var flag = all_activities.indexOf('Anti Gram(+)');
+            delete all_activities[flag];
+        }
+    }
+    all_activities = all_activities.filter(function(e){return e});
+    //console.log(all_activities)
+    //console.log(req.body['organisms[]'])
+    //console.log(req.body.uniprot)
+    //console.log(req.body['interval[]'][1])
+    //console.log(req.body.time)
     
-    
-    if (req.query.pdb == 'true' && req.query.uniprot == 'true'){
-        if (organisms_list.includes("") == false && organisms_list.includes('all') == false){
-            if (activity_lvl_1 != '' && activity_lvl_2 == '' && activity_lvl_3 == ''){
-                const activities = await Activity.find({$and:[{"activity" : {"$in": activity_lvl_1}},{"organism" : {"$in": organisms_list}}, {'pdb_code': {$ne : ""}}, {'pdb_code': {$ne : "0"}}, {'uniprot_code': {$ne : ""}},{'uniprot_code': {$ne : "0"}},{ "length": { $gte : parseInt(interval_list[0])}},{ "length": { $lte : parseInt(interval_list[1])}}]}).lean();
-                //await exportQueryJSON(activities, req.query.time);
-                //await exportQueryCSV(activities, req.query.time);
-                res.send(activities);
-            }
-            if (activity_lvl_1.length && activity_lvl_1 != '' && activity_lvl_2.length && activity_lvl_2 != '' && activity_lvl_3.length && activity_lvl_3 == ''){
-                const activities = await Activity.find({$and:[{"activity" : {"$in": activity_lvl_2}},{"organism" : {"$in": organisms_list}},{'pdb_code': {$ne : ""}}, {'pdb_code': {$ne : "0"}}, {'uniprot_code': {$ne : ""}},{'uniprot_code': {$ne : "0"}},{ "length": { $gte : parseInt(interval_list[0])}},{ "length": { $lte : parseInt(interval_list[1])}}]}).lean();
-                //await exportQueryJSON(activities, req.query.time);
-                //await exportQueryCSV(activities, req.query.time);
-                res.send(activities);
-            }
-            if (activity_lvl_1.length && activity_lvl_1 != '' && activity_lvl_2.length && activity_lvl_2 != '' && activity_lvl_3.length && activity_lvl_3 != ''){
-                if(activity_lvl_3.includes("Wound healing") && activity_lvl_2.includes("Immunomodulatory")){
-                    //si no esta seleccionado la actividad 3 incluye la actividad 2 a la actividad 3
-                    for (let index = 0; index < activity_lvl_2.length; index++) {
-                        if(activity_lvl_2[index] != 'Immunomodulatory'){
-                            activity_lvl_3 = activity_lvl_3.concat(activity_lvl_2[index])
-                        }   
-                    }
-                }
-                if(activity_lvl_3.includes("Hemolytic") && activity_lvl_2.includes("Cytolytic")){
-                    //si no esta seleccionado la actividad 3 incluye la actividad 2 a la actividad 3
-                    for (let index = 0; index < activity_lvl_2.length; index++) {
-                        if(activity_lvl_2[index] != 'Cytolytic'){
-                            activity_lvl_3 = activity_lvl_3.concat(activity_lvl_2[index])
-                        }   
-                    }
-                }
-                if(activity_lvl_3.includes("Anti Yeast") || activity_lvl_3.includes("Anti Gram(-)") || activity_lvl_3.includes("Anti Gram(+)") || activity_lvl_3.includes("Bacteriocins") || activity_lvl_3.includes("Anti Tuberculosis") || activity_lvl_3.includes("Antibiofilm") || activity_lvl_3.includes("Antimalarial/antiplasmodial") || activity_lvl_3.includes("Anti HIV") || activity_lvl_3.includes("Anti HSV") && activity_lvl_2.includes("Antifungal") || activity_lvl_2.includes("Antibacterial") || activity_lvl_2.includes("Anuro defense") || activity_lvl_2.includes("Antiprotozoal") || activity_lvl_2.includes("Antiviral")){
-                    if (!activity_lvl_3.includes("Anti Yeast") && activity_lvl_2.includes("Antifungal")){
-                        activity_lvl_3 = activity_lvl_3.concat("Antifungal")
-                    }
-                    if (!activity_lvl_3.includes("Antimalarial/antiplasmodial") && activity_lvl_2.includes("Antiprotozoal")){
-                        activity_lvl_3 = activity_lvl_3.concat("Antiprotozoal")
-                    }
-                    if (activity_lvl_2.includes("Anuro defense")){
-                        activity_lvl_3 = activity_lvl_3.concat("Anuro defense")
-                    }
-                    if (activity_lvl_2.includes("Antiviral")){
-                        if (!activity_lvl_3.includes("Anti HIV")){
-                            if(!activity_lvl_3.includes("Anti HSV")){
-                                activity_lvl_3 = activity_lvl_3.concat("Antiviral")
-                            }
-                        }
-                    }
-                    if (activity_lvl_2.includes("Antibacterial")){
-                        if (!activity_lvl_3.includes("Anti Gram(-)")){
-                            if(!activity_lvl_3.includes("Anti Gram(+)")){
-                                if(!activity_lvl_3.includes("Bacteriocins")){
-                                    if(!activity_lvl_3.includes("Anti Tuberculoosis")){
-                                        if(!activity_lvl_3.includes("Antibiofilm")){
-                                            activity_lvl_3 = activity_lvl_3.concat("Antibacterial")
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-                const activities = await Activity.find({$and:[{"activity" : {"$in": activity_lvl_3}},{"organism" : {"$in": organisms_list}}, {'pdb_code': {$ne : ""}}, {'pdb_code': {$ne : "0"}}, {'uniprot_code': {$ne : ""}},{'uniprot_code': {$ne : "0"}},{ "length": { $gte : parseInt(interval_list[0])}},{ "length": { $lte : parseInt(interval_list[1])}}]}).lean();
+    if (req.body['organisms[]'].includes('all') == true){
+        if (req.body.uniprot == 'false'){
+            if (all_activities != ''){
+                const activities = await Activity.find({$and:[{"activity" : {"$in": all_activities}},{ "length": { $gte : parseInt(req.body['interval[]'][0])}},{ "length": { $lte : parseInt(req.body['interval[]'][1])}}]}).lean();
                 //await exportQueryJSON(activities, req.query.time);
                 //await exportQueryCSV(activities, req.query.time);
                 res.send(activities);
             }
         }
-        if (activity_lvl_1 != '' && activity_lvl_2 == '' && activity_lvl_3 == ''){
-            const activities = await Activity.find({$and:[{"activity" : {"$in": activity_lvl_1}}, {'pdb_code': {$ne : ""}}, {'pdb_code': {$ne : "0"}}, {'uniprot_code': {$ne : ""}},{'uniprot_code': {$ne : "0"}},{ "length": { $gte : parseInt(interval_list[0])}},{ "length": { $lte : parseInt(interval_list[1])}}]}).lean();
-            //await exportQueryJSON(activities, req.query.time);
-            //await exportQueryCSV(activities, req.query.time);
-            res.send(activities);
-        }
-        if (activity_lvl_1.length && activity_lvl_1 != '' && activity_lvl_2.length && activity_lvl_2 != '' && activity_lvl_3.length && activity_lvl_3 == ''){
-            const activities = await Activity.find({$and:[{"activity" : {"$in": activity_lvl_2}},{'pdb_code': {$ne : ""}}, {'pdb_code': {$ne : "0"}}, {'uniprot_code': {$ne : ""}},{'uniprot_code': {$ne : "0"}},{ "length": { $gte : parseInt(interval_list[0])}},{ "length": { $lte : parseInt(interval_list[1])}}]}).lean();
-            //await exportQueryJSON(activities, req.query.time);
-            //await exportQueryCSV(activities, req.query.time);
-            res.send(activities);
-        }
-        if (activity_lvl_1.length && activity_lvl_1 != '' && activity_lvl_2.length && activity_lvl_2 != '' && activity_lvl_3.length && activity_lvl_3 != ''){
-            if(activity_lvl_3.includes("Wound healing") && activity_lvl_2.includes("Immunomodulatory")){
-                //si no esta seleccionado la actividad 3 incluye la actividad 2 a la actividad 3
-                for (let index = 0; index < activity_lvl_2.length; index++) {
-                    if(activity_lvl_2[index] != 'Immunomodulatory'){
-                        activity_lvl_3 = activity_lvl_3.concat(activity_lvl_2[index])
-                    }   
-                }
-            }
-            if(activity_lvl_3.includes("Hemolytic") && activity_lvl_2.includes("Cytolytic")){
-                //si no esta seleccionado la actividad 3 incluye la actividad 2 a la actividad 3
-                for (let index = 0; index < activity_lvl_2.length; index++) {
-                    if(activity_lvl_2[index] != 'Cytolytic'){
-                        activity_lvl_3 = activity_lvl_3.concat(activity_lvl_2[index])
-                    }   
-                }
-            }
-            if(activity_lvl_3.includes("Anti Yeast") || activity_lvl_3.includes("Anti Gram(-)") || activity_lvl_3.includes("Anti Gram(+)") || activity_lvl_3.includes("Bacteriocins") || activity_lvl_3.includes("Anti Tuberculosis") || activity_lvl_3.includes("Antibiofilm") || activity_lvl_3.includes("Antimalarial/antiplasmodial") || activity_lvl_3.includes("Anti HIV") || activity_lvl_3.includes("Anti HSV") && activity_lvl_2.includes("Antifungal") || activity_lvl_2.includes("Antibacterial") || activity_lvl_2.includes("Anuro defense") || activity_lvl_2.includes("Antiprotozoal") || activity_lvl_2.includes("Antiviral")){
-                if (!activity_lvl_3.includes("Anti Yeast") && activity_lvl_2.includes("Antifungal")){
-                    activity_lvl_3 = activity_lvl_3.concat("Antifungal")
-                }
-                if (!activity_lvl_3.includes("Antimalarial/antiplasmodial") && activity_lvl_2.includes("Antiprotozoal")){
-                    activity_lvl_3 = activity_lvl_3.concat("Antiprotozoal")
-                }
-                if (activity_lvl_2.includes("Anuro defense")){
-                    activity_lvl_3 = activity_lvl_3.concat("Anuro defense")
-                }
-                if (activity_lvl_2.includes("Antiviral")){
-                    if (!activity_lvl_3.includes("Anti HIV")){
-                        if(!activity_lvl_3.includes("Anti HSV")){
-                            activity_lvl_3 = activity_lvl_3.concat("Antiviral")
-                        }
-                    }
-                }
-                if (activity_lvl_2.includes("Antibacterial")){
-                    if (!activity_lvl_3.includes("Anti Gram(-)")){
-                        if(!activity_lvl_3.includes("Anti Gram(+)")){
-                            if(!activity_lvl_3.includes("Bacteriocins")){
-                                if(!activity_lvl_3.includes("Anti Tuberculoosis")){
-                                    if(!activity_lvl_3.includes("Antibiofilm")){
-                                        activity_lvl_3 = activity_lvl_3.concat("Antibacterial")
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            const activities = await Activity.find({$and:[{"activity" : {"$in": activity_lvl_3}}, {'pdb_code': {$ne : ""}}, {'pdb_code': {$ne : "0"}}, {'uniprot_code': {$ne : ""}},{'uniprot_code': {$ne : "0"}},{ "length": { $gte : parseInt(interval_list[0])}},{ "length": { $lte : parseInt(interval_list[1])}}]}).lean();
-            //await exportQueryJSON(activities, req.query.time);
-            //await exportQueryCSV(activities, req.query.time);
-            res.send(activities);
-        }
-    }
-    if (req.query.pdb == 'false' && req.query.uniprot == 'false'){
-        if (organisms_list.includes("") == false && organisms_list.includes('all') == false){ //con organismos
-            if (activity_lvl_1 != '' && activity_lvl_2 == '' && activity_lvl_3 == ''){
-                const activities = await Activity.find({$and:[{"activity" : {"$in": activity_lvl_1}}, {"organism" : {"$in": organisms_list}},{ "length": { $gte : parseInt(interval_list[0])}},{ "length": { $lte : parseInt(interval_list[1])}}]}).lean();
-                
-                //await exportQueryJSON(activities, req.query.time);
-                //await exportQueryCSV(activities, req.query.time);
-                res.send(activities);
-            }
-            if (activity_lvl_1.length && activity_lvl_1 != '' && activity_lvl_2.length && activity_lvl_2 != '' && activity_lvl_3.length && activity_lvl_3 == ''){
-                const activities = await Activity.find({$and:[{"activity" : {"$in": activity_lvl_2}}, {"organism" : {"$in": organisms_list}},{ "length": { $gte : parseInt(interval_list[0])}},{ "length": { $lte : parseInt(interval_list[1])}}]}).lean();
-                //await exportQueryJSON(activities, req.query.time);
-                //await exportQueryCSV(activities, req.query.time);
-                res.send(activities);
-            }
-            if (activity_lvl_1.length && activity_lvl_1 != '' && activity_lvl_2.length && activity_lvl_2 != '' && activity_lvl_3.length && activity_lvl_3 != ''){
-                if(activity_lvl_3.includes("Wound healing") && activity_lvl_2.includes("Immunomodulatory")){
-                    //si no esta seleccionado la actividad 3 incluye la actividad 2 a la actividad 3
-                    for (let index = 0; index < activity_lvl_2.length; index++) {
-                        if(activity_lvl_2[index] != 'Immunomodulatory'){
-                            activity_lvl_3 = activity_lvl_3.concat(activity_lvl_2[index])
-                        }   
-                    }
-                }
-                if(activity_lvl_3.includes("Hemolytic") && activity_lvl_2.includes("Cytolytic")){
-                    //si no esta seleccionado la actividad 3 incluye la actividad 2 a la actividad 3
-                    for (let index = 0; index < activity_lvl_2.length; index++) {
-                        if(activity_lvl_2[index] != 'Cytolytic'){
-                            activity_lvl_3 = activity_lvl_3.concat(activity_lvl_2[index])
-                        }   
-                    }
-                }
-                if(activity_lvl_3.includes("Anti Yeast") || activity_lvl_3.includes("Anti Gram(-)") || activity_lvl_3.includes("Anti Gram(+)") || activity_lvl_3.includes("Bacteriocins") || activity_lvl_3.includes("Anti Tuberculosis") || activity_lvl_3.includes("Antibiofilm") || activity_lvl_3.includes("Antimalarial/antiplasmodial") || activity_lvl_3.includes("Anti HIV") || activity_lvl_3.includes("Anti HSV") && activity_lvl_2.includes("Antifungal") || activity_lvl_2.includes("Antibacterial") || activity_lvl_2.includes("Anuro defense") || activity_lvl_2.includes("Antiprotozoal") || activity_lvl_2.includes("Antiviral")){
-                    if (!activity_lvl_3.includes("Anti Yeast") && activity_lvl_2.includes("Antifungal")){
-                        activity_lvl_3 = activity_lvl_3.concat("Antifungal")
-                    }
-                    if (!activity_lvl_3.includes("Antimalarial/antiplasmodial") && activity_lvl_2.includes("Antiprotozoal")){
-                        activity_lvl_3 = activity_lvl_3.concat("Antiprotozoal")
-                    }
-                    if (activity_lvl_2.includes("Anuro defense")){
-                        activity_lvl_3 = activity_lvl_3.concat("Anuro defense")
-                    }
-                    if (activity_lvl_2.includes("Antiviral")){
-                        if (!activity_lvl_3.includes("Anti HIV")){
-                            if(!activity_lvl_3.includes("Anti HSV")){
-                                activity_lvl_3 = activity_lvl_3.concat("Antiviral")
-                            }
-                        }
-                    }
-                    if (activity_lvl_2.includes("Antibacterial")){
-                        if (!activity_lvl_3.includes("Anti Gram(-)")){
-                            if(!activity_lvl_3.includes("Anti Gram(+)")){
-                                if(!activity_lvl_3.includes("Bacteriocins")){
-                                    if(!activity_lvl_3.includes("Anti Tuberculoosis")){
-                                        if(!activity_lvl_3.includes("Antibiofilm")){
-                                            activity_lvl_3 = activity_lvl_3.concat("Antibacterial")
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-                const activities = await Activity.find({$and:[{"activity" : {"$in": activity_lvl_3}}, {"organism" : {"$in": organisms_list}},{ "length": { $gte : parseInt(interval_list[0])}},{ "length": { $lte : parseInt(interval_list[1])}}]}).lean();
-                //await exportQueryJSON(activities, req.query.time);
-                //await exportQueryCSV(activities, req.query.time);
-                res.send(activities);
-            }
-        }
-        else{
-            if (activity_lvl_1 != '' && activity_lvl_2 == '' && activity_lvl_3 == ''){
-                const activities = await Activity.find({$and:[{"activity" : {"$in": activity_lvl_1}}, { "length": { $gte : parseInt(interval_list[0])}},{ "length": { $lte : parseInt(interval_list[1])}}]}).lean();
-                
-                //await exportQueryJSON(activities, req.query.time);
-                //await exportQueryCSV(activities, req.query.time);
-                res.send(activities);
-            }
-            if (activity_lvl_1.length && activity_lvl_1 != '' && activity_lvl_2.length && activity_lvl_2 != '' && activity_lvl_3.length && activity_lvl_3 == ''){
-                const activities = await Activity.find({$and:[{"activity" : {"$in": activity_lvl_2}}, { "length": { $gte : parseInt(interval_list[0])}},{ "length": { $lte : parseInt(interval_list[1])}}]}).lean();
-                //await exportQueryJSON(activities, req.query.time);
-                //await exportQueryCSV(activities, req.query.time);
-                res.send(activities);
-            }
-            if (activity_lvl_1.length && activity_lvl_1 != '' && activity_lvl_2.length && activity_lvl_2 != '' && activity_lvl_3.length && activity_lvl_3 != ''){
-                if(activity_lvl_3.includes("Wound healing") && activity_lvl_2.includes("Immunomodulatory")){
-                    //si no esta seleccionado la actividad 3 incluye la actividad 2 a la actividad 3
-                    for (let index = 0; index < activity_lvl_2.length; index++) {
-                        if(activity_lvl_2[index] != 'Immunomodulatory'){
-                            activity_lvl_3 = activity_lvl_3.concat(activity_lvl_2[index])
-                        }   
-                    }
-                }
-                if(activity_lvl_3.includes("Hemolytic") && activity_lvl_2.includes("Cytolytic")){
-                    //si no esta seleccionado la actividad 3 incluye la actividad 2 a la actividad 3
-                    for (let index = 0; index < activity_lvl_2.length; index++) {
-                        if(activity_lvl_2[index] != 'Cytolytic'){
-                            activity_lvl_3 = activity_lvl_3.concat(activity_lvl_2[index])
-                        }   
-                    }
-                }
-                if(activity_lvl_3.includes("Anti Yeast") || activity_lvl_3.includes("Anti Gram(-)") || activity_lvl_3.includes("Anti Gram(+)") || activity_lvl_3.includes("Bacteriocins") || activity_lvl_3.includes("Anti Tuberculosis") || activity_lvl_3.includes("Antibiofilm") || activity_lvl_3.includes("Antimalarial/antiplasmodial") || activity_lvl_3.includes("Anti HIV") || activity_lvl_3.includes("Anti HSV") && activity_lvl_2.includes("Antifungal") || activity_lvl_2.includes("Antibacterial") || activity_lvl_2.includes("Anuro defense") || activity_lvl_2.includes("Antiprotozoal") || activity_lvl_2.includes("Antiviral")){
-                    if (!activity_lvl_3.includes("Anti Yeast") && activity_lvl_2.includes("Antifungal")){
-                        activity_lvl_3 = activity_lvl_3.concat("Antifungal")
-                    }
-                    if (!activity_lvl_3.includes("Antimalarial/antiplasmodial") && activity_lvl_2.includes("Antiprotozoal")){
-                        activity_lvl_3 = activity_lvl_3.concat("Antiprotozoal")
-                    }
-                    if (activity_lvl_2.includes("Anuro defense")){
-                        activity_lvl_3 = activity_lvl_3.concat("Anuro defense")
-                    }
-                    if (activity_lvl_2.includes("Antiviral")){
-                        if (!activity_lvl_3.includes("Anti HIV")){
-                            if(!activity_lvl_3.includes("Anti HSV")){
-                                activity_lvl_3 = activity_lvl_3.concat("Antiviral")
-                            }
-                        }
-                    }
-                    if (activity_lvl_2.includes("Antibacterial")){
-                        if (!activity_lvl_3.includes("Anti Gram(-)")){
-                            if(!activity_lvl_3.includes("Anti Gram(+)")){
-                                if(!activity_lvl_3.includes("Bacteriocins")){
-                                    if(!activity_lvl_3.includes("Anti Tuberculoosis")){
-                                        if(!activity_lvl_3.includes("Antibiofilm")){
-                                            activity_lvl_3 = activity_lvl_3.concat("Antibacterial")
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-                const activities = await Activity.find({$and:[{"activity" : {"$in": activity_lvl_3}}, { "length": { $gte : parseInt(interval_list[0])}},{ "length": { $lte : parseInt(interval_list[1])}}]}).lean();
+        if (req.body.uniprot == 'true'){
+            if (all_activities != ''){
+                const activities = await Activity.find({$and:[{"activity" : {"$in": all_activities}}, {'uniprot_code': {$ne : ""}},{'uniprot_code': {$ne : "0"}}, { "length": { $gte : parseInt(req.body['interval[]'][0])}},{ "length": { $lte : parseInt(req.body['interval[]'][1])}}]}).lean();
                 //await exportQueryJSON(activities, req.query.time);
                 //await exportQueryCSV(activities, req.query.time);
                 res.send(activities);
             }
         }
     }
-    if (req.query.pdb == 'true' && req.query.uniprot == 'false'){
-        if (organisms_list.includes("") == false && organisms_list.includes('all') == false){
-            
-            if (activity_lvl_1 != '' && activity_lvl_2 == '' && activity_lvl_3 == ''){
-                const activities = await Activity.find({$and:[{"activity" : {"$in": activity_lvl_1}}, {"organism" : {"$in": organisms_list}}, {'pdb_code': {$ne : ""}}, {'pdb_code': {$ne : "0"}},{ "length": { $gte : parseInt(interval_list[0])}},{ "length": { $lte : parseInt(interval_list[1])}}]}).lean();
-                //await exportQueryJSON(activities, req.query.time);
-                //await exportQueryCSV(activities, req.query.time);
-                res.send(activities);
-            }
-            if (activity_lvl_1.length && activity_lvl_1 != '' && activity_lvl_2.length && activity_lvl_2 != '' && activity_lvl_3.length && activity_lvl_3 == ''){
-                const activities = await Activity.find({$and:[{"activity" : {"$in": activity_lvl_2}}, {"organism" : {"$in": organisms_list}}, {'pdb_code': {$ne : ""}}, {'pdb_code': {$ne : "0"}},{ "length": { $gte : parseInt(interval_list[0])}},{ "length": { $lte : parseInt(interval_list[1])}}]}).lean();
-                //await exportQueryJSON(activities, req.query.time);
-                //await exportQueryCSV(activities, req.query.time);
-                res.send(activities);
-            }
-            if (activity_lvl_1.length && activity_lvl_1 != '' && activity_lvl_2.length && activity_lvl_2 != '' && activity_lvl_3.length && activity_lvl_3 != ''){
-                if(activity_lvl_3.includes("Wound healing") && activity_lvl_2.includes("Immunomodulatory")){
-                    //si no esta seleccionado la actividad 3 incluye la actividad 2 a la actividad 3
-                    for (let index = 0; index < activity_lvl_2.length; index++) {
-                        if(activity_lvl_2[index] != 'Immunomodulatory'){
-                            activity_lvl_3 = activity_lvl_3.concat(activity_lvl_2[index])
-                        }   
-                    }
-                }
-                if(activity_lvl_3.includes("Hemolytic") && activity_lvl_2.includes("Cytolytic")){
-                    //si no esta seleccionado la actividad 3 incluye la actividad 2 a la actividad 3
-                    for (let index = 0; index < activity_lvl_2.length; index++) {
-                        if(activity_lvl_2[index] != 'Cytolytic'){
-                            activity_lvl_3 = activity_lvl_3.concat(activity_lvl_2[index])
-                        }   
-                    }
-                }
-                if(activity_lvl_3.includes("Anti Yeast") || activity_lvl_3.includes("Anti Gram(-)") || activity_lvl_3.includes("Anti Gram(+)") || activity_lvl_3.includes("Bacteriocins") || activity_lvl_3.includes("Anti Tuberculosis") || activity_lvl_3.includes("Antibiofilm") || activity_lvl_3.includes("Antimalarial/antiplasmodial") || activity_lvl_3.includes("Anti HIV") || activity_lvl_3.includes("Anti HSV") && activity_lvl_2.includes("Antifungal") || activity_lvl_2.includes("Antibacterial") || activity_lvl_2.includes("Anuro defense") || activity_lvl_2.includes("Antiprotozoal") || activity_lvl_2.includes("Antiviral")){
-                    if (!activity_lvl_3.includes("Anti Yeast") && activity_lvl_2.includes("Antifungal")){
-                        activity_lvl_3 = activity_lvl_3.concat("Antifungal")
-                    }
-                    if (!activity_lvl_3.includes("Antimalarial/antiplasmodial") && activity_lvl_2.includes("Antiprotozoal")){
-                        activity_lvl_3 = activity_lvl_3.concat("Antiprotozoal")
-                    }
-                    if (activity_lvl_2.includes("Anuro defense")){
-                        activity_lvl_3 = activity_lvl_3.concat("Anuro defense")
-                    }
-                    if (activity_lvl_2.includes("Antiviral")){
-                        if (!activity_lvl_3.includes("Anti HIV")){
-                            if(!activity_lvl_3.includes("Anti HSV")){
-                                activity_lvl_3 = activity_lvl_3.concat("Antiviral")
-                            }
-                        }
-                    }
-                    if (activity_lvl_2.includes("Antibacterial")){
-                        if (!activity_lvl_3.includes("Anti Gram(-)")){
-                            if(!activity_lvl_3.includes("Anti Gram(+)")){
-                                if(!activity_lvl_3.includes("Bacteriocins")){
-                                    if(!activity_lvl_3.includes("Anti Tuberculoosis")){
-                                        if(!activity_lvl_3.includes("Antibiofilm")){
-                                            activity_lvl_3 = activity_lvl_3.concat("Antibacterial")
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-                const activities = await Activity.find({$and:[{"activity" : {"$in": activity_lvl_3}}, {"organism" : {"$in": organisms_list}}, {'pdb_code': {$ne : ""}}, {'pdb_code': {$ne : "0"}},{ "length": { $gte : parseInt(interval_list[0])}},{ "length": { $lte : parseInt(interval_list[1])}}]}).lean();
+    if (req.body['organisms[]'].includes("") == false && req.body['organisms[]'].includes('all') == false){
+        if (req.body.uniprot == 'false'){
+            if (all_activities != ''){
+                const activities = await Activity.find({$and:[{"activity" : {"$in": all_activities}},{"organism_value" : {"$in": req.body['organisms[]']}},{ "length": { $gte : parseInt(req.body['interval[]'][0])}},{ "length": { $lte : parseInt(req.body['interval[]'][1])}}]}).lean();
                 //await exportQueryJSON(activities, req.query.time);
                 //await exportQueryCSV(activities, req.query.time);
                 res.send(activities);
             }
         }
-
-        if (activity_lvl_1 != '' && activity_lvl_2 == '' && activity_lvl_3 == ''){
-            const activities = await Activity.find({$and:[{"activity" : {"$in": activity_lvl_1}}, {'pdb_code': {$ne : ""}}, {'pdb_code': {$ne : "0"}},{ "length": { $gte : parseInt(interval_list[0])}},{ "length": { $lte : parseInt(interval_list[1])}}]}).lean();
-            
-            //await exportQueryJSON(activities, req.query.time);
-            //await exportQueryCSV(activities, req.query.time);
-            res.send(activities);
-        }
-        if (activity_lvl_1.length && activity_lvl_1 != '' && activity_lvl_2.length && activity_lvl_2 != '' && activity_lvl_3.length && activity_lvl_3 == ''){
-            const activities = await Activity.find({$and:[{"activity" : {"$in": activity_lvl_2}}, {'pdb_code': {$ne : ""}}, {'pdb_code': {$ne : "0"}},{ "length": { $gte : parseInt(interval_list[0])}},{ "length": { $lte : parseInt(interval_list[1])}}]}).lean();
-            //await exportQueryJSON(activities, req.query.time);
-            //await exportQueryCSV(activities, req.query.time);
-            res.send(activities);
-        }
-        if (activity_lvl_1.length && activity_lvl_1 != '' && activity_lvl_2.length && activity_lvl_2 != '' && activity_lvl_3.length && activity_lvl_3 != ''){
-            if(activity_lvl_3.includes("Wound healing") && activity_lvl_2.includes("Immunomodulatory")){
-                //si no esta seleccionado la actividad 3 incluye la actividad 2 a la actividad 3
-                for (let index = 0; index < activity_lvl_2.length; index++) {
-                    if(activity_lvl_2[index] != 'Immunomodulatory'){
-                        activity_lvl_3 = activity_lvl_3.concat(activity_lvl_2[index])
-                    }   
-                }
-            }
-            if(activity_lvl_3.includes("Hemolytic") && activity_lvl_2.includes("Cytolytic")){
-                //si no esta seleccionado la actividad 3 incluye la actividad 2 a la actividad 3
-                for (let index = 0; index < activity_lvl_2.length; index++) {
-                    if(activity_lvl_2[index] != 'Cytolytic'){
-                        activity_lvl_3 = activity_lvl_3.concat(activity_lvl_2[index])
-                    }   
-                }
-            }
-            if(activity_lvl_3.includes("Anti Yeast") || activity_lvl_3.includes("Anti Gram(-)") || activity_lvl_3.includes("Anti Gram(+)") || activity_lvl_3.includes("Bacteriocins") || activity_lvl_3.includes("Anti Tuberculosis") || activity_lvl_3.includes("Antibiofilm") || activity_lvl_3.includes("Antimalarial/antiplasmodial") || activity_lvl_3.includes("Anti HIV") || activity_lvl_3.includes("Anti HSV") && activity_lvl_2.includes("Antifungal") || activity_lvl_2.includes("Antibacterial") || activity_lvl_2.includes("Anuro defense") || activity_lvl_2.includes("Antiprotozoal") || activity_lvl_2.includes("Antiviral")){
-                if (!activity_lvl_3.includes("Anti Yeast") && activity_lvl_2.includes("Antifungal")){
-                    activity_lvl_3 = activity_lvl_3.concat("Antifungal")
-                }
-                if (!activity_lvl_3.includes("Antimalarial/antiplasmodial") && activity_lvl_2.includes("Antiprotozoal")){
-                    activity_lvl_3 = activity_lvl_3.concat("Antiprotozoal")
-                }
-                if (activity_lvl_2.includes("Anuro defense")){
-                    activity_lvl_3 = activity_lvl_3.concat("Anuro defense")
-                }
-                if (activity_lvl_2.includes("Antiviral")){
-                    if (!activity_lvl_3.includes("Anti HIV")){
-                        if(!activity_lvl_3.includes("Anti HSV")){
-                            activity_lvl_3 = activity_lvl_3.concat("Antiviral")
-                        }
-                    }
-                }
-                if (activity_lvl_2.includes("Antibacterial")){
-                    if (!activity_lvl_3.includes("Anti Gram(-)")){
-                        if(!activity_lvl_3.includes("Anti Gram(+)")){
-                            if(!activity_lvl_3.includes("Bacteriocins")){
-                                if(!activity_lvl_3.includes("Anti Tuberculoosis")){
-                                    if(!activity_lvl_3.includes("Antibiofilm")){
-                                        activity_lvl_3 = activity_lvl_3.concat("Antibacterial")
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            const activities = await Activity.find({$and:[{"activity" : {"$in": activity_lvl_3}}, {'pdb_code': {$ne : ""}}, {'pdb_code': {$ne : "0"}},{ "length": { $gte : parseInt(interval_list[0])}},{ "length": { $lte : parseInt(interval_list[1])}}]}).lean();
-            //await exportQueryJSON(activities, req.query.time);
-            //await exportQueryCSV(activities, req.query.time);
-            res.send(activities);
-        }
-    }
-    if (req.query.pdb == 'false' && req.query.uniprot == 'true'){
-        if (organisms_list.includes("") == false && organisms_list.includes('all') == false){
-            if (activity_lvl_1 != '' && activity_lvl_2 == '' && activity_lvl_3 == ''){
-                const activities = await Activity.find({$and:[{"activity" : {"$in": activity_lvl_1}}, {"organism" : {"$in": organisms_list}}, {'uniprot_code': {$ne : ""}},{'uniprot_code': {$ne : "0"}},{ "length": { $gte : parseInt(interval_list[0])}},{ "length": { $lte : parseInt(interval_list[1])}}]}).lean();    
-                
+        if (req.body.uniprot == 'true'){
+            if (all_activities != ''){
+                const activities = await Activity.find({$and:[{"activity" : {"$in": all_activities}},{"organism_value" : {"$in": req.body['organisms[]']}}, {'uniprot_code': {$ne : ""}},{'uniprot_code': {$ne : "0"}}, { "length": { $gte : parseInt(req.body['interval[]'][0])}},{ "length": { $lte : parseInt(req.body['interval[]'][1])}}]}).lean();
                 //await exportQueryJSON(activities, req.query.time);
                 //await exportQueryCSV(activities, req.query.time);
                 res.send(activities);
             }
-            if (activity_lvl_1.length && activity_lvl_1 != '' && activity_lvl_2.length && activity_lvl_2 != '' && activity_lvl_3.length && activity_lvl_3 == ''){
-                const activities = await Activity.find({$and:[{"activity" : {"$in": activity_lvl_2}}, {"organism" : {"$in": organisms_list}}, {'uniprot_code': {$ne : ""}},{'uniprot_code': {$ne : "0"}},{ "length": { $gte : parseInt(interval_list[0])}},{ "length": { $lte : parseInt(interval_list[1])}}]}).lean();    
-                //await exportQueryJSON(activities, req.query.time);
-                //await exportQueryCSV(activities, req.query.time);
-                res.send(activities);
-            }
-            if (activity_lvl_1.length && activity_lvl_1 != '' && activity_lvl_2.length && activity_lvl_2 != '' && activity_lvl_3.length && activity_lvl_3 != ''){
-                if(activity_lvl_3.includes("Wound healing") && activity_lvl_2.includes("Immunomodulatory")){
-                    //si no esta seleccionado la actividad 3 incluye la actividad 2 a la actividad 3
-                    for (let index = 0; index < activity_lvl_2.length; index++) {
-                        if(activity_lvl_2[index] != 'Immunomodulatory'){
-                            activity_lvl_3 = activity_lvl_3.concat(activity_lvl_2[index])
-                        }   
-                    }
-                }
-                if(activity_lvl_3.includes("Hemolytic") && activity_lvl_2.includes("Cytolytic")){
-                    //si no esta seleccionado la actividad 3 incluye la actividad 2 a la actividad 3
-                    for (let index = 0; index < activity_lvl_2.length; index++) {
-                        if(activity_lvl_2[index] != 'Cytolytic'){
-                            activity_lvl_3 = activity_lvl_3.concat(activity_lvl_2[index])
-                        }   
-                    }
-                }
-                if(activity_lvl_3.includes("Anti Yeast") || activity_lvl_3.includes("Anti Gram(-)") || activity_lvl_3.includes("Anti Gram(+)") || activity_lvl_3.includes("Bacteriocins") || activity_lvl_3.includes("Anti Tuberculosis") || activity_lvl_3.includes("Antibiofilm") || activity_lvl_3.includes("Antimalarial/antiplasmodial") || activity_lvl_3.includes("Anti HIV") || activity_lvl_3.includes("Anti HSV") && activity_lvl_2.includes("Antifungal") || activity_lvl_2.includes("Antibacterial") || activity_lvl_2.includes("Anuro defense") || activity_lvl_2.includes("Antiprotozoal") || activity_lvl_2.includes("Antiviral")){
-                    if (!activity_lvl_3.includes("Anti Yeast") && activity_lvl_2.includes("Antifungal")){
-                        activity_lvl_3 = activity_lvl_3.concat("Antifungal")
-                    }
-                    if (!activity_lvl_3.includes("Antimalarial/antiplasmodial") && activity_lvl_2.includes("Antiprotozoal")){
-                        activity_lvl_3 = activity_lvl_3.concat("Antiprotozoal")
-                    }
-                    if (activity_lvl_2.includes("Anuro defense")){
-                        activity_lvl_3 = activity_lvl_3.concat("Anuro defense")
-                    }
-                    if (activity_lvl_2.includes("Antiviral")){
-                        if (!activity_lvl_3.includes("Anti HIV")){
-                            if(!activity_lvl_3.includes("Anti HSV")){
-                                activity_lvl_3 = activity_lvl_3.concat("Antiviral")
-                            }
-                        }
-                    }
-                    if (activity_lvl_2.includes("Antibacterial")){
-                        if (!activity_lvl_3.includes("Anti Gram(-)")){
-                            if(!activity_lvl_3.includes("Anti Gram(+)")){
-                                if(!activity_lvl_3.includes("Bacteriocins")){
-                                    if(!activity_lvl_3.includes("Anti Tuberculoosis")){
-                                        if(!activity_lvl_3.includes("Antibiofilm")){
-                                            activity_lvl_3 = activity_lvl_3.concat("Antibacterial")
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-                const activities = await Activity.find({$and:[{"activity" : {"$in": activity_lvl_3}}, {"organism" : {"$in": organisms_list}}, {'uniprot_code': {$ne : ""}},{'uniprot_code': {$ne : "0"}},{ "length": { $gte : parseInt(interval_list[0])}},{ "length": { $lte : parseInt(interval_list[1])}}]}).lean();    
-                //await exportQueryJSON(activities, req.query.time);
-                //await exportQueryCSV(activities, req.query.time);
-                res.send(activities);
-            }
-        }
-        if (activity_lvl_1 != '' && activity_lvl_2 == '' && activity_lvl_3 == ''){
-            const activities = await Activity.find({$and:[{"activity" : {"$in": activity_lvl_1}}, {'uniprot_code': {$ne : ""}},{'uniprot_code': {$ne : "0"}},{ "length": { $gte : parseInt(interval_list[0])}},{ "length": { $lte : parseInt(interval_list[1])}}]}).lean();
-            
-            //await exportQueryJSON(activities, req.query.time);
-            //await exportQueryCSV(activities, req.query.time);
-            res.send(activities);
-        }
-        if (activity_lvl_1.length && activity_lvl_1 != '' && activity_lvl_2.length && activity_lvl_2 != '' && activity_lvl_3.length && activity_lvl_3 == ''){
-            const activities = await Activity.find({$and:[{"activity" : {"$in": activity_lvl_2}}, {'uniprot_code': {$ne : ""}},{'uniprot_code': {$ne : "0"}},{ "length": { $gte : parseInt(interval_list[0])}},{ "length": { $lte : parseInt(interval_list[1])}}]}).lean();
-            //await exportQueryJSON(activities, req.query.time);
-            //await exportQueryCSV(activities, req.query.time);
-            res.send(activities);
-        }
-        if (activity_lvl_1.length && activity_lvl_1 != '' && activity_lvl_2.length && activity_lvl_2 != '' && activity_lvl_3.length && activity_lvl_3 != ''){
-            if(activity_lvl_3.includes("Wound healing") && activity_lvl_2.includes("Immunomodulatory")){
-                //si no esta seleccionado la actividad 3 incluye la actividad 2 a la actividad 3
-                for (let index = 0; index < activity_lvl_2.length; index++) {
-                    if(activity_lvl_2[index] != 'Immunomodulatory'){
-                        activity_lvl_3 = activity_lvl_3.concat(activity_lvl_2[index])
-                    }   
-                }
-            }
-            if(activity_lvl_3.includes("Hemolytic") && activity_lvl_2.includes("Cytolytic")){
-                //si no esta seleccionado la actividad 3 incluye la actividad 2 a la actividad 3
-                for (let index = 0; index < activity_lvl_2.length; index++) {
-                    if(activity_lvl_2[index] != 'Cytolytic'){
-                        activity_lvl_3 = activity_lvl_3.concat(activity_lvl_2[index])
-                    }   
-                }
-            }
-            if(activity_lvl_3.includes("Anti Yeast") || activity_lvl_3.includes("Anti Gram(-)") || activity_lvl_3.includes("Anti Gram(+)") || activity_lvl_3.includes("Bacteriocins") || activity_lvl_3.includes("Anti Tuberculosis") || activity_lvl_3.includes("Antibiofilm") || activity_lvl_3.includes("Antimalarial/antiplasmodial") || activity_lvl_3.includes("Anti HIV") || activity_lvl_3.includes("Anti HSV") && activity_lvl_2.includes("Antifungal") || activity_lvl_2.includes("Antibacterial") || activity_lvl_2.includes("Anuro defense") || activity_lvl_2.includes("Antiprotozoal") || activity_lvl_2.includes("Antiviral")){
-                if (!activity_lvl_3.includes("Anti Yeast") && activity_lvl_2.includes("Antifungal")){
-                    activity_lvl_3 = activity_lvl_3.concat("Antifungal")
-                }
-                if (!activity_lvl_3.includes("Antimalarial/antiplasmodial") && activity_lvl_2.includes("Antiprotozoal")){
-                    activity_lvl_3 = activity_lvl_3.concat("Antiprotozoal")
-                }
-                if (activity_lvl_2.includes("Anuro defense")){
-                    activity_lvl_3 = activity_lvl_3.concat("Anuro defense")
-                }
-                if (activity_lvl_2.includes("Antiviral")){
-                    if (!activity_lvl_3.includes("Anti HIV")){
-                        if(!activity_lvl_3.includes("Anti HSV")){
-                            activity_lvl_3 = activity_lvl_3.concat("Antiviral")
-                        }
-                    }
-                }
-                if (activity_lvl_2.includes("Antibacterial")){
-                    if (!activity_lvl_3.includes("Anti Gram(-)")){
-                        if(!activity_lvl_3.includes("Anti Gram(+)")){
-                            if(!activity_lvl_3.includes("Bacteriocins")){
-                                if(!activity_lvl_3.includes("Anti Tuberculoosis")){
-                                    if(!activity_lvl_3.includes("Antibiofilm")){
-                                        activity_lvl_3 = activity_lvl_3.concat("Antibacterial")
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            const activities = await Activity.find({$and:[{"activity" : {"$in": activity_lvl_3}}, {'uniprot_code': {$ne : ""}},{'uniprot_code': {$ne : "0"}},{ "length": { $gte : parseInt(interval_list[0])}},{ "length": { $lte : parseInt(interval_list[1])}}]}).lean();
-            //await exportQueryJSON(activities, req.query.time);
-            //await exportQueryCSV(activities, req.query.time);
-            res.send(activities);
         }
     }
 }
 indexCtrl.renderSequence = async(req,res) =>{
-    const peptides = await Peptide.find({"sequence":req.query.sec}).lean();
-    
+    const peptides = await Peptide.find({"id_sequence":req.query.id_sec}).lean();
     res.render('sequence', {peptides});
 };
 indexCtrl.renderDatabaseInformation = async(req,res) =>{
     res.render('database_information');
 };
 indexCtrl.renderCharacterization = async(req,res) =>{
-    res.render('characterization');
+    const statistics = await Statistic.find().lean();
+    res.render('characterization', {statistics});
 };
 indexCtrl.getCharacterization = async(req,response) =>{
     postData = JSON.stringify({
@@ -712,509 +325,6 @@ indexCtrl.renderAlignment = async(req,res) =>{
 };
 indexCtrl.getAlignment = async(req,response) =>{
     response.setTimeout(3600000) // no timeout
-    var activity_lvl_1 = req.query.activities1.split(',');
-    var activity_lvl_2 = req.query.activities2.split(',');
-    var activity_lvl_3 = req.query.activities3.split(',');
-    for (let index = 0; index < activity_lvl_3.length; index++) {
-        if (activity_lvl_3[index] == "Anti Gram( )"){
-            activity_lvl_3[index] = "Anti Gram(+)"
-        }
-    }
-    var organisms_list = req.query.organisms.split(',');
-    var interval_list = req.query.interval.split(','); //trae el minimo y max de length
-    
-    if (req.query.pdb == 'true' && req.query.uniprot == 'true'){
-        if (organisms_list.includes("") == false && organisms_list.includes('all') == false){
-            if (activity_lvl_1 != '' && activity_lvl_2 == '' && activity_lvl_3 == ''){
-                const activities = await Activity.find({$and:[{"activity" : {"$in": activity_lvl_1}},{"organism" : {"$in": organisms_list}}, {'pdb_code': {$ne : ""}}, {'uniprot_code': {$ne : ""}},{ "length": { $gte : parseInt(interval_list[0])}},{ "length": { $lte : parseInt(interval_list[1])}}]}).lean();
-                await exportCSVForAlignment(activities);
-            }
-            if (activity_lvl_1.length && activity_lvl_1 != '' && activity_lvl_2.length && activity_lvl_2 != '' && activity_lvl_3.length && activity_lvl_3 == ''){
-                const activities = await Activity.find({$and:[{"activity" : {"$in": activity_lvl_2}},{"organism" : {"$in": organisms_list}}, {'pdb_code': {$ne : ""}}, {'uniprot_code': {$ne : ""}},{ "length": { $gte : parseInt(interval_list[0])}},{ "length": { $lte : parseInt(interval_list[1])}}]}).lean();
-                await exportCSVForAlignment(activities);
-            }
-            if (activity_lvl_1.length && activity_lvl_1 != '' && activity_lvl_2.length && activity_lvl_2 != '' && activity_lvl_3.length && activity_lvl_3 != ''){
-                if(activity_lvl_3.includes("Wound healing") && activity_lvl_2.includes("Immunomodulatory")){
-                    //si no esta seleccionado la actividad 3 incluye la actividad 2 a la actividad 3
-                    for (let index = 0; index < activity_lvl_2.length; index++) {
-                        if(activity_lvl_2[index] != 'Immunomodulatory'){
-                            activity_lvl_3 = activity_lvl_3.concat(activity_lvl_2[index])
-                        }   
-                    }
-                }
-                if(activity_lvl_3.includes("Hemolytic") && activity_lvl_2.includes("Cytolytic")){
-                    //si no esta seleccionado la actividad 3 incluye la actividad 2 a la actividad 3
-                    for (let index = 0; index < activity_lvl_2.length; index++) {
-                        if(activity_lvl_2[index] != 'Cytolytic'){
-                            activity_lvl_3 = activity_lvl_3.concat(activity_lvl_2[index])
-                        }   
-                    }
-                }
-                if(activity_lvl_3.includes("Anti Yeast") || activity_lvl_3.includes("Anti Gram(-)") || activity_lvl_3.includes("Anti Gram(+)") || activity_lvl_3.includes("Bacteriocins") || activity_lvl_3.includes("Anti Tuberculosis") || activity_lvl_3.includes("Antibiofilm") || activity_lvl_3.includes("Antimalarial/antiplasmodial") || activity_lvl_3.includes("Anti HIV") || activity_lvl_3.includes("Anti HSV") && activity_lvl_2.includes("Antifungal") || activity_lvl_2.includes("Antibacterial") || activity_lvl_2.includes("Anuro defense") || activity_lvl_2.includes("Antiprotozoal") || activity_lvl_2.includes("Antiviral")){
-                    if (!activity_lvl_3.includes("Anti Yeast") && activity_lvl_2.includes("Antifungal")){
-                        activity_lvl_3 = activity_lvl_3.concat("Antifungal")
-                    }
-                    if (!activity_lvl_3.includes("Antimalarial/antiplasmodial") && activity_lvl_2.includes("Antiprotozoal")){
-                        activity_lvl_3 = activity_lvl_3.concat("Antiprotozoal")
-                    }
-                    if (activity_lvl_2.includes("Anuro defense")){
-                        activity_lvl_3 = activity_lvl_3.concat("Anuro defense")
-                    }
-                    if (activity_lvl_2.includes("Antiviral")){
-                        if (!activity_lvl_3.includes("Anti HIV")){
-                            if(!activity_lvl_3.includes("Anti HSV")){
-                                activity_lvl_3 = activity_lvl_3.concat("Antiviral")
-                            }
-                        }
-                    }
-                    if (activity_lvl_2.includes("Antibacterial")){
-                        if (!activity_lvl_3.includes("Anti Gram(-)")){
-                            if(!activity_lvl_3.includes("Anti Gram(+)")){
-                                if(!activity_lvl_3.includes("Bacteriocins")){
-                                    if(!activity_lvl_3.includes("Anti Tuberculoosis")){
-                                        if(!activity_lvl_3.includes("Antibiofilm")){
-                                            activity_lvl_3 = activity_lvl_3.concat("Antibacterial")
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-                const activities = await Activity.find({$and:[{"activity" : {"$in": activity_lvl_3}},{"organism" : {"$in": organisms_list}}, {'pdb_code': {$ne : ""}}, {'uniprot_code': {$ne : ""}},{ "length": { $gte : parseInt(interval_list[0])}},{ "length": { $lte : parseInt(interval_list[1])}}]}).lean();
-                await exportCSVForAlignment(activities);
-            }
-        }
-        if (activity_lvl_1 != '' && activity_lvl_2 == '' && activity_lvl_3 == ''){
-            const activities = await Activity.find({$and:[{"activity" : {"$in": activity_lvl_1}}, {'pdb_code': {$ne : ""}}, {'uniprot_code': {$ne : ""}},{ "length": { $gte : parseInt(interval_list[0])}},{ "length": { $lte : parseInt(interval_list[1])}}]}).lean();
-            await exportCSVForAlignment(activities);
-        }
-        if (activity_lvl_1.length && activity_lvl_1 != '' && activity_lvl_2.length && activity_lvl_2 != '' && activity_lvl_3.length && activity_lvl_3 == ''){
-            const activities = await Activity.find({$and:[{"activity" : {"$in": activity_lvl_2}}, {'pdb_code': {$ne : ""}}, {'uniprot_code': {$ne : ""}},{ "length": { $gte : parseInt(interval_list[0])}},{ "length": { $lte : parseInt(interval_list[1])}}]}).lean();
-            await exportCSVForAlignment(activities);
-        }
-        if (activity_lvl_1.length && activity_lvl_1 != '' && activity_lvl_2.length && activity_lvl_2 != '' && activity_lvl_3.length && activity_lvl_3 != ''){
-            if(activity_lvl_3.includes("Wound healing") && activity_lvl_2.includes("Immunomodulatory")){
-                //si no esta seleccionado la actividad 3 incluye la actividad 2 a la actividad 3
-                for (let index = 0; index < activity_lvl_2.length; index++) {
-                    if(activity_lvl_2[index] != 'Immunomodulatory'){
-                        activity_lvl_3 = activity_lvl_3.concat(activity_lvl_2[index])
-                    }   
-                }
-            }
-            if(activity_lvl_3.includes("Hemolytic") && activity_lvl_2.includes("Cytolytic")){
-                //si no esta seleccionado la actividad 3 incluye la actividad 2 a la actividad 3
-                for (let index = 0; index < activity_lvl_2.length; index++) {
-                    if(activity_lvl_2[index] != 'Cytolytic'){
-                        activity_lvl_3 = activity_lvl_3.concat(activity_lvl_2[index])
-                    }   
-                }
-            }
-            if(activity_lvl_3.includes("Anti Yeast") || activity_lvl_3.includes("Anti Gram(-)") || activity_lvl_3.includes("Anti Gram(+)") || activity_lvl_3.includes("Bacteriocins") || activity_lvl_3.includes("Anti Tuberculosis") || activity_lvl_3.includes("Antibiofilm") || activity_lvl_3.includes("Antimalarial/antiplasmodial") || activity_lvl_3.includes("Anti HIV") || activity_lvl_3.includes("Anti HSV") && activity_lvl_2.includes("Antifungal") || activity_lvl_2.includes("Antibacterial") || activity_lvl_2.includes("Anuro defense") || activity_lvl_2.includes("Antiprotozoal") || activity_lvl_2.includes("Antiviral")){
-                if (!activity_lvl_3.includes("Anti Yeast") && activity_lvl_2.includes("Antifungal")){
-                    activity_lvl_3 = activity_lvl_3.concat("Antifungal")
-                }
-                if (!activity_lvl_3.includes("Antimalarial/antiplasmodial") && activity_lvl_2.includes("Antiprotozoal")){
-                    activity_lvl_3 = activity_lvl_3.concat("Antiprotozoal")
-                }
-                if (activity_lvl_2.includes("Anuro defense")){
-                    activity_lvl_3 = activity_lvl_3.concat("Anuro defense")
-                }
-                if (activity_lvl_2.includes("Antiviral")){
-                    if (!activity_lvl_3.includes("Anti HIV")){
-                        if(!activity_lvl_3.includes("Anti HSV")){
-                            activity_lvl_3 = activity_lvl_3.concat("Antiviral")
-                        }
-                    }
-                }
-                if (activity_lvl_2.includes("Antibacterial")){
-                    if (!activity_lvl_3.includes("Anti Gram(-)")){
-                        if(!activity_lvl_3.includes("Anti Gram(+)")){
-                            if(!activity_lvl_3.includes("Bacteriocins")){
-                                if(!activity_lvl_3.includes("Anti Tuberculoosis")){
-                                    if(!activity_lvl_3.includes("Antibiofilm")){
-                                        activity_lvl_3 = activity_lvl_3.concat("Antibacterial")
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            const activities = await Activity.find({$and:[{"activity" : {"$in": activity_lvl_3}}, {'pdb_code': {$ne : ""}}, {'uniprot_code': {$ne : ""}},{ "length": { $gte : parseInt(interval_list[0])}},{ "length": { $lte : parseInt(interval_list[1])}}]}).lean();
-            await exportCSVForAlignment(activities);
-        }
-    }
-    if (req.query.pdb == 'false' && req.query.uniprot == 'false'){
-        if (organisms_list.includes("") == false && organisms_list.includes('all') == false){ //con organismos
-            if (activity_lvl_1 != '' && activity_lvl_2 == '' && activity_lvl_3 == ''){
-                const activities = await Activity.find({$and:[{"activity" : {"$in": activity_lvl_1}}, {"organism" : {"$in": organisms_list}},{ "length": { $gte : parseInt(interval_list[0])}},{ "length": { $lte : parseInt(interval_list[1])}}]}).lean();
-                await exportCSVForAlignment(activities);
-            }
-            if (activity_lvl_1.length && activity_lvl_1 != '' && activity_lvl_2.length && activity_lvl_2 != '' && activity_lvl_3.length && activity_lvl_3 == ''){
-                const activities = await Activity.find({$and:[{"activity" : {"$in": activity_lvl_2}}, {"organism" : {"$in": organisms_list}},{ "length": { $gte : parseInt(interval_list[0])}},{ "length": { $lte : parseInt(interval_list[1])}}]}).lean();
-                await exportCSVForAlignment(activities);
-            }
-            if (activity_lvl_1.length && activity_lvl_1 != '' && activity_lvl_2.length && activity_lvl_2 != '' && activity_lvl_3.length && activity_lvl_3 != ''){
-                if(activity_lvl_3.includes("Wound healing") && activity_lvl_2.includes("Immunomodulatory")){
-                    //si no esta seleccionado la actividad 3 incluye la actividad 2 a la actividad 3
-                    for (let index = 0; index < activity_lvl_2.length; index++) {
-                        if(activity_lvl_2[index] != 'Immunomodulatory'){
-                            activity_lvl_3 = activity_lvl_3.concat(activity_lvl_2[index])
-                        }   
-                    }
-                }
-                if(activity_lvl_3.includes("Hemolytic") && activity_lvl_2.includes("Cytolytic")){
-                    //si no esta seleccionado la actividad 3 incluye la actividad 2 a la actividad 3
-                    for (let index = 0; index < activity_lvl_2.length; index++) {
-                        if(activity_lvl_2[index] != 'Cytolytic'){
-                            activity_lvl_3 = activity_lvl_3.concat(activity_lvl_2[index])
-                        }   
-                    }
-                }
-                if(activity_lvl_3.includes("Anti Yeast") || activity_lvl_3.includes("Anti Gram(-)") || activity_lvl_3.includes("Anti Gram(+)") || activity_lvl_3.includes("Bacteriocins") || activity_lvl_3.includes("Anti Tuberculosis") || activity_lvl_3.includes("Antibiofilm") || activity_lvl_3.includes("Antimalarial/antiplasmodial") || activity_lvl_3.includes("Anti HIV") || activity_lvl_3.includes("Anti HSV") && activity_lvl_2.includes("Antifungal") || activity_lvl_2.includes("Antibacterial") || activity_lvl_2.includes("Anuro defense") || activity_lvl_2.includes("Antiprotozoal") || activity_lvl_2.includes("Antiviral")){
-                    if (!activity_lvl_3.includes("Anti Yeast") && activity_lvl_2.includes("Antifungal")){
-                        activity_lvl_3 = activity_lvl_3.concat("Antifungal")
-                    }
-                    if (!activity_lvl_3.includes("Antimalarial/antiplasmodial") && activity_lvl_2.includes("Antiprotozoal")){
-                        activity_lvl_3 = activity_lvl_3.concat("Antiprotozoal")
-                    }
-                    if (activity_lvl_2.includes("Anuro defense")){
-                        activity_lvl_3 = activity_lvl_3.concat("Anuro defense")
-                    }
-                    if (activity_lvl_2.includes("Antiviral")){
-                        if (!activity_lvl_3.includes("Anti HIV")){
-                            if(!activity_lvl_3.includes("Anti HSV")){
-                                activity_lvl_3 = activity_lvl_3.concat("Antiviral")
-                            }
-                        }
-                    }
-                    if (activity_lvl_2.includes("Antibacterial")){
-                        if (!activity_lvl_3.includes("Anti Gram(-)")){
-                            if(!activity_lvl_3.includes("Anti Gram(+)")){
-                                if(!activity_lvl_3.includes("Bacteriocins")){
-                                    if(!activity_lvl_3.includes("Anti Tuberculoosis")){
-                                        if(!activity_lvl_3.includes("Antibiofilm")){
-                                            activity_lvl_3 = activity_lvl_3.concat("Antibacterial")
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-                const activities = await Activity.find({$and:[{"activity" : {"$in": activity_lvl_3}}, {"organism" : {"$in": organisms_list}},{ "length": { $gte : parseInt(interval_list[0])}},{ "length": { $lte : parseInt(interval_list[1])}}]}).lean();
-                await exportCSVForAlignment(activities);
-            }
-        }
-        else{
-            if (activity_lvl_1 != '' && activity_lvl_2 == '' && activity_lvl_3 == ''){
-                const activities = await Activity.find({$and:[{"activity" : {"$in": activity_lvl_1}}, { "length": { $gte : parseInt(interval_list[0])}},{ "length": { $lte : parseInt(interval_list[1])}}]}).lean();
-                await exportCSVForAlignment(activities);
-            }
-            if (activity_lvl_1.length && activity_lvl_1 != '' && activity_lvl_2.length && activity_lvl_2 != '' && activity_lvl_3.length && activity_lvl_3 == ''){
-                const activities = await Activity.find({$and:[{"activity" : {"$in": activity_lvl_2}}, { "length": { $gte : parseInt(interval_list[0])}},{ "length": { $lte : parseInt(interval_list[1])}}]}).lean();
-                await exportCSVForAlignment(activities);
-            }
-            if (activity_lvl_1.length && activity_lvl_1 != '' && activity_lvl_2.length && activity_lvl_2 != '' && activity_lvl_3.length && activity_lvl_3 != ''){
-                if(activity_lvl_3.includes("Wound healing") && activity_lvl_2.includes("Immunomodulatory")){
-                    //si no esta seleccionado la actividad 3 incluye la actividad 2 a la actividad 3
-                    for (let index = 0; index < activity_lvl_2.length; index++) {
-                        if(activity_lvl_2[index] != 'Immunomodulatory'){
-                            activity_lvl_3 = activity_lvl_3.concat(activity_lvl_2[index])
-                        }   
-                    }
-                }
-                if(activity_lvl_3.includes("Hemolytic") && activity_lvl_2.includes("Cytolytic")){
-                    //si no esta seleccionado la actividad 3 incluye la actividad 2 a la actividad 3
-                    for (let index = 0; index < activity_lvl_2.length; index++) {
-                        if(activity_lvl_2[index] != 'Cytolytic'){
-                            activity_lvl_3 = activity_lvl_3.concat(activity_lvl_2[index])
-                        }   
-                    }
-                }
-                if(activity_lvl_3.includes("Anti Yeast") || activity_lvl_3.includes("Anti Gram(-)") || activity_lvl_3.includes("Anti Gram(+)") || activity_lvl_3.includes("Bacteriocins") || activity_lvl_3.includes("Anti Tuberculosis") || activity_lvl_3.includes("Antibiofilm") || activity_lvl_3.includes("Antimalarial/antiplasmodial") || activity_lvl_3.includes("Anti HIV") || activity_lvl_3.includes("Anti HSV") && activity_lvl_2.includes("Antifungal") || activity_lvl_2.includes("Antibacterial") || activity_lvl_2.includes("Anuro defense") || activity_lvl_2.includes("Antiprotozoal") || activity_lvl_2.includes("Antiviral")){
-                    if (!activity_lvl_3.includes("Anti Yeast") && activity_lvl_2.includes("Antifungal")){
-                        activity_lvl_3 = activity_lvl_3.concat("Antifungal")
-                    }
-                    if (!activity_lvl_3.includes("Antimalarial/antiplasmodial") && activity_lvl_2.includes("Antiprotozoal")){
-                        activity_lvl_3 = activity_lvl_3.concat("Antiprotozoal")
-                    }
-                    if (activity_lvl_2.includes("Anuro defense")){
-                        activity_lvl_3 = activity_lvl_3.concat("Anuro defense")
-                    }
-                    if (activity_lvl_2.includes("Antiviral")){
-                        if (!activity_lvl_3.includes("Anti HIV")){
-                            if(!activity_lvl_3.includes("Anti HSV")){
-                                activity_lvl_3 = activity_lvl_3.concat("Antiviral")
-                            }
-                        }
-                    }
-                    if (activity_lvl_2.includes("Antibacterial")){
-                        if (!activity_lvl_3.includes("Anti Gram(-)")){
-                            if(!activity_lvl_3.includes("Anti Gram(+)")){
-                                if(!activity_lvl_3.includes("Bacteriocins")){
-                                    if(!activity_lvl_3.includes("Anti Tuberculoosis")){
-                                        if(!activity_lvl_3.includes("Antibiofilm")){
-                                            activity_lvl_3 = activity_lvl_3.concat("Antibacterial")
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-                const activities = await Activity.find({$and:[{"activity" : {"$in": activity_lvl_3}}, { "length": { $gte : parseInt(interval_list[0])}},{ "length": { $lte : parseInt(interval_list[1])}}]}).lean();
-                await exportCSVForAlignment(activities);
-            }
-        }
-    }
-    if (req.query.pdb == 'true' && req.query.uniprot == 'false'){
-        if (organisms_list.includes("") == false && organisms_list.includes('all') == false){
-            
-            if (activity_lvl_1 != '' && activity_lvl_2 == '' && activity_lvl_3 == ''){
-                const activities = await Activity.find({$and:[{"activity" : {"$in": activity_lvl_1}}, {"organism" : {"$in": organisms_list}}, {'pdb_code': {$ne : ""}},{ "length": { $gte : parseInt(interval_list[0])}},{ "length": { $lte : parseInt(interval_list[1])}}]}).lean();
-                await exportCSVForAlignment(activities);
-            }
-            if (activity_lvl_1.length && activity_lvl_1 != '' && activity_lvl_2.length && activity_lvl_2 != '' && activity_lvl_3.length && activity_lvl_3 == ''){
-                const activities = await Activity.find({$and:[{"activity" : {"$in": activity_lvl_2}}, {"organism" : {"$in": organisms_list}}, {'pdb_code': {$ne : ""}},{ "length": { $gte : parseInt(interval_list[0])}},{ "length": { $lte : parseInt(interval_list[1])}}]}).lean();
-                await exportCSVForAlignment(activities);
-            }
-            if (activity_lvl_1.length && activity_lvl_1 != '' && activity_lvl_2.length && activity_lvl_2 != '' && activity_lvl_3.length && activity_lvl_3 != ''){
-                if(activity_lvl_3.includes("Wound healing") && activity_lvl_2.includes("Immunomodulatory")){
-                    //si no esta seleccionado la actividad 3 incluye la actividad 2 a la actividad 3
-                    for (let index = 0; index < activity_lvl_2.length; index++) {
-                        if(activity_lvl_2[index] != 'Immunomodulatory'){
-                            activity_lvl_3 = activity_lvl_3.concat(activity_lvl_2[index])
-                        }   
-                    }
-                }
-                if(activity_lvl_3.includes("Hemolytic") && activity_lvl_2.includes("Cytolytic")){
-                    //si no esta seleccionado la actividad 3 incluye la actividad 2 a la actividad 3
-                    for (let index = 0; index < activity_lvl_2.length; index++) {
-                        if(activity_lvl_2[index] != 'Cytolytic'){
-                            activity_lvl_3 = activity_lvl_3.concat(activity_lvl_2[index])
-                        }   
-                    }
-                }
-                if(activity_lvl_3.includes("Anti Yeast") || activity_lvl_3.includes("Anti Gram(-)") || activity_lvl_3.includes("Anti Gram(+)") || activity_lvl_3.includes("Bacteriocins") || activity_lvl_3.includes("Anti Tuberculosis") || activity_lvl_3.includes("Antibiofilm") || activity_lvl_3.includes("Antimalarial/antiplasmodial") || activity_lvl_3.includes("Anti HIV") || activity_lvl_3.includes("Anti HSV") && activity_lvl_2.includes("Antifungal") || activity_lvl_2.includes("Antibacterial") || activity_lvl_2.includes("Anuro defense") || activity_lvl_2.includes("Antiprotozoal") || activity_lvl_2.includes("Antiviral")){
-                    if (!activity_lvl_3.includes("Anti Yeast") && activity_lvl_2.includes("Antifungal")){
-                        activity_lvl_3 = activity_lvl_3.concat("Antifungal")
-                    }
-                    if (!activity_lvl_3.includes("Antimalarial/antiplasmodial") && activity_lvl_2.includes("Antiprotozoal")){
-                        activity_lvl_3 = activity_lvl_3.concat("Antiprotozoal")
-                    }
-                    if (activity_lvl_2.includes("Anuro defense")){
-                        activity_lvl_3 = activity_lvl_3.concat("Anuro defense")
-                    }
-                    if (activity_lvl_2.includes("Antiviral")){
-                        if (!activity_lvl_3.includes("Anti HIV")){
-                            if(!activity_lvl_3.includes("Anti HSV")){
-                                activity_lvl_3 = activity_lvl_3.concat("Antiviral")
-                            }
-                        }
-                    }
-                    if (activity_lvl_2.includes("Antibacterial")){
-                        if (!activity_lvl_3.includes("Anti Gram(-)")){
-                            if(!activity_lvl_3.includes("Anti Gram(+)")){
-                                if(!activity_lvl_3.includes("Bacteriocins")){
-                                    if(!activity_lvl_3.includes("Anti Tuberculoosis")){
-                                        if(!activity_lvl_3.includes("Antibiofilm")){
-                                            activity_lvl_3 = activity_lvl_3.concat("Antibacterial")
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-                const activities = await Activity.find({$and:[{"activity" : {"$in": activity_lvl_3}}, {"organism" : {"$in": organisms_list}}, {'pdb_code': {$ne : ""}},{ "length": { $gte : parseInt(interval_list[0])}},{ "length": { $lte : parseInt(interval_list[1])}}]}).lean();
-                await exportCSVForAlignment(activities);
-            }
-        }
-
-        if (activity_lvl_1 != '' && activity_lvl_2 == '' && activity_lvl_3 == ''){
-            const activities = await Activity.find({$and:[{"activity" : {"$in": activity_lvl_1}}, {'pdb_code': {$ne : ""}},{ "length": { $gte : parseInt(interval_list[0])}},{ "length": { $lte : parseInt(interval_list[1])}}]}).lean();
-            await exportCSVForAlignment(activities);
-        }
-        if (activity_lvl_1.length && activity_lvl_1 != '' && activity_lvl_2.length && activity_lvl_2 != '' && activity_lvl_3.length && activity_lvl_3 == ''){
-            const activities = await Activity.find({$and:[{"activity" : {"$in": activity_lvl_2}}, {'pdb_code': {$ne : ""}},{ "length": { $gte : parseInt(interval_list[0])}},{ "length": { $lte : parseInt(interval_list[1])}}]}).lean();
-            await exportCSVForAlignment(activities);
-        }
-        if (activity_lvl_1.length && activity_lvl_1 != '' && activity_lvl_2.length && activity_lvl_2 != '' && activity_lvl_3.length && activity_lvl_3 != ''){
-            if(activity_lvl_3.includes("Wound healing") && activity_lvl_2.includes("Immunomodulatory")){
-                //si no esta seleccionado la actividad 3 incluye la actividad 2 a la actividad 3
-                for (let index = 0; index < activity_lvl_2.length; index++) {
-                    if(activity_lvl_2[index] != 'Immunomodulatory'){
-                        activity_lvl_3 = activity_lvl_3.concat(activity_lvl_2[index])
-                    }   
-                }
-            }
-            if(activity_lvl_3.includes("Hemolytic") && activity_lvl_2.includes("Cytolytic")){
-                //si no esta seleccionado la actividad 3 incluye la actividad 2 a la actividad 3
-                for (let index = 0; index < activity_lvl_2.length; index++) {
-                    if(activity_lvl_2[index] != 'Cytolytic'){
-                        activity_lvl_3 = activity_lvl_3.concat(activity_lvl_2[index])
-                    }   
-                }
-            }
-            if(activity_lvl_3.includes("Anti Yeast") || activity_lvl_3.includes("Anti Gram(-)") || activity_lvl_3.includes("Anti Gram(+)") || activity_lvl_3.includes("Bacteriocins") || activity_lvl_3.includes("Anti Tuberculosis") || activity_lvl_3.includes("Antibiofilm") || activity_lvl_3.includes("Antimalarial/antiplasmodial") || activity_lvl_3.includes("Anti HIV") || activity_lvl_3.includes("Anti HSV") && activity_lvl_2.includes("Antifungal") || activity_lvl_2.includes("Antibacterial") || activity_lvl_2.includes("Anuro defense") || activity_lvl_2.includes("Antiprotozoal") || activity_lvl_2.includes("Antiviral")){
-                if (!activity_lvl_3.includes("Anti Yeast") && activity_lvl_2.includes("Antifungal")){
-                    activity_lvl_3 = activity_lvl_3.concat("Antifungal")
-                }
-                if (!activity_lvl_3.includes("Antimalarial/antiplasmodial") && activity_lvl_2.includes("Antiprotozoal")){
-                    activity_lvl_3 = activity_lvl_3.concat("Antiprotozoal")
-                }
-                if (activity_lvl_2.includes("Anuro defense")){
-                    activity_lvl_3 = activity_lvl_3.concat("Anuro defense")
-                }
-                if (activity_lvl_2.includes("Antiviral")){
-                    if (!activity_lvl_3.includes("Anti HIV")){
-                        if(!activity_lvl_3.includes("Anti HSV")){
-                            activity_lvl_3 = activity_lvl_3.concat("Antiviral")
-                        }
-                    }
-                }
-                if (activity_lvl_2.includes("Antibacterial")){
-                    if (!activity_lvl_3.includes("Anti Gram(-)")){
-                        if(!activity_lvl_3.includes("Anti Gram(+)")){
-                            if(!activity_lvl_3.includes("Bacteriocins")){
-                                if(!activity_lvl_3.includes("Anti Tuberculoosis")){
-                                    if(!activity_lvl_3.includes("Antibiofilm")){
-                                        activity_lvl_3 = activity_lvl_3.concat("Antibacterial")
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            const activities = await Activity.find({$and:[{"activity" : {"$in": activity_lvl_3}}, {'pdb_code': {$ne : ""}},{ "length": { $gte : parseInt(interval_list[0])}},{ "length": { $lte : parseInt(interval_list[1])}}]}).lean();
-            await exportCSVForAlignment(activities);
-        }
-    }
-    if (req.query.pdb == 'false' && req.query.uniprot == 'true'){
-        if (organisms_list.includes("") == false && organisms_list.includes('all') == false){
-            if (activity_lvl_1 != '' && activity_lvl_2 == '' && activity_lvl_3 == ''){
-                const activities = await Activity.find({$and:[{"activity" : {"$in": activity_lvl_1}}, {"organism" : {"$in": organisms_list}}, {'uniprot_code': {$ne : ""}},{ "length": { $gte : parseInt(interval_list[0])}},{ "length": { $lte : parseInt(interval_list[1])}}]}).lean();    
-                await exportCSVForAlignment(activities);
-            }
-            if (activity_lvl_1.length && activity_lvl_1 != '' && activity_lvl_2.length && activity_lvl_2 != '' && activity_lvl_3.length && activity_lvl_3 == ''){
-                const activities = await Activity.find({$and:[{"activity" : {"$in": activity_lvl_2}}, {"organism" : {"$in": organisms_list}}, {'uniprot_code': {$ne : ""}},{ "length": { $gte : parseInt(interval_list[0])}},{ "length": { $lte : parseInt(interval_list[1])}}]}).lean();    
-                await exportCSVForAlignment(activities);
-            }
-            if (activity_lvl_1.length && activity_lvl_1 != '' && activity_lvl_2.length && activity_lvl_2 != '' && activity_lvl_3.length && activity_lvl_3 != ''){
-                if(activity_lvl_3.includes("Wound healing") && activity_lvl_2.includes("Immunomodulatory")){
-                    //si no esta seleccionado la actividad 3 incluye la actividad 2 a la actividad 3
-                    for (let index = 0; index < activity_lvl_2.length; index++) {
-                        if(activity_lvl_2[index] != 'Immunomodulatory'){
-                            activity_lvl_3 = activity_lvl_3.concat(activity_lvl_2[index])
-                        }   
-                    }
-                }
-                if(activity_lvl_3.includes("Hemolytic") && activity_lvl_2.includes("Cytolytic")){
-                    //si no esta seleccionado la actividad 3 incluye la actividad 2 a la actividad 3
-                    for (let index = 0; index < activity_lvl_2.length; index++) {
-                        if(activity_lvl_2[index] != 'Cytolytic'){
-                            activity_lvl_3 = activity_lvl_3.concat(activity_lvl_2[index])
-                        }   
-                    }
-                }
-                if(activity_lvl_3.includes("Anti Yeast") || activity_lvl_3.includes("Anti Gram(-)") || activity_lvl_3.includes("Anti Gram(+)") || activity_lvl_3.includes("Bacteriocins") || activity_lvl_3.includes("Anti Tuberculosis") || activity_lvl_3.includes("Antibiofilm") || activity_lvl_3.includes("Antimalarial/antiplasmodial") || activity_lvl_3.includes("Anti HIV") || activity_lvl_3.includes("Anti HSV") && activity_lvl_2.includes("Antifungal") || activity_lvl_2.includes("Antibacterial") || activity_lvl_2.includes("Anuro defense") || activity_lvl_2.includes("Antiprotozoal") || activity_lvl_2.includes("Antiviral")){
-                    if (!activity_lvl_3.includes("Anti Yeast") && activity_lvl_2.includes("Antifungal")){
-                        activity_lvl_3 = activity_lvl_3.concat("Antifungal")
-                    }
-                    if (!activity_lvl_3.includes("Antimalarial/antiplasmodial") && activity_lvl_2.includes("Antiprotozoal")){
-                        activity_lvl_3 = activity_lvl_3.concat("Antiprotozoal")
-                    }
-                    if (activity_lvl_2.includes("Anuro defense")){
-                        activity_lvl_3 = activity_lvl_3.concat("Anuro defense")
-                    }
-                    if (activity_lvl_2.includes("Antiviral")){
-                        if (!activity_lvl_3.includes("Anti HIV")){
-                            if(!activity_lvl_3.includes("Anti HSV")){
-                                activity_lvl_3 = activity_lvl_3.concat("Antiviral")
-                            }
-                        }
-                    }
-                    if (activity_lvl_2.includes("Antibacterial")){
-                        if (!activity_lvl_3.includes("Anti Gram(-)")){
-                            if(!activity_lvl_3.includes("Anti Gram(+)")){
-                                if(!activity_lvl_3.includes("Bacteriocins")){
-                                    if(!activity_lvl_3.includes("Anti Tuberculoosis")){
-                                        if(!activity_lvl_3.includes("Antibiofilm")){
-                                            activity_lvl_3 = activity_lvl_3.concat("Antibacterial")
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-                const activities = await Activity.find({$and:[{"activity" : {"$in": activity_lvl_3}}, {"organism" : {"$in": organisms_list}}, {'uniprot_code': {$ne : ""}},{ "length": { $gte : parseInt(interval_list[0])}},{ "length": { $lte : parseInt(interval_list[1])}}]}).lean();    
-                await exportCSVForAlignment(activities);
-            }
-        }
-        if (activity_lvl_1 != '' && activity_lvl_2 == '' && activity_lvl_3 == ''){
-            const activities = await Activity.find({$and:[{"activity" : {"$in": activity_lvl_1}}, {'uniprot_code': {$ne : ""}},{ "length": { $gte : parseInt(interval_list[0])}},{ "length": { $lte : parseInt(interval_list[1])}}]}).lean();
-            await exportCSVForAlignment(activities);
-        }
-        if (activity_lvl_1.length && activity_lvl_1 != '' && activity_lvl_2.length && activity_lvl_2 != '' && activity_lvl_3.length && activity_lvl_3 == ''){
-            const activities = await Activity.find({$and:[{"activity" : {"$in": activity_lvl_2}}, {'uniprot_code': {$ne : ""}},{ "length": { $gte : parseInt(interval_list[0])}},{ "length": { $lte : parseInt(interval_list[1])}}]}).lean();
-            await exportCSVForAlignment(activities);
-        }
-        if (activity_lvl_1.length && activity_lvl_1 != '' && activity_lvl_2.length && activity_lvl_2 != '' && activity_lvl_3.length && activity_lvl_3 != ''){
-            if(activity_lvl_3.includes("Wound healing") && activity_lvl_2.includes("Immunomodulatory")){
-                //si no esta seleccionado la actividad 3 incluye la actividad 2 a la actividad 3
-                for (let index = 0; index < activity_lvl_2.length; index++) {
-                    if(activity_lvl_2[index] != 'Immunomodulatory'){
-                        activity_lvl_3 = activity_lvl_3.concat(activity_lvl_2[index])
-                    }   
-                }
-            }
-            if(activity_lvl_3.includes("Hemolytic") && activity_lvl_2.includes("Cytolytic")){
-                //si no esta seleccionado la actividad 3 incluye la actividad 2 a la actividad 3
-                for (let index = 0; index < activity_lvl_2.length; index++) {
-                    if(activity_lvl_2[index] != 'Cytolytic'){
-                        activity_lvl_3 = activity_lvl_3.concat(activity_lvl_2[index])
-                    }   
-                }
-            }
-            if(activity_lvl_3.includes("Anti Yeast") || activity_lvl_3.includes("Anti Gram(-)") || activity_lvl_3.includes("Anti Gram(+)") || activity_lvl_3.includes("Bacteriocins") || activity_lvl_3.includes("Anti Tuberculosis") || activity_lvl_3.includes("Antibiofilm") || activity_lvl_3.includes("Antimalarial/antiplasmodial") || activity_lvl_3.includes("Anti HIV") || activity_lvl_3.includes("Anti HSV") && activity_lvl_2.includes("Antifungal") || activity_lvl_2.includes("Antibacterial") || activity_lvl_2.includes("Anuro defense") || activity_lvl_2.includes("Antiprotozoal") || activity_lvl_2.includes("Antiviral")){
-                if (!activity_lvl_3.includes("Anti Yeast") && activity_lvl_2.includes("Antifungal")){
-                    activity_lvl_3 = activity_lvl_3.concat("Antifungal")
-                }
-                if (!activity_lvl_3.includes("Antimalarial/antiplasmodial") && activity_lvl_2.includes("Antiprotozoal")){
-                    activity_lvl_3 = activity_lvl_3.concat("Antiprotozoal")
-                }
-                if (activity_lvl_2.includes("Anuro defense")){
-                    activity_lvl_3 = activity_lvl_3.concat("Anuro defense")
-                }
-                if (activity_lvl_2.includes("Antiviral")){
-                    if (!activity_lvl_3.includes("Anti HIV")){
-                        if(!activity_lvl_3.includes("Anti HSV")){
-                            activity_lvl_3 = activity_lvl_3.concat("Antiviral")
-                        }
-                    }
-                }
-                if (activity_lvl_2.includes("Antibacterial")){
-                    if (!activity_lvl_3.includes("Anti Gram(-)")){
-                        if(!activity_lvl_3.includes("Anti Gram(+)")){
-                            if(!activity_lvl_3.includes("Bacteriocins")){
-                                if(!activity_lvl_3.includes("Anti Tuberculoosis")){
-                                    if(!activity_lvl_3.includes("Antibiofilm")){
-                                        activity_lvl_3 = activity_lvl_3.concat("Antibacterial")
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            const activities = await Activity.find({$and:[{"activity" : {"$in": activity_lvl_3}}, {'uniprot_code': {$ne : ""}},{ "length": { $gte : parseInt(interval_list[0])}},{ "length": { $lte : parseInt(interval_list[1])}}]}).lean();
-            await exportCSVForAlignment(activities);
-        }
-    }
     postData = JSON.stringify({
         'sequences': req.body.sequences,
         'time': req.body.time
@@ -1332,5 +442,42 @@ indexCtrl.getEncoding = async(req,response) =>{
     req.write(postData);    
     req.end();
 };
+indexCtrl.renderTraining = async(req,res) =>{
+    res.render('training');
+};
+indexCtrl.getTraining = (req,response) =>{
+    postData = JSON.stringify({
+        //'sequences': req.body.sequences,
+        //'option': req.body.option,
+        //'time': req.body.time
+        'status': "ok"
+    });    
+    response.send(postData)
+    //const options = {
+    //    host: 'localhost',
+    //    port: 4000,
+    //    method: 'POST',
+    //    path: '/api/encoding/',
+    //    headers: {
+    //        'Content-Type': 'application/json',
+    //        'Content-Length': Buffer.byteLength(postData)
+    //    }
+    //};
+    //var req = http.request(options, (res) => {
+    //    var data = ''
+    //    res.on('data', (chunk) => {
+    //        data = JSON.parse(chunk);
+    //    });
+    //    res.on('end', () => {
+    //        console.log('No more data in response.');
+    //        var str2 = JSON.parse(JSON.stringify(data));
+    //        response.send(str2)
+    //    });
+    //});
+    //req.on('error', (e) => {
+    //    console.error(`problem with request: ${e.message}`);
+    //});
+    //req.write(postData);    
+    //req.end();
+};
 module.exports = indexCtrl;
-

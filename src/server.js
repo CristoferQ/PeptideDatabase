@@ -25,7 +25,7 @@ app.engine('.hbs', exphbs({
             }
         },
         calculation_matrix: function(name, value, indice){
-            activities = ['Antimicrobial', 'Anticancer', 'Toxic', 'Metabolic', 'Bioactive', 'Immunological', 'Sensorial', 'Neurological', 'Signal Peptide', 'Transit', 'Propeptide', 'Other']
+            activities = ['Propeptide', 'Signal', 'Transit', 'Sensorial', 'Drug delivery vehicle', 'Therapeutic', 'Other activity', 'Neurological activity', 'Immunological activity', 'non_activity']
             for (let index = 0; index < activities.length; index++) {
                 if (name == activities[index]){
                     return value[indice];
@@ -36,7 +36,7 @@ app.engine('.hbs', exphbs({
                 return value[index];
         },
         matrix: function(name, value){
-            activities = ['Antimicrobial', 'Anticancer', 'Toxic', 'Metabolic', 'Bioactive', 'Immunological', 'Sensorial', 'Neurological', 'Signal Peptide', 'Transit', 'Propeptide', 'Other']
+            activities = ['Propeptide', 'Signal', 'Transit', 'Sensorial', 'Drug delivery vehicle', 'Therapeutic', 'Other activity', 'Neurological activity', 'Immunological activity', 'non_activity']
             for (let index = 0; index < activities.length; index++) {
                 if (name == activities[index]){
                     return value;

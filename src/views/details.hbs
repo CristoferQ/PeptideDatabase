@@ -1,16 +1,15 @@
+<div class="jumbotron mt-4">
+    <h1 class="display-4">Description of "{{#each statistics}}{{Name}}{{/each}}"</h1>
+    <br>
+    <p class="lead">{{#each statistics}}{{'Full_description'}}{{/each}}</p>
+</div>
 <div id="all" class="card">
-    <h5 class="card-header">Description of {{#each statistics}}{{Name}}{{/each}}</h5>
-    <div class="card-body">
-        <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Molestias explicabo, asperiores sunt vitae enim fugit fugiat. Nisi omnis quam vitae?</p>
-    </div>
     <h5 class="card-header">General statistics</h5>
     <div class="card-body">
     <h5 class="card-title">Total number of records:</h5>
     <p class="card-text">{{#each statistics}}{{'Total_sequences'}}{{/each}}</p>
     <h5 class="card-title">Total Uniprot codes:</h5>
     <p class="card-text">{{#each statistics}}{{'Total_uniprot'}}{{/each}}</p>
-    <h5 class="card-title">Total PDB codes:</h5>
-    <p class="card-text">{{#each statistics}}{{'Total_pdb'}}{{/each}}</p>
     <h5 class="card-title">Total number of organism:</h5>
     <p class="card-text">{{#each statistics}}{{'Total_organisms'}}{{/each}}</p>
   </div>
@@ -47,6 +46,9 @@
         <div class="card-body col-6">
             <div id="Hist_hydrophobic_profile"></div>
         </div>
+        <div class="card-body col-6">
+            <div id="Hist_momment"></div>
+        </div>
     </div>
     <h5 class="card-header">Average property values ​​for each activity</h5>
     <div class="card-body">
@@ -65,7 +67,7 @@
             </thead>
             <tbody>
                 <tr>
-                <th scope="row">Molecular Weigth</th>
+                <th scope="row">Molecular Weight</th>
                 <td>{{#each statistics}}{{calculation_matrix_id Mean 0}}{{/each}}</td>
                 <td>{{#each statistics}}{{calculation_matrix_id Max 0}}{{/each}}</td>
                 <td>{{#each statistics}}{{calculation_matrix_id Min 0}}{{/each}}</td>
@@ -178,20 +180,26 @@
         <table id="example" class="display" style="width:100%">
                 <thead>
                     <tr>
-                        <th>Sequence</th>
                         <th>View more</th>
+                        <th>ID Sequence</th>
+                        <th>Sequence</th>
                         <th>Length</th>
-                        <th>Uniprot_code</th>
-                        <th>Pdb_code</th>
+                        <th>Activity</th>
+                        <th>Peptide name</th>
+                        <th>Isoelectric</th>
+                        <th>Molecular weight</th>
                     </tr>
                 </thead>
                 <tfoot>
                     <tr>
-                        <th>Sequence</th>
                         <th>View more</th>
+                        <th>ID Sequence</th>
+                        <th>Sequence</th>
                         <th>Length</th>
-                        <th>Uniprot_code</th>
-                        <th>Pdb_code</th>
+                        <th>Activity</th>
+                        <th>Peptide name</th>
+                        <th>Isoelectric</th>
+                        <th>Molecular weight</th>
                     </tr>
                 </tfoot>
             </table>  
@@ -212,22 +220,33 @@
     </div>
 </div>
 <script>
-function myFunction(elem) {
+  function myFunction(elem) {
         //location.href = 'details?activity='+elem.id;
-        if(elem.id == 'Signal Peptide'){
-            elem.id = 'SignalPeptide'
+        if(elem.id == 'Drug delivery vehicle'){
+            elem.id = 'Drugdeliveryvehicle'
+        }
+        if(elem.id == 'Other activity'){
+            elem.id = 'Otheractivity'
+        }
+        if(elem.id == 'Neurological activity'){
+            elem.id = 'Neurologicalactivity'
+        }
+        if(elem.id == 'Immunological activity'){
+            elem.id = 'Immunologicalactivity'
         }
         location.href = './'+elem.id;
-} 
+    } 
+
+
 var trace = {
     x: [{{#each statistics}}{{'Hist_molecular_weigth'}}{{/each}}],
     type: 'histogram',
   };
 var data = [trace];
 var layout = {
-  title: "Molecular Weigth", 
+  title: "Molecular Weight", 
   xaxis: {title: "Value"}, 
-  yaxis: {title: "Count"}
+  yaxis: {title: "Frequency"}
 };
 Plotly.newPlot('Hist_molecular_weigth', data, layout);
 
@@ -239,7 +258,7 @@ var data = [trace];
 var layout = {
   title: "Charge", 
   xaxis: {title: "Value"}, 
-  yaxis: {title: "Count"}
+  yaxis: {title: "Frequency"}
 };
 Plotly.newPlot('Hist_charge', data, layout);
 
@@ -251,7 +270,7 @@ var data = [trace];
 var layout = {
   title: "Charge density", 
   xaxis: {title: "Value"}, 
-  yaxis: {title: "Count"}
+  yaxis: {title: "Frequency"}
 };
 Plotly.newPlot('Hist_charge_density', data, layout);
 
@@ -263,7 +282,7 @@ var data = [trace];
 var layout = {
   title: "Isoelectric", 
   xaxis: {title: "Value"}, 
-  yaxis: {title: "Count"}
+  yaxis: {title: "Frequency"}
 };
 Plotly.newPlot('Hist_isoelectric', data, layout);
 
@@ -275,7 +294,7 @@ var data = [trace];
 var layout = {
   title: "Inestability", 
   xaxis: {title: "Value"}, 
-  yaxis: {title: "Count"}
+  yaxis: {title: "Frequency"}
 };
 Plotly.newPlot('Hist_inestability', data, layout);
 
@@ -287,7 +306,7 @@ var data = [trace];
 var layout = {
   title: "Aromaticity", 
   xaxis: {title: "Value"}, 
-  yaxis: {title: "Count"}
+  yaxis: {title: "Frequency"}
 };
 Plotly.newPlot('Hist_aromaticity', data, layout);
 
@@ -299,7 +318,7 @@ var data = [trace];
 var layout = {
   title: "Aliphatic index", 
   xaxis: {title: "Value"}, 
-  yaxis: {title: "Count"}
+  yaxis: {title: "Frequency"}
 };
 Plotly.newPlot('Hist_aliphatic_index', data, layout);
 
@@ -311,7 +330,7 @@ var data = [trace];
 var layout = {
   title: "Hydrophobic ratio", 
   xaxis: {title: "Value"}, 
-  yaxis: {title: "Count"}
+  yaxis: {title: "Frequency"}
 };
 Plotly.newPlot('Hist_hydrophobic_ratio', data, layout);
 
@@ -323,7 +342,7 @@ var data = [trace];
 var layout = {
   title: "Hydrophobicity profile", 
   xaxis: {title: "Value"}, 
-  yaxis: {title: "Count"}
+  yaxis: {title: "Frequency"}
 };
 Plotly.newPlot('Hist_hydrophobicity_profile', data, layout);
 
@@ -335,15 +354,38 @@ var data = [trace];
 var layout = {
   title: "Hydrophobic profile", 
   xaxis: {title: "Value"}, 
-  yaxis: {title: "Count"}
+  yaxis: {title: "Frequency"}
 };
 Plotly.newPlot('Hist_hydrophobic_profile', data, layout);
+
+var trace = {
+    x: [{{#each statistics}}{{'Hist_momment'}}{{/each}}],
+    type: 'histogram',
+  };
+var data = [trace];
+var layout = {
+  title: "Momment", 
+  xaxis: {title: "Value"}, 
+  yaxis: {title: "Frequency"}
+};
+Plotly.newPlot('Hist_momment', data, layout);
+
+
+
 actual_url = window.location.href.split('/')
 
-if(actual_url[actual_url.length-1] == 'SignalPeptide'){
-  actual_url[actual_url.length-1] = 'Signal Peptide'
+if(actual_url[actual_url.length-1] == 'Drugdeliveryvehicle'){
+  actual_url[actual_url.length-1] = 'Drug delivery vehicle'
 }
-
+if(actual_url[actual_url.length-1] == 'Otheractivity'){
+  actual_url[actual_url.length-1] = 'Other activity'
+}
+if(actual_url[actual_url.length-1] == 'Neurologicalactivity'){
+  actual_url[actual_url.length-1] = 'Neurological activity'
+}
+if(actual_url[actual_url.length-1] == 'Immunologicalactivity'){
+  actual_url[actual_url.length-1] = 'Immunological activity'
+}
 $.ajax({
     'url': "http://localhost/api/database/"+actual_url[actual_url.length-1],
     'method': "GET",
@@ -353,11 +395,14 @@ $.ajax({
         "scrollX": true,
         "aaData": data,
         "columns": [
-            { "data": "sequence" },
             { "defaultContent": "<button id='b_results' type='button' class='btn btn-success'><i class='fa fa-file'></i></button>"},
+            { "data": "id_sequence" },
+            { "data": "sequence" },
             { "data": "length" },
-            { "data": "uniprot_code" },
-            { "data": "pdb_code" },
+            { "data": "activity" },
+            { "data": "peptide_name" },
+            { "data": "isoelectric_point" },
+            { "data": "molecular_weigth" }
         ]
     })
     getSecForDetail("#example tbody", example);
@@ -366,7 +411,7 @@ var getSecForDetail = function(tbody, table){
     $(tbody).on("click", "#b_results", function(){
 		var data = table.row( $(this).parents("tr") ).data();		
         if (data != undefined){
-            window.open("../sequence?sec="+data.sequence, "_blank");
+            window.open("../sequence?id_sec="+data.id_sequence, "_blank");
             //location.href="../sequence?sec="+data.sequence;
         }
 	});

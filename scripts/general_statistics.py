@@ -1,6 +1,6 @@
 from pymongo import MongoClient
 client = MongoClient('localhost', 27017)
-db = client['Peptides']
+db = client['Peptipedia']
 col = db['peptides']
 update_col = db['statistics']
 
@@ -38,8 +38,8 @@ print('La cantidad total de codigos uniprot es:',len(unique_uniprot_codes))
 #cuenta los organismos
 organisms = []
 for documento in col.find({}):
-    if documento['organism'] != '':
-        organisms.append(documento['organism'])
+    if documento['organism_value'] != '':
+        organisms.append(documento['organism_value'])
 unique_organisms = set(organisms)
 
 update_col.update_one({
@@ -51,23 +51,3 @@ update_col.update_one({
 }, upsert=False)
 
 print('La cantidad de organismos es:',len(unique_organisms))
-
-
-#cuenta todos los pdb
-total_pdb_code = []
-for documento in col.find({}):
-    if documento['pdb_code'] != '' or documento['pdb_code'] == 'Unknown':
-        total_pdb_code.append(documento['pdb_code'])
-unique_pdb_code = set(total_pdb_code)
-
-
-update_col.update_one({
-  'Name': "Total PDB codes"
-},{
-  '$set': {
-    'Value': len(unique_pdb_code)
-  }
-}, upsert=False)
-
-
-print('La cantidad total de codigos pdb es:',len(unique_pdb_code))

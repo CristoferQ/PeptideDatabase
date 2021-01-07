@@ -1,0 +1,119 @@
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.5.1/min/dropzone.min.css">
+  <div class="jumbotron mt-4">
+  <h1 class="display-4">Training predictive models</h1>
+  <br>
+  <p class="lead">The predictive model training service allows the user to train specific models for their sequences of interest. The sequences must be entered in a CSV file and must have two columns: Sequence and Response. To run the service, it is necessary to select the type of model to perform (classification if the response is binary or categorical and regression if the response is of the continuous type). It is then necessary to select the type of coding to be carried out (the same ones existing in the coding service). For the cases of Digital Signal Processing and Physicochemical Properties, it will be necessary to select the type of property to use. Finally, the supervised learning algorithm and its configuration hyperparameters are chosen. Peptipedia collects all the information and proceeds to develop the model with a k-fold cross-validation system. The value of k is selected according to the type of sequence. Once the model is generated, Peptipedia displays the performance results and statistical graphs that show the characteristics and trends of the predictive model. It is essential to mention that all the results and models generated are packed in a compressed file and are available for download.</p>
+</div>
+
+
+<p>In general, performances are associated with a value between 0 and 1 for regression cases and 0 and 100 for classification cases, where the higher the value, the better the performance. For the classification models, the confusion matrix is reported, which indicates the trends of predictions by class and their rate of error and graphs of sensitivity v/s specificity, which help to understand the characteristics of the models and the pampering reliability. For regression models, a scatter plot of real versus predicted values is exposed. As they approach a diagonal, the model presents better performance. Besides, an error trend graph is generated, which the more significant the randomness present, indicates that there is no preference for an underestimation or overestimation of the predicted values.</p>
+<div class="card">
+    <h5 class="card-header">Inputs</h5>    
+    <div class="card-body">
+      
+      <form method="post" action="http://localhost/training/results" class="dropzone" id="uploader" enctype="multipart/form-data"></form>
+  
+            <div class="form-group">
+                <label for="exampleFormControlSelect1">Select the type of analysis:</label>
+                <select class="form-control" id="typeAnalysis">
+                <option value="none">None selected</option>
+                <option value="1">Clasificacion</option>
+                <option value="0">Regresion</option>
+                </select>
+            </div>
+            <div class="form-group" id="s_validation" style="display:none;">
+                <label >Validation (K-Fold Cross Validation):</label>
+                  <select class="form-control" name="validation" id="validation">
+                    <option value="2">2</option> 
+                    <option value="5">5</option>
+                    <option value="10">10</option>
+                  </select>
+            </div>
+
+           <div class="form-group" name="p_algorithm" id="p_algorithm" style="display:none;">
+              <label>Select the prediction algorithm*</label>
+               <div>
+                <select  class="form-control" name="p_algorithm_s" id="p_algorithm_s">
+                  <option value="0">AdaBoostRegressor</option> 
+                  <option value="1">BaggingRegressor</option>
+                  <option value="2">DecisionTree</option>
+                  <option value="3">GradientBoostingRegressor</option>
+                  <option value="4">KNeighborsRegressor</option>
+                  <option value="5">MLPRegressor</option>
+                  <option value="6">NuSVR</option>
+                  <option value="7">RandomForestRegressor</option>
+                  <option value="8">SVR</option>
+                </select>
+               </div> 
+           </div>
+        
+           <div class="form-group" name="c_algorithm" id="c_algorithm" style="display:none;">
+            <label>Select the classification algorithm*</label>
+             <div>
+              <select class="form-control" name="c_algorithm_s" id="c_algorithm_s">
+                <option value="0">AdaBoostClassifier</option> 
+                <option value="1">BaggingClassifier</option>
+                <option value="2">BernoulliNB</option>
+                <option value="3">DecisionTree</option>
+                <option value="4">GaussianNB</option>
+                <option value="5">GradientBoostingClassifier</option>
+                <option value="6">KNeighborsClassifier</option>
+                <option value="7">MLPClassifier</option>
+                <option value="8">NuSVC</option>
+                <option value="9">RandomForestClassifier</option>
+                <option value="10">SVC</option>
+              </select>
+             </div> 
+        </div>      
+        <div class="text-center">
+            <button id="btn1" type='button' class="btn btn-success btn-lg">Calculate</button>
+        </div>
+  </div>
+</div>
+      
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.5.1/min/dropzone.min.js"></script>
+<script>
+Dropzone.options.uploader = {
+    paramName: "file",
+    maxFilesize: 10, // MB
+    maxFiles : 1,
+    uploadMultiple : false,
+    dictDefaultMessage : "Drop files here or click to upload"
+};
+  var option = $('#typeAnalysis').val()    
+
+  $('#typeAnalysis').change(function(){
+    $('#s_validation').show();
+    $("#typeAnalysis option[value='none']").remove();
+    option = $('#typeAnalysis').val()
+    if(option == 0) {//prediccion
+    $('#p_algorithm').show();
+    $('#c_algorithm').hide();   
+  }
+  if(option == 1) {//clasificacion
+    $('#p_algorithm').hide();
+    $('#c_algorithm').show();   
+    }
+  });
+
+  $("#btn1").click(function(){
+    
+        $('#wait').attr('hidden', false);  
+        var now = new Date().getTime();
+        $.ajax({
+            'url': "http://localhost/training/results",
+            'method': 'POST',
+            //'data' : { "sequences" : $("#exampleFormControlTextarea1").val(), "time": now, "option" : $("#exampleFormControlSelect1").val()}
+            'data' : { "test": "1"}
+        }).done(function(data) {
+            console.log(data)
+            $('#wait').attr('hidden', true);  
+            $('#resultsh5').attr('hidden', false); 
+            $('#resultsdiv').attr('hidden', false);
+            var keys = Object.keys(data)
+            var values = Object.values(data[keys[0]])
+            
+            
+        });
+  });
+</script>

@@ -1,9 +1,10 @@
+<link rel="stylesheet" href="/css/buttons.dataTables.min.css">
+<div class="jumbotron mt-4">
+    <h1 class="display-4">Database integration</h1>
+    <br>
+    <p class="lead">We generate our platform's database system, integrating the information from 30 previously reported repositories or tools. First, we process the information individually for each of the included systems, downloading it from the tools and generating Pythons scripts to process them. Additionally, information on the peptide sequences' characteristics is added, and fields are added that indicate the origin or where the peptide is reported. Finally, we add information on physicochemical and thermodynamic properties using the ModLamp library. It is essential to mention that we dynamically update our records every month, adding new records when appropriate.</p>
+</div>
 <div id="all" class="card">
-	
-    <h5 class="card-header">Description</h5>
-    <div class="card-body">
-        <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Molestias explicabo, asperiores sunt vitae enim fugit fugiat. Nisi omnis quam vitae?</p>
-    </div>
 	<h5 class="card-header">Databases references</h5>
     <div class="card-body">
         <div class="table-responsive">
@@ -322,12 +323,24 @@
 		</div>
     </div>
 </div>
+
+<script src="/js/dataTables.buttons.min.js"></script>
+<script src="/js/buttons.html5.min.js"></script>
+<script src="/js/pdfmake.min.js"></script>
+<script src="/js/buttons.flash.min.js"></script>
+<script src="/js/vfs_fonts.js"></script>
+
+
 <script>
 	
     $('#example').DataTable({
+		"order": [[ 0, "desc" ]],
+		dom: 'Bfrtip',
+        buttons: [
+            { extend: 'pdf', text: 'Download table in PDF' }
+        ]
 		//"bFilter": false,
 		//"bLengthChange": false,
 		//"pageLength": 20
-	});
-			
+	});	
 </script>

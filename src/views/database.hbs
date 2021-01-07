@@ -1,13 +1,14 @@
+<div class="jumbotron mt-4">
+    <h1 class="display-4">Database</h1>
+    <br>
+    <p class="lead">Our database has 99297 registered and characterized peptides, currently the peptide database with the most extensive registrations to date. According to our system of categories proposed in this work, we classify peptides, suggesting ten main categories. Each of them has subcategories or different levels of classification, according to previously reported activities.</p>
+</div>
 <div id="wait" class="text-center">
     <h1>The database is loading, this will take a few seconds</h1>
     <br>
     <i class="fa-7x fas fa-cog fa-spin"></i>  
 </div>
 <div hidden id="all" class="card">
-    <h5 class="card-header">Description</h5>
-    <div class="card-body">
-        <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Molestias explicabo, asperiores sunt vitae enim fugit fugiat. Nisi omnis quam vitae?</p>
-    </div>
     <h5 class="card-header">General statistics of the database</h5>
     <div class="card-body">
     <h5 class="card-title">Total number of records:</h5>
@@ -18,10 +19,6 @@
     {{#each statistics}}
     <p class="card-text">{{calculation Name 'Total Uniprot codes' Value}}</p>
     {{/each}}
-    <h5 class="card-title">Total PDB codes:</h5>
-    {{#each statistics}}
-    <p class="card-text">{{calculation Name 'Total PDB codes' Value}}</p>
-    {{/each}}
     <h5 class="card-title">Total number of organism:</h5>
     {{#each statistics}}
     <p class="card-text">{{calculation Name 'Total number of organism' Value}}</p>
@@ -30,11 +27,11 @@
 
     <h5 class="card-header">Pie Chart of the number of sequences per activity</h5>
     <div class="card-body">
-        <div id="pie1"></div>
+        <div class="col-sm-12" id="pie1"></div>
     </div>
     <h5 class="card-header">Histogram of the lenght of total sequences</h5>
     <div class="card-body">
-        <div id="hist1"></div>
+        <div class="col-sm-12" id="hist1"></div>
     </div>
     <h5 class="card-header">Database</h5>
     <div class="card-body">
@@ -46,20 +43,24 @@
         <table id="example" class="display" style="width:100%">
                 <thead>
                     <tr>
-                        <th>Sequence</th>
                         <th>View more</th>
+                        <th>ID Sequence</th>
+                        <th>Sequence</th>
                         <th>Length</th>
-                        <th>Uniprot_code</th>
-                        <th>Pdb_code</th>
+                        <th>Peptide name</th>
+                        <th>Isoelectric</th>
+                        <th>Molecular weight</th>
                     </tr>
                 </thead>
                 <tfoot>
                     <tr>
-                        <th>Sequence</th>
                         <th>View more</th>
+                        <th>ID Sequence</th>
+                        <th>Sequence</th>
                         <th>Length</th>
-                        <th>Uniprot_code</th>
-                        <th>Pdb_code</th>
+                        <th>Peptide name</th>
+                        <th>Isoelectric</th>
+                        <th>Molecular weight</th>
                     </tr>
                 </tfoot>
             </table>  
@@ -77,7 +78,7 @@
             </thead>
             <tbody>
                 <tr>
-                <th class="px-2 py-2" scope="row">Molecular Weigth</th>
+                <th class="px-2 py-2" scope="row">Molecular Weight</th>
                 {{#each statistics}}
                 <td class="px-2 py-2">{{calculation_matrix Name Mean 0}}</td>
                 {{/each}}
@@ -157,8 +158,17 @@
 <script>
   function myFunction(elem) {
         //location.href = 'details?activity='+elem.id;
-        if(elem.id == 'Signal Peptide'){
-            elem.id = 'SignalPeptide'
+        if(elem.id == 'Drug delivery vehicle'){
+            elem.id = 'Drugdeliveryvehicle'
+        }
+        if(elem.id == 'Other activity'){
+            elem.id = 'Otheractivity'
+        }
+        if(elem.id == 'Neurological activity'){
+            elem.id = 'Neurologicalactivity'
+        }
+        if(elem.id == 'Immunological activity'){
+            elem.id = 'Immunologicalactivity'
         }
         location.href = 'details/'+elem.id;
     } 
@@ -177,8 +187,12 @@ var trace = {
     x: [{{#each statistics}}{{calculation Name 'Histogram1' Value}}{{/each}}],
     type: 'histogram',
   };
+  var layout = {
+  xaxis: {title: "Value"}, 
+  yaxis: {title: "Frequency"}
+};
 var data = [trace];
-Plotly.newPlot('hist1', data);
+Plotly.newPlot('hist1', data, layout);
 
 
 $.ajax({
@@ -190,11 +204,13 @@ $.ajax({
         "scrollX": true,
         "aaData": data,
         "columns": [
-            { "data": "sequence" },
             { "defaultContent": "<button id='b_results' type='button' class='btn btn-success'><i class='fa fa-file'></i></button>"},
+            { "data": "id_sequence" },
+            { "data": "sequence" },
             { "data": "length" },
-            { "data": "uniprot_code" },
-            { "data": "pdb_code" }
+            { "data": "peptide_name" },
+            { "data": "isoelectric_point" },
+            { "data": "molecular_weigth" },
         ]
     })    
     
@@ -219,7 +235,7 @@ var getSecForDetail = function(tbody, table){
     $(tbody).on("click", "#b_results", function(){
 		var data = table.row( $(this).parents("tr") ).data();		
         if (data != undefined){
-            window.open("../sequence?sec="+data.sequence, "_blank");
+            window.open("../sequence?id_sec="+data.id_sequence, "_blank");
             //location.href="../sequence?sec="+data.sequence;
         }
 	});

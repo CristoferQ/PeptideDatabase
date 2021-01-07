@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const MONGODB_URI = `mongodb://localhost/Peptides`;
+const MONGODB_URI = `mongodb://localhost/Peptipedia`;
 
 mongoose.connect(MONGODB_URI,{
     useUnifiedTopology: true,

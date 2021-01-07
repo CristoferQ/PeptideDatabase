@@ -1,33 +1,30 @@
+<script src="https://html2canvas.hertzen.com/dist/html2canvas.js"></script> 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.3/jspdf.min.js"></script>
+<script src="https://unpkg.com/jspdf-autotable@3.5.13/dist/jspdf.plugin.autotable.js"></script>
 <div class="jumbotron mt-4">
-    <h1 class="display-4">Frequency</h1>
-    <p class="lead">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ipsum enim, dignissimos iusto sunt placeat quisquam minus repudiandae voluptates ipsa mollitia inventore, eligendi consequuntur dolorem consequatur ad nulla accusantium blanditiis non!</p>
-    <hr class="my-4">
-    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Nemo omnis ratione natus est non ex animi molestiae atque sed ab.</p>
+    <h1 class="display-4">Statistical Residue Analysis</h1>
+    <br>
+    <p class="lead">Peptipedia allows making trend analysis of amino acids in a sequence or a set of them, counting the proportion of residues in the input sequence. If it is only one sequence, the tool displays a pie chart with the analyzed frequency. Otherwise, a summary table is generated for each summary trend for each sequence, and a graph is developed with the average trend for the set of sequences entered.</p>
 </div>
 
 
 <div class="card">
-    <h5 class="card-header">Description</h5>    
-    <div class="card-body">
-        <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Molestias explicabo, asperiores sunt vitae enim fugit fugiat. Nisi omnis quam vitae?</p>
-    </div>
     <h5 class="card-header">Inputs</h5>    
     <div class="card-body">
         <form>
             <div class="form-group">
-                <label for="exampleFormControlTextarea1">Sequences in FASTA format</label>
+                <label for="exampleFormControlTextarea1">Sequences in FASTA format:</label>
                 <textarea class="form-control" id="exampleFormControlTextarea1" rows="8"></textarea>
             </div>
             <div class="form-group">
-                <label for="exampleFormControlSelect1">Select</label>
+                <label for="exampleFormControlSelect1">Select the type of analysis:</label>
                 <select class="form-control" id="exampleFormControlSelect1">
-                <option value="1">%</option>
+                <option value="1">Percentage</option>
                 <option value="2">Count</option>
-                
                 </select>
             </div>
             <div class="text-center">
-                <button id="btn1" type='button' class="btn btn-success btn-lg">Submit!</button>
+                <button id="btn1" type='button' class="btn btn-success btn-lg">Calculate</button>
                 <button type='button' class="btn btn-dark btn-lg" onclick="javascript:eraseText();">Clear</button>
             </div>
             
@@ -73,6 +70,9 @@
             </table>
         </div>
     </div>
+    <div class="text-center">
+        <button type='button' class="btn btn-dark btn-lg mt-2 mb-3" onclick="javascript:downloadResults1();">Download results</button>
+    </div>
     </div>
 </div>
 
@@ -106,7 +106,12 @@ function eraseText() {
     document.getElementById("exampleFormControlTextarea1").value = "";
     $("#exampleFormControlTextarea1").focus();
 }
-
+function downloadResults1() {
+    var doc = new jsPDF('l', 'pt');
+    doc.text(20, 20, 'Peptide Sequence Characterization obtained from X');
+    doc.autoTable({ html: '#tabla' })
+    doc.save("Results.pdf");
+}
 </script>
 
 

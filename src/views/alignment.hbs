@@ -10,72 +10,17 @@
 
 
 <div class="jumbotron mt-4">
-    <h1 class="display-4">Alignment</h1>
-    <p class="lead">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ipsum enim, dignissimos iusto sunt placeat quisquam minus repudiandae voluptates ipsa mollitia inventore, eligendi consequuntur dolorem consequatur ad nulla accusantium blanditiis non!</p>
-    <hr class="my-4">
-    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Nemo omnis ratione natus est non ex animi molestiae atque sed ab.</p>
+    <h1 class="display-4">Alignment sequences</h1>
+    <br>
+    <p class="lead">Peptipedia allows the alignment of sequences against its database, using the BlastP tool from the Blast suite. To do this, it is necessary to enter a sequence in Fasta format. The tool takes the sequence and aligns it against the generated database. The results are ordered by percent identity, the first match being the one with the closest phylogenetic relationship.</p>
 </div>
 
 
 
 <div id="all" class="card">
-    <h5 class="card-header">Description</h5>    
-    <div class="card-body">
-        <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Molestias explicabo, asperiores sunt vitae enim fugit fugiat. Nisi omnis quam vitae?</p>
-    </div>
-    <h5 class="card-header">Search form</h5>
+    <h5 class="card-header">Inputs</h5>
     <div class="card-body">
         <form>
-        <div class="form-group">
-            <label for="activity_lvl_1">Activity</label>
-            <select id="activity_lvl_1" class="form-control selectpicker" data-live-search="true" data-actions-box="true">
-                <option hidden selected></option>
-                <option>Antimicrobial</option>
-                <option>Anticancer</option>
-                <option>Toxic</option>
-                <option>Metabolic</option>
-                <option>Bioactive</option>
-                <option>Immunological</option>
-                <option>Sensorial</option>
-                <option>Neurological</option>
-                <option>Signal Peptide</option>
-                <option>Transit</option>
-                <option>Propeptide</option>
-                <option>Other</option>
-            </select>
-        </div>
-
-        <div class="form-group">
-            <label for="activity_lvl_2">Sub category</label>
-            <select id="activity_lvl_2" class="form-control selectpicker" data-live-search="true" multiple data-actions-box="true"></select>
-        </div>
-        <div class="form-group">
-            <label for="activity_lvl_3">Sub category 2</label>
-            <select id="activity_lvl_3" class="form-control selectpicker" data-live-search="true" multiple data-actions-box="true"></select>
-        </div>
-        <div class="form-group">
-            <label for="organism">Organism</label>
-            <select id="organism" class="selectpicker form-control" data-live-search="true" multiple data-actions-box="true">
-                {{#each organisms}}<option >{{organism}}</option>{{/each}}
-            </select>
-        </div>
-
-        <div class="custom-control custom-checkbox my-1 mr-sm-2 mb-3">
-        <input type="checkbox" class="custom-control-input" id="customControlInline">
-        <label class="custom-control-label" for="customControlInline">That have PDB code?</label>
-        </div>
-        <div class="custom-control custom-checkbox my-1 mr-sm-2 mb-3">
-        <input type="checkbox" class="custom-control-input" id="customControlInline2">
-        <label class="custom-control-label" for="customControlInline2">That have UNIPROT code?</label>
-        </div>
-        <div class="form-group">
-        <label for="ex2">Filter by sequence lenght interval:</label><br>
-        <!--<span id="ex2CurrentSliderValLabel">The selected sequence length range is between: <span id="ex2SliderVal1">1</span> and <span id="ex2SliderVal2">150</span></span>-->
-        <small id="ex2CurrentSliderValLabel">The selected sequence length range is between: <b id="ex2SliderVal1">5</b> and <b id="ex2SliderVal2">200</b></small>
-        <br>
-        <input id="ex2" type="text" class="span2" value="" data-slider-min="5" data-slider-max="200" data-slider-step="1" data-slider-value="[1,200]"/>
-        <br>
-        <br>
          <div class="form-group">
                 <label for="exampleFormControlTextarea1">Sequence in FASTA format</label>
                 <textarea class="form-control" id="exampleFormControlTextarea1" rows="8"></textarea>
@@ -83,7 +28,8 @@
         
         </div>
         <div class="text-center">
-        <button id="btn1" type='button' class="btn btn-dark btn-lg">Search!</button>
+            <button id="btn1" type='button' class="btn btn-success btn-lg">Calculate</button>
+            <button type='button' class="btn btn-dark btn-lg" onclick="javascript:eraseText();">Clear</button>
         </div>
         </form>
     </div>
@@ -117,347 +63,8 @@
 
 
 <script>
-    $('#activity_lvl_2').selectpicker('hide');
-    $('label[for="activity_lvl_2"]').hide();
-    $('#activity_lvl_3').selectpicker('hide');
-    $('label[for="activity_lvl_3"]').hide();
-
-    $('#activity_lvl_1.selectpicker').on('change', function(){        
-    actuales = []
-    activities_lvl_2 = ['Antifungal','Antibacterial','Anuro defense','Antiprotozoal','Antiviral','Anti Tumour','Insecticidal','Spermicidal','Antiparasitic','Cytolytic','Antiinflammatory','Antihypertensive','Enzyme inhibitor','Antioxidant','Immunomodulatory','Cell degranulating','Quorum sensing','Chemotactic','Cell-cell communication','Defense','Antinociceptive','Brain peptide','Neuropeptide','Drug delivery vehicle','Cell-penetrating','Cancer cell','Mammallian cell','Proteolytic','Surface-immobilized','Milk Peptide']        
-    activities_lvl_3 = ['Anti Yeast', 'Anti Gram(-)', 'Anti Gram(+)', 'Bacteriocins', 'Anti Tuberculosis', 'Antibiofilm', 'Antimalarial/antiplasmodial', 'Anti HIV', 'Anti HSV', 'Hemolytic', 'Wound healing']
-        
-        $.each(activities_lvl_3, function( index, value ) {    
-            $('#activity_lvl_3 option[value="'+value+'"]').remove();
-            $('#activity_lvl_3').selectpicker('refresh');
-            $('#activity_lvl_3').selectpicker('hide');
-            $('label[for="activity_lvl_3"]').hide();
-        });
-
-        if ($('#activity_lvl_1').selectpicker('val') == "Antimicrobial"){
-            $('#activity_lvl_2').selectpicker('show');
-            $.each(activities_lvl_2, function( index, value ) {
-                if (jQuery.inArray(value, actuales) == -1){
-                    $('#activity_lvl_2 option[value="'+value+'"]').remove();
-                    $('#activity_lvl_2').selectpicker('refresh');
-                }
-                if (value == 'Antifungal' || value == 'Antibacterial' || value == 'Anuro defense'|| value == 'Antiprotozoal'|| value == 'Antiviral'){  
-                    $('label[for="activity_lvl_2"]').show();
-                    $("#activity_lvl_2").append('<option value="'+value+'">'+value+'</option>');
-                    $('#activity_lvl_2').selectpicker('refresh');
-                    actuales.push(value)
-                }
-            });
-        }
-        if ($('#activity_lvl_1').selectpicker('val') == "Anticancer"){
-            $('#activity_lvl_2').selectpicker('show');
-            $.each(activities_lvl_2, function( index, value ) {
-                if (jQuery.inArray(value, actuales) == -1){
-                    $('#activity_lvl_2 option[value="'+value+'"]').remove();
-                    $('#activity_lvl_2').selectpicker('refresh');
-                }
-                if (value == 'Anti Tumour'){
-                    $('label[for="activity_lvl_2"]').show();
-                    $("#activity_lvl_2").append('<option value="'+value+'">'+value+'</option>');
-                    $('#activity_lvl_2').selectpicker('refresh');
-                    actuales.push(value)
-                }
-            });
-        }
-        if ($('#activity_lvl_1').selectpicker('val') == "Toxic"){
-            $('#activity_lvl_2').selectpicker('show');
-            $.each(activities_lvl_2, function(index, value) {
-                if (jQuery.inArray(value, actuales) == -1){
-                    $('#activity_lvl_2 option[value="'+value+'"]').remove();
-                    $('#activity_lvl_2').selectpicker('refresh');
-                }
-                if (value == 'Insecticidal' || value == 'Spermicidal' || value == 'Antiparasitic' || value == 'Cytolytic'){  
-                    $('label[for="activity_lvl_2"]').show();
-                    $("#activity_lvl_2").append('<option value="'+value+'">'+value+'</option>');
-                    $('#activity_lvl_2').selectpicker('refresh');
-                    actuales.push(value)
-                }
-            });
-        }
-        if ($('#activity_lvl_1').selectpicker('val') == "Metabolic"){
-            $('#activity_lvl_2').selectpicker('show');
-            $.each(activities_lvl_2, function(index, value) {
-                if (jQuery.inArray(value, actuales) == -1){
-                    $('#activity_lvl_2 option[value="'+value+'"]').remove();
-                    $('#activity_lvl_2').selectpicker('refresh');
-                }
-                if (value == 'Antiinflammatory' || value == 'Antihypertensive' || value == 'Enzyme inhibitor'){  
-                    $('label[for="activity_lvl_2"]').show();
-                    $("#activity_lvl_2").append('<option value="'+value+'">'+value+'</option>');
-                    $('#activity_lvl_2').selectpicker('refresh');
-                    actuales.push(value)
-                }
-            });
-        }
-        if ($('#activity_lvl_1').selectpicker('val') == "Bioactive"){
-            $('#activity_lvl_2').selectpicker('show');
-            $.each(activities_lvl_2, function(index, value) {
-                if (jQuery.inArray(value, actuales) == -1){
-                    $('#activity_lvl_2 option[value="'+value+'"]').remove();
-                    $('#activity_lvl_2').selectpicker('refresh');
-                }
-                if (value == 'Antioxidant'){  
-                    $('label[for="activity_lvl_2"]').show();
-                    $("#activity_lvl_2").append('<option value="'+value+'">'+value+'</option>');
-                    $('#activity_lvl_2').selectpicker('refresh');
-                    actuales.push(value)
-                }
-            });
-        }
-        if ($('#activity_lvl_1').selectpicker('val') == "Immunological"){
-            $('#activity_lvl_2').selectpicker('show');
-            $.each(activities_lvl_2, function(index, value) {
-                if (jQuery.inArray(value, actuales) == -1){
-                    $('#activity_lvl_2 option[value="'+value+'"]').remove();
-                    $('#activity_lvl_2').selectpicker('refresh');
-                }
-                if (value == 'Immunomodulatory' || value == 'Cell degranulating'){  
-                    $('label[for="activity_lvl_2"]').show();
-                    $("#activity_lvl_2").append('<option value="'+value+'">'+value+'</option>');
-                    $('#activity_lvl_2').selectpicker('refresh');
-                    actuales.push(value)
-                }
-            });
-        }
-        if ($('#activity_lvl_1').selectpicker('val') == "Sensorial"){
-            $('#activity_lvl_2').selectpicker('show');
-            $.each(activities_lvl_2, function(index, value) {
-                if (jQuery.inArray(value, actuales) == -1){
-                    $('#activity_lvl_2 option[value="'+value+'"]').remove();
-                    $('#activity_lvl_2').selectpicker('refresh');
-                }
-                if (value == 'Quorum sensing' || value == 'Chemotactic' || value == 'Cell-cell communication' || value == 'Defense'){
-                    $('label[for="activity_lvl_2"]').show();
-                    $("#activity_lvl_2").append('<option value="'+value+'">'+value+'</option>');
-                    $('#activity_lvl_2').selectpicker('refresh');
-                    actuales.push(value)
-                }
-            });
-        }
-        if ($('#activity_lvl_1').selectpicker('val') == "Neurological"){
-            $('#activity_lvl_2').selectpicker('show');
-            $.each(activities_lvl_2, function(index, value) {
-                if (jQuery.inArray(value, actuales) == -1){
-                    $('#activity_lvl_2 option[value="'+value+'"]').remove();
-                    $('#activity_lvl_2').selectpicker('refresh');
-                }
-                if (value == 'Antinociceptive' || value == 'Brain peptide' || value == 'Neuropeptide' || value == 'Drug delivery vehicle' || value == 'Cell-penetrating'){
-                    $('label[for="activity_lvl_2"]').show();
-                    $("#activity_lvl_2").append('<option value="'+value+'">'+value+'</option>');
-                    $('#activity_lvl_2').selectpicker('refresh');
-                    actuales.push(value)
-                }
-            });
-        }
-        if ($('#activity_lvl_1').selectpicker('val') == "Signal Peptide"){            
-            if (actuales.length == 0){
-                $.each(activities_lvl_2, function(index, value) {
-                if (jQuery.inArray(value, actuales) == -1){
-                    $('#activity_lvl_2 option[value="'+value+'"]').remove();
-                    $('#activity_lvl_2').selectpicker('refresh');
-                    $('#activity_lvl_2').selectpicker('hide');
-                    $('label[for="activity_lvl_2"]').hide();
-                    }
-                });
-            }
-        }
-        if ($('#activity_lvl_1').selectpicker('val') == "Transit"){            
-            if (actuales.length == 0){
-                $.each(activities_lvl_2, function(index, value) {
-                if (jQuery.inArray(value, actuales) == -1){
-                    $('#activity_lvl_2 option[value="'+value+'"]').remove();
-                    $('#activity_lvl_2').selectpicker('refresh');
-                    $('#activity_lvl_2').selectpicker('hide');
-                    $('label[for="activity_lvl_2"]').hide();
-                    }
-                });
-            }
-        }
-        if ($('#activity_lvl_1').selectpicker('val') == "Propeptide"){            
-            if (actuales.length == 0){
-                $.each(activities_lvl_2, function(index, value) {
-                if (jQuery.inArray(value, actuales) == -1){
-                    $('#activity_lvl_2 option[value="'+value+'"]').remove();
-                    $('#activity_lvl_2').selectpicker('refresh');
-                    $('#activity_lvl_2').selectpicker('hide');
-                    $('label[for="activity_lvl_2"]').hide();
-                    }
-                });
-            }
-        }
-        if ($('#activity_lvl_1').selectpicker('val') == "Other"){
-            $('#activity_lvl_2').selectpicker('show');
-            $.each(activities_lvl_2, function(index, value) {
-                if (jQuery.inArray(value, actuales) == -1){
-                    $('#activity_lvl_2 option[value="'+value+'"]').remove();
-                    $('#activity_lvl_2').selectpicker('refresh');
-                }
-                if (value == 'Cancer cell' || value == 'Mammallian cell' || value == 'Proteolytic' || value == 'Surface-immobilized' || value == 'Milk Peptide'){
-                    $('label[for="activity_lvl_2"]').show();
-                    $("#activity_lvl_2").append('<option value="'+value+'">'+value+'</option>');
-                    $('#activity_lvl_2').selectpicker('refresh');
-                    actuales.push(value)
-                }
-            });
-        }
-        if ($('#activity_lvl_1').selectpicker('val') == ""){
-            $('label[for="activity_lvl_2"]').hide();            
-            $('#activity_lvl_2').selectpicker('hide');
-            $.each(activities_lvl_2, function( index, value ) {
-                $('#activity_lvl_2 option[value="'+value+'"]').remove();
-                $('#activity_lvl_2').selectpicker('refresh');
-            });
-        }
-    });
-
-
-
-
-
-    
-
-
-
-    $('#activity_lvl_2.selectpicker').on('change', function(){ 
-        activities_lvl_3 = ['Anti Yeast', 'Anti Gram(-)', 'Anti Gram(+)', 'Bacteriocins', 'Anti Tuberculosis', 'Antibiofilm', 'Antimalarial/antiplasmodial', 'Anti HIV', 'Anti HSV', 'Hemolytic', 'Wound healing']
-        actuales2 = []
-        
-        if (jQuery.inArray("Antifungal", $('#activity_lvl_2').selectpicker('val')) != -1){
-            $('#activity_lvl_3').selectpicker('show');
-            $.each(activities_lvl_3, function(index, value) {
-                if (jQuery.inArray(value, actuales2) == -1){
-                    $('#activity_lvl_3 option[value="'+value+'"]').remove();
-                    $('#activity_lvl_3').selectpicker('refresh');
-                }
-                if (value == 'Anti Yeast'){
-                    $('label[for="activity_lvl_3"]').show();
-                    $("#activity_lvl_3").append('<option data-subtext="Antifungal" value="'+value+'">'+value+'</option>');
-                    $('#activity_lvl_3').selectpicker('refresh');
-                    actuales2.push(value)
-                }
-            });
-        }
-        if (jQuery.inArray("Antibacterial", $('#activity_lvl_2').selectpicker('val')) != -1){
-            $('#activity_lvl_3').selectpicker('show');
-            $.each(activities_lvl_3, function(index, value) {
-                if (jQuery.inArray(value, actuales2) == -1){
-                    $('#activity_lvl_3 option[value="'+value+'"]').remove();
-                    $('#activity_lvl_3').selectpicker('refresh');
-                }
-                if (value == 'Anti Gram(-)' || value == 'Anti Gram(+)' || value == 'Bacteriocins' || value == 'Anti Tuberculosis' || value == 'Antibiofilm'){
-                    $('label[for="activity_lvl_3"]').show();
-                    $("#activity_lvl_3").append('<option data-subtext="Antibacterial" value="'+value+'">'+value+'</option>');
-                    $('#activity_lvl_3').selectpicker('refresh');
-                    actuales2.push(value)
-                }
-            });
-        }
-        if (jQuery.inArray("Antiprotozoal", $('#activity_lvl_2').selectpicker('val')) != -1){
-            $('#activity_lvl_3').selectpicker('show');
-            $.each(activities_lvl_3, function(index, value) {
-                if (jQuery.inArray(value, actuales2) == -1){
-                    $('#activity_lvl_3 option[value="'+value+'"]').remove();
-                    $('#activity_lvl_3').selectpicker('refresh');
-                }
-                if (value == 'Antimalarial/antiplasmodial'){
-                    $('label[for="activity_lvl_3"]').show();
-                    $("#activity_lvl_3").append('<option data-subtext="Antiprotozoal" value="'+value+'">'+value+'</option>');
-                    $('#activity_lvl_3').selectpicker('refresh');
-                    actuales2.push(value)
-                }
-            });
-        }
-        if (jQuery.inArray("Antiviral", $('#activity_lvl_2').selectpicker('val')) != -1){
-            $('#activity_lvl_3').selectpicker('show');
-            $.each(activities_lvl_3, function(index, value) {
-                if (jQuery.inArray(value, actuales2) == -1){
-                    $('#activity_lvl_3 option[value="'+value+'"]').remove();
-                    $('#activity_lvl_3').selectpicker('refresh');
-                }
-                if (value == 'Anti HIV' || value == 'Anti HSV'){
-                    $('label[for="activity_lvl_3"]').show();
-                    $("#activity_lvl_3").append('<option data-subtext="Antiviral" value="'+value+'">'+value+'</option>');
-                    $('#activity_lvl_3').selectpicker('refresh');
-                    actuales2.push(value)
-                }
-            });
-        }
-        if (jQuery.inArray("Cytolytic", $('#activity_lvl_2').selectpicker('val')) != -1){
-            $('#activity_lvl_3').selectpicker('show');
-            $.each(activities_lvl_3, function(index, value) {
-                if (jQuery.inArray(value, actuales2) == -1){
-                    $('#activity_lvl_3 option[value="'+value+'"]').remove();
-                    $('#activity_lvl_3').selectpicker('refresh');
-                }
-                if (value == 'Hemolytic'){
-                    $('label[for="activity_lvl_3"]').show();
-                    $("#activity_lvl_3").append('<option data-subtext="Cytolytic" value="'+value+'">'+value+'</option>');
-                    $('#activity_lvl_3').selectpicker('refresh');
-                    actuales2.push(value)
-                }
-            });
-        }
-        if (jQuery.inArray("Immunomodulatory", $('#activity_lvl_2').selectpicker('val')) != -1){
-            $('#activity_lvl_3').selectpicker('show');
-            $.each(activities_lvl_3, function(index, value) {
-                if (jQuery.inArray(value, actuales2) == -1){
-                    $('#activity_lvl_3 option[value="'+value+'"]').remove();
-                    $('#activity_lvl_3').selectpicker('refresh');
-                }
-                if (value == 'Wound healing'){
-                    $('label[for="activity_lvl_3"]').show();
-                    $("#activity_lvl_3").append('<option data-subtext="Immunomodulatory" value="'+value+'">'+value+'</option>');
-                    $('#activity_lvl_3').selectpicker('refresh');
-                    actuales2.push(value)
-                }
-            });
-        }
-        if ($('#activity_lvl_2').selectpicker('val').length == 0){
-            $('label[for="activity_lvl_3"]').hide();            
-            $('#activity_lvl_3').selectpicker('hide');
-            $.each(activities_lvl_3, function( index, value ) {
-                $('#activity_lvl_3 option[value="'+value+'"]').remove();
-                $('#activity_lvl_3').selectpicker('refresh');
-            });
-        }
-    });
-
-    var mySlider = $("#ex2").slider({
-	tooltip: 'show',
-    id: "ex2"
-});
-
-$("#ex2").on("slide", function(slideEvt) {
-	$("#ex2SliderVal1").text(slideEvt.value[0]);
-    $("#ex2SliderVal2").text(slideEvt.value[1]);
-});
-
     $("#btn1").click(function(){
         $('#wait').attr('hidden', false);  
-        var pdb = false; 
-        var uniprot = false; 
-        var all_organism = $('#organism').selectpicker('val')
-        
-        if ($('#customControlInline').is(":checked") && $('#customControlInline2').is(":checked")){
-                pdb = true; uniprot = true;
-            }
-        if ($('#customControlInline').is(":checked") && !$('#customControlInline2').is(":checked")){
-                pdb = true; uniprot = false;
-            }
-        if (!$('#customControlInline').is(":checked") && $('#customControlInline2').is(":checked")){
-                pdb = false; uniprot = true;
-            }
-        if (!$('#customControlInline').is(":checked") && !$('#customControlInline2').is(":checked")){
-                pdb = false; uniprot = false;
-            }
-        if (all_organism.length == 2777){
-            all_organism = 'all'
-        }
         var now = new Date().getTime();
         $.ajax({
             'url': "http://localhost/alignment/results/?activities1="+$('#activity_lvl_1').selectpicker('val')+"&activities2="+$('#activity_lvl_2').selectpicker('val')+"&activities3="+$('#activity_lvl_3').selectpicker('val')+"&organisms="+all_organism+"&pdb="+pdb+"&uniprot="+uniprot+"&interval="+mySlider.slider('getValue')+"&time="+now,
@@ -482,36 +89,11 @@ $("#ex2").on("slide", function(slideEvt) {
                 $('#row'+element).append('<td>'+values[element]['score_data']+'</td>');
             }
         });
-//        var example = $('#example').DataTable( {
-//            "aaData": data,
-//            "bDestroy": true,
-//            "columns": [
-//                { "data": "sequence" },
-//                { "defaultContent": "<button id='b_results' type='button' class='btn btn-success' data-toggle='modal' data-target='.bs-example-modal-sm'><i class='fa fa-file'></i></button>"},
-//                { "data": "activity" },
-//            ],
-//            "scrollX": true,
-//        })
-//            $('#example').DataTable().columns.adjust()
-//            getSecForDetail("#example tbody", example);
-//        });          
-//    });
-//    
-//var getSecForDetail = function(tbody, table){
-//    $(tbody).on("click", "#b_results", function(){
-//		var data = table.row( $(this).parents("tr") ).data();		
-//        if (data != undefined){
-//            location.href="../sequence?sec="+data.Sequence;
-//        }
-//	});
-//}
+
     });
+
+function eraseText() {
+    document.getElementById("exampleFormControlTextarea1").value = "";
+    $("#exampleFormControlTextarea1").focus();
+}
 </script>
-<style>
-    #ex2 .slider-selection {
-	background: red;
-}
-    #ex2 .slider-track-low, #ex2 .slider-track-high {
-	background: grey;
-}
-</style>

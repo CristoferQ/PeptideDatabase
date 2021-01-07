@@ -1,39 +1,40 @@
+<script src="https://html2canvas.hertzen.com/dist/html2canvas.js"></script> 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.3/jspdf.min.js"></script>
+<script src="https://unpkg.com/jspdf-autotable@3.5.13/dist/jspdf.plugin.autotable.js"></script>
 <div class="jumbotron mt-4">
-    <h1 class="display-4">Characterization</h1>
-    <p class="lead">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ipsum enim, dignissimos iusto sunt placeat quisquam minus repudiandae voluptates ipsa mollitia inventore, eligendi consequuntur dolorem consequatur ad nulla accusantium blanditiis non!</p>
-    <hr class="my-4">
-    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Nemo omnis ratione natus est non ex animi molestiae atque sed ab.</p>
+    <h1 class="display-4">Peptide Sequence Characterization</h1>
+    <br>
+    <p class="lead">Amino acid sequences can be characterized using physicochemical and structural properties. To do this, Peptipedia in combination with the MODLAMP library [1], estimates the properties of one or a set of peptide sequences. First, complete the form by entering the sequences in Fasta format and pressing the Calculate button. In the case of being only a single sequence, Peptipedia provides a general breakdown of the estimated information, together with the hydrophobic profile and the helical wheel analysis. For sequence sets, generates a downloadable summary table.</p>
 </div>
 
-
+<div id="canvas"></div>
 <div class="card">
-    <h5 class="card-header">Description</h5>    
-    <div class="card-body">
-        <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Molestias explicabo, asperiores sunt vitae enim fugit fugiat. Nisi omnis quam vitae?</p>
-    </div>
     <h5 class="card-header">Inputs</h5>    
     <div class="card-body">
         <form>
             <div class="form-group">
-                <label for="exampleFormControlTextarea1">Sequences in FASTA format</label>
+                <label><a tabindex="0" data-toggle="popover" class="text-primary" data-trigger="focus" title="Sequences in FASTA format:" data-content="{{#each statistics}}{{'asdas'}}{{/each}}" style="cursor:pointer;:hover{text-decoration:underline;}">Sequences in FASTA format:</a></label>
                 <textarea class="form-control" id="exampleFormControlTextarea1" rows="8"></textarea>
             </div>
             <div class="text-center">
-                <button id="btn1" type='button' class="btn btn-dark btn-lg">Submit!</button>
+                <button id="btn1" type='button' class="btn btn-success btn-lg">Calculate</button>
+                <button type='button' class="btn btn-dark btn-lg" onclick="javascript:eraseText();">Clear</button>
             </div>
         </form>
     </div>
+
     <div hidden id="wait" class="text-center">
     <h2>The results are being processed, this will take a few seconds</h2>
     <i class="fa-5x fas fa-cog fa-spin"></i>
     <br>
     <br>
     </div>
+
     <div hidden id="all" class="card">
     <h5 class="card-header">Results</h5>    
     <div class="card-body">
         <div class="table-responsive">
-            <table class="table table-dark" id="tabla">
+            <table class="table table-striped" id="tabla">
                 <thead>
                     <tr>
                     <th scope="col">Sequence id</th>
@@ -57,9 +58,12 @@
             </table>
         </div>
     </div>
+    <div class="text-center">
+        <button type='button' class="btn btn-dark btn-lg mt-2 mb-3" onclick="javascript:downloadResults1();">Download results</button>
+    </div>
     </div>
     <div hidden id="allb" class="card-group">
-        <div class="card">
+        <div id="seq_info" class="card">
             <h5 class="card-header">Sequence information</h5>    
             <div class="card-body">
             <h5 class="card-title">Sequence id:</h5><p id="p_sequence_id" class="card-text"></p>
@@ -71,7 +75,7 @@
             <h5 class="card-title">Isoelectric point:</h5><p id="p_isoelectric_point" class="card-text"></p>
             </div>
         </div>
-        <div class="card">
+        <div id="seq_properties" class="card">
             <h5 class="card-header">Indices and physicochemical properties</h5>    
             <div class="card-body">
                 <h5 class="card-title">Aliphatic index:</h5><p id="p_aliphatic_index" class="card-text"></p>
@@ -109,12 +113,15 @@
             </div>
         </div>
         </div>
+        <div class="text-center">
+        <button type='button' class="btn btn-dark btn-lg mt-3 mb-3" onclick="javascript:downloadResults2();">Download results</button>
+        </div>
     </div>
     </div>
 </div>
 
-
-
+<br>
+<footer>[1] Müller, A. T., Gabernet, G., Hiss, J. A., & Schneider, G. (2017). modlAMP: Python for antimicrobial peptides. Bioinformatics, 33(17), 2753-2755.</footer>
 <script>
 $("#btn1").click(function(){
     var now = new Date().getTime();
@@ -190,7 +197,38 @@ $("#btn1").click(function(){
         });          
     });
     
+function eraseText() {
+    document.getElementById("exampleFormControlTextarea1").value = "";
+    $("#exampleFormControlTextarea1").focus();
+}
+$(function () {
+  $('[data-toggle="popover"]').popover()
+})
+$('.popover-dismiss').popover({
+  trigger: 'focus'
+})
 
 
+function downloadResults1() {
+    var doc = new jsPDF('l', 'pt');
+    doc.text(20, 20, 'Peptide Sequence Characterization obtained from X');
+    doc.autoTable({ html: '#tabla' })
+    doc.save("Results.pdf");
+}
+function downloadResults2() {
+    var doc = new jsPDF('p', 'pt');
+    var width = doc.internal.pageSize.width;
+    var height = doc.internal.pageSize.height;
+    doc.text(20, 20, 'Peptide Sequence Characterization obtained from X');    
+    doc.fromHTML($('#seq_info')[0],15,30)
+    doc.addPage();
+    doc.fromHTML($('#seq_properties')[0],15,20)
+    doc.addPage();
+    doc.text(20, 20, 'Helical');
+    doc.addImage($('#helical')[0], 'JPEG', 0, 30, 600, 500);
+    doc.addPage();
+    doc.text(20, 20, 'Profile');
+    doc.addImage($('#profile')[0], 'JPEG', 0, 30, 600, 400);
+    doc.save("Results.pdf");
+}
 </script>
-

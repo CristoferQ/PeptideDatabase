@@ -1,6 +1,6 @@
 from pymongo import MongoClient
 client = MongoClient('localhost', 27017)
-db = client['Peptides']
+db = client['Peptipedia']
 col = db['activities']
 update_col = db['activities']
 

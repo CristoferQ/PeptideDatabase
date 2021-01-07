@@ -20,7 +20,8 @@
                 <textarea class="form-control" id="exampleFormControlTextarea1" rows="8"></textarea>
             </div>
             <div class="text-center">
-                <button id="btn1" type='button' class="btn btn-dark btn-lg">Submit!</button>
+                <button id="btn1" type='button' class="btn btn-success btn-lg">Calculate</button>
+                <button type='button' class="btn btn-dark btn-lg" onclick="javascript:eraseText();">Clear</button>
             </div>
         </form>
     </div>
@@ -71,46 +72,280 @@
 </div>
 <script src="js/bstreeview.js"></script>
 <script>
-			var json = [
+		var json = [
+				{	
+					id: "Propeptide",
+					text: "Propeptide 'Propeptide'",
+				},
 				{
-					text: "Inbox",
-					icon: "fa fa-inbox fa-fw",
+					id: "Signal",
+					text: "Signal 'Signal'",
+				},
+				{
+					id: "Transit",
+					text: "Transit 'Transit'",
+				},
+				{
+					id: "Sensorial",
+					text: "Sensorial 'Sensorial'",
 					nodes: [
 						{
-							text: "Office",
-							icon: "fa fa-inbox fa-fw",
-							nodes: [
-								{
-									icon: "fa fa-inbox fa-fw",
-									text: "Customers"
-								},
-								{
-									icon: "fa fa-inbox fa-fw",
-									text: "Co-Workers"
-								}
-							]
+							id: "Quorumsensing",
+							text: "Quorumsensing 'Quorumsensing'",
 						},
 						{
-							icon: "fa fa-inbox fa-fw",
-							text: "Others"
+							id: "Chemotactic",
+							text: "Chemotactic 'Chemotactic'",
+						},
+						{
+							id: "Cell-cellcommunication",
+							text: "Cell-cellcommunication 'Cell-cellcommunication'",
+						},
+						{
+							id: "Defense",
+							text: "Defense 'Defense'",
 						}
 					]
 				},
-				{
-					icon: "fa fa-archive fa-fw",
-					text: "Drafts"
+                {
+					id: "Drug delivery vehicle",
+					text: "Drug delivery vehicle 'Drug delivery vehicle'",
+					nodes: [
+						{
+							id: "Cell-penetrating",
+							text: "Cell-penetrating 'Cell-penetrating'",
+						},
+						{
+							id: "Blood-brain barrier crossing",
+							text: "Blood-brain barrier crossing 'Blood-brain barrier crossing'",
+						}
+					]
 				},
-				{
-					icon: "fa fa-calendar fa-fw",
-					text: "Calendar"
+                {
+					id: "Therapeutic",
+					text: "Therapeutic 'Therapeutic'",
+					nodes: [
+						{
+							id: "Antimicrobial",
+							text: "Antimicrobial 'Antimicrobial'",
+                            nodes: [
+                                {
+                                    id: "Antiviral",
+                                    text: "Antiviral 'Antiviral'",
+                                    nodes: [
+                                        {
+                                            id: "Anti-HIV",
+                                            text: "Anti-HIV 'Anti-HIV'",
+                                        }, 
+                                        {
+                                            id: "Anti-HSV",
+                                            text: "Anti-HSV 'Anti-HSV'",
+                                        }
+                                    ]
+                                }, 
+                                {
+                                    id: "Antibacterial/antibiotic",
+                                    text: "Antibacterial/antibiotic 'Antibacterial/antibiotic'",
+                                    nodes: [
+                                        {
+                                            id: "Antibiofilm",
+                                            text: "Antibiofilm  'Antibiofilm'",
+                                        }, 
+                                        {
+                                            id: "Anti Gram(+)",
+                                            text: "Anti Gram(+) 'Anti Gram(+)'",
+                                            nodes: [
+                                                {
+                                                    id: "Antilisterial",
+                                                    text: "Antilisterial  'Antilisterial'",
+                                                }, 
+                                                {
+                                                    id: "Anti MRSA",
+                                                    text: "Anti MRSA 'Anti MRSA'",
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            id: "Anti Gram(-)",
+                                            text: "Anti Gram(-)  'Anti Gram(-)'",
+                                        },
+                                        {
+                                            id: "Anti TB",
+                                            text: "Anti TB  'Anti TB'",
+                                        },
+                                        {
+                                            id: "Bacteriocins",
+                                            text: "Bacteriocins  'Bacteriocins'",
+                                        }
+                                    ]
+                                }, 
+                                {
+                                    id: "Antifungal",
+                                    text: "Antifungal 'Antifungal'",
+                                    nodes: [
+                                        {
+                                            id: "Anti Yeast",
+                                            text: "Anti Yeast 'Anti Yeast'",
+                                        }
+                                    ]
+                                }, 
+                                {
+                                    id: "Antiprotozoal",
+                                    text: "Antiprotozoal 'Antiprotozoal'",
+                                    nodes: [
+                                        {
+                                            id: "Antimalarialantiplasmodial",
+                                            text: "Antimalarialantiplasmodial 'Antimalarialantiplasmodial'",
+                                        }
+                                    ]
+                                }, 
+                                {
+                                    id: "AnuroDefense",
+                                    text: "AnuroDefense 'AnuroDefense'",
+                                }
+                                
+                            ]
+						}, 
+						{
+							id: "Toxic",
+							text: "Toxic 'Toxic'",
+                            nodes: [
+                                {
+                                    id: "Antiparasitic",
+                                    text: "Antiparasitic 'Antiparasitic'",
+                                },
+                                {
+                                    id: "Cytolytic",
+                                    text: "Cytolytic 'Cytolytic'",
+                                    nodes: [
+                                        {
+                                            id: "Hemolytic",
+                                            text: "Hemolytic 'Hemolytic'",
+                                        }
+                                    ]
+                                },
+                                {
+                                    id: "Insecticidal",
+                                    text: "Insecticidal 'Insecticidal'",
+                                }
+
+                            ]
+						},
+                        {
+							id: "Metabolic",
+							text: "Metabolic 'Metabolic'",
+                            nodes: [
+                                {
+                                    id: "Antihypertensive",
+                                    text: "Antihypertensive 'Antihypertensive'",
+                                },
+                                {
+                                    id: "Anti Diabetic",
+                                    text: "Anti Diabetic 'Anti Diabetic'",
+                                },
+                                {
+                                    id: "Antiinflammatory",
+                                    text: "Antiinflammatory 'Antiinflammatory'",
+                                },
+                                {
+                                    id: "Enzymeinhibitor",
+                                    text: "Enzymeinhibitor 'Enzymeinhibitor'",
+                                },
+                                {
+                                    id: "Regulatory",
+                                    text: "Regulatory 'Regulatory'",
+                                },
+                                {
+                                    id: "AntiAngiogenic",
+                                    text: "AntiAngiogenic 'AntiAngiogenic'",
+                                }
+                            ]
+						},
+                        {
+							id: "Anticancer",
+							text: "Anticancer 'Anticancer'",
+                            nodes: [
+                                {
+                                    id: "Antitumour",
+                                    text: "Antitumour 'Antitumour'",
+                                }
+                            ]
+						},
+                        {
+							id: "Bioactive",
+							text: "Bioactive 'Bioactive'",
+                            nodes: [
+                                {
+                                    id: "Antioxidant",
+                                    text: "Antioxidant 'Antioxidant'",
+                                }
+                            ]
+						}
+					]
 				},
-				{
-					icon: "fa fa-address-book fa-fw",
-					text: "Contacts"
+                {
+					id: "Other",
+					text: "Other 'Other'",
+					nodes: [
+						{
+							id: "Cancer-cell",
+							text: "Cancer-cell 'Cancer-cell'",
+						},
+						{
+							id: "Mammalliancell",
+							text: "Mammalliancell 'Mammalliancell'",
+						},
+                        {
+							id: "Proteolytic",
+							text: "Proteolytic 'Proteolytic'",
+						},
+                        {
+							id: "Surfaceimmobilized",
+							text: "Surfaceimmobilized 'Surfaceimmobilized'",
+						}
+					]
 				},
-				{
-					icon: "fa fa-trash fa-fw",
-					text: "Deleted Items"
+                {
+					id: "Neurologicalactivity",
+					text: "Neurologicalactivity 'Neurologicalactivity'",
+					nodes: [
+						{
+							id: "Neuropeptide",
+							text: "Neuropeptide 'Neuropeptide'",
+						},
+						{
+							id: "Antinociceptive",
+							text: "Antinociceptive 'Antinociceptive'",
+						},
+                        {
+							id: "Brainpeptide",
+							text: "Brainpeptide 'Brainpeptide'",
+						}
+					]
+				},
+                 {
+					id: "Immunological",
+					text: "Immunological 'Immunological'",
+					nodes: [
+						{
+							id: "Allergen",
+							text: "Allergen 'Allergen'",
+						},
+                        {
+							id: "Immunomodulatory",
+							text: "Immunomodulatory 'Immunomodulatory'",
+                            nodes: [
+                                {
+                                    id: "Woundhealing",
+                                    text: "Woundhealing 'Woundhealing'",
+                                }
+                            ]
+						}
+					]
+				},
+                 {
+					id: "Non activity",
+					text: "Non activity 'Non activity'"
 				}
 			];
 
@@ -122,4 +357,8 @@
                 parentsMarginLeft: '1.25rem',
                 openNodeLinkOnNewTab: true
 			});
+function eraseText() {
+    document.getElementById("exampleFormControlTextarea1").value = "";
+    $("#exampleFormControlTextarea1").focus();
+}
 </script>
