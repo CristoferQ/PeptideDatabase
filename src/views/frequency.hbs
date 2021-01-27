@@ -1,6 +1,4 @@
-<script src="https://html2canvas.hertzen.com/dist/html2canvas.js"></script> 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.3/jspdf.min.js"></script>
-<script src="https://unpkg.com/jspdf-autotable@3.5.13/dist/jspdf.plugin.autotable.js"></script>
+<link rel="stylesheet" href="/css/buttons.dataTables.min.css">
 <div class="jumbotron mt-4">
     <h1 class="display-4">Statistical Residue Analysis</h1>
     <br>
@@ -40,7 +38,7 @@
     <h5 class="card-header">Results</h5>    
     <div class="card-body">
         <div class="table-responsive">
-            <table class="table table-striped" id="tabla">
+            <table id="tabla" class="display" style="width:100%">
                 <thead>
                     <tr>
                     <th scope="col">Sequence id</th>
@@ -70,13 +68,19 @@
             </table>
         </div>
     </div>
-    <div class="text-center">
-        <button type='button' class="btn btn-dark btn-lg mt-2 mb-3" onclick="javascript:downloadResults1();">Download results</button>
+    <h5 class="card-header">Graph</h5>    
+    <div class="card-body">
+        <div class="col-sm-12" id="graph"></div>
     </div>
     </div>
 </div>
 
 
+<script src="/js/dataTables.buttons.min.js"></script>
+<script src="/js/buttons.html5.min.js"></script>
+<script src="/js/pdfmake.min.js"></script>
+<script src="/js/buttons.flash.min.js"></script>
+<script src="/js/vfs_fonts.js"></script>
 
 <script>
 $("#btn1").click(function(){
@@ -89,28 +93,44 @@ $("#btn1").click(function(){
             'data' : { "sequences" : $("#exampleFormControlTextarea1").val(), "time": now, "option" : $("#exampleFormControlSelect1").val()}
         }).done( function(data) {
             $('#wait').attr('hidden', true);
-            $("#tabla td").remove(); 
-            //console.log(data)
+            $("#tabla td").remove();
             $('#all').attr('hidden', false);   
-            var json = jQuery.parseJSON(data);
+            var json = jQuery.parseJSON(data[0]);
             for (element in json.data){
                 $('#tabla').append('<tr id=row'+element+'>'+'</tr>');
                 for (i in json.data[element]){
                     $('#row'+element).append('<td>'+json.data[element][i]+'</td>');    
                 }
             }
+            $('#tabla').DataTable({
+                dom: 'Bfrtip',
+                "bDestroy": true,
+                buttons: [
+                    { extend: 'pdf', text: 'Download table in PDF', orientation: 'landscape', pageSize: 'LEGAL'},
+                    { extend: 'csv', text: 'Download table in CSV' }
+                ]
+            });	
+            console.log(data[1][0].error_y.array)
+            var trace1 = {
+            x: data[1][0].x,
+            y: data[1][0].y,
+            name: 'Control',
+            error_y: {
+                type: 'data',
+                array: data[1][0].error_y.array,
+                visible: true
+            },
+            type: 'bar'
+            };
+            var data = [trace1];
+            var layout = {barmode: 'group'};
+            Plotly.newPlot('graph', data, layout);
         });          
 });
     
 function eraseText() {
     document.getElementById("exampleFormControlTextarea1").value = "";
     $("#exampleFormControlTextarea1").focus();
-}
-function downloadResults1() {
-    var doc = new jsPDF('l', 'pt');
-    doc.text(20, 20, 'Peptide Sequence Characterization obtained from X');
-    doc.autoTable({ html: '#tabla' })
-    doc.save("Results.pdf");
 }
 </script>
 

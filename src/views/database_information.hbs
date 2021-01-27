@@ -330,14 +330,14 @@
 <script src="/js/buttons.flash.min.js"></script>
 <script src="/js/vfs_fonts.js"></script>
 
-
 <script>
 	
     $('#example').DataTable({
 		"order": [[ 0, "desc" ]],
 		dom: 'Bfrtip',
         buttons: [
-            { extend: 'pdf', text: 'Download table in PDF' }
+            { extend: 'pdf', text: 'Download table in PDF', orientation: 'landscape', pageSize: 'LEGAL' },
+			{ extend: 'csv', text: 'Download table in CSV' }
         ]
 		//"bFilter": false,
 		//"bLengthChange": false,

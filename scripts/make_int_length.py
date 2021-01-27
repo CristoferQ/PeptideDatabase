@@ -13,3 +13,17 @@ for documento in col.find({}):
         'length': int(float(documento['length']))
         }
         }, upsert=False)
+
+db = client['Peptipedia']
+col = db['peptides']
+update_col = db['peptides']
+
+for documento in col.find({}):
+    if (documento['length'] != ''):
+        update_col.update_one({
+            '_id': documento['_id']
+        },{
+        '$set': {
+        'length': int(float(documento['length']))
+        }
+        }, upsert=False)

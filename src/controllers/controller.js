@@ -6,9 +6,10 @@ const Peptide = require('../models/Peptide'); //modelo de base de datos
 const Statistic = require('../models/Statistic');
 const Activity = require('../models/Activity');
 const Organism = require('../models/Organism');
+const rimraf = require("rimraf");
 
 indexCtrl.renderIndex = async(req,res) =>{ //ruta de index
-    const statistics_full = await Statistic.find({$and:[{'Name': {$ne : "Total number of records"}},{'Name': {$ne : "Total number of organism"}},{'Name': {$ne : "Total PDB codes"}},{'Name': {$ne : "Histogram1"}},{'Name': {$ne : "PieChart1"}},{'Name': {$ne : "Total Uniprot codes"}},{'Sequences in FASTA format': {$ne : "test"}}]}).lean();
+    const statistics_full = await Statistic.find({$and:[{'Name': {$ne : "Total number of records"}},{'Name': {$ne : "Total number of organism"}},{'Name': {$ne : "Total PDB codes"}},{'Name': {$ne : "Histogram1"}},{'Name': {$ne : "PieChart1"}},{'Name': {$ne : "Total Uniprot codes"}},{'Name': {$ne : "Glossary"}}]}).lean();
     res.render('index', {statistics_full});
 };
 indexCtrl.renderAbout = (req,res) =>{ //ruta de about
@@ -16,7 +17,7 @@ indexCtrl.renderAbout = (req,res) =>{ //ruta de about
 };
 indexCtrl.renderDatabase = async(req,res) =>{ //ruta de about
     const statistics = await Statistic.find().lean();
-    const activities = await Statistic.find({$and:[{'Name': {$ne : "Total number of records"}},{'Name': {$ne : "Total number of organism"}},{'Name': {$ne : "Total PDB codes"}},{'Name': {$ne : "Histogram1"}},{'Name': {$ne : "PieChart1"}},{'Name': {$ne : "Total Uniprot codes"}},{'Sequences in FASTA format': {$ne : "test"}}]}).lean();
+    const activities = await Statistic.find({$and:[{'Name': {$ne : "Total number of records"}},{'Name': {$ne : "Total number of organism"}},{'Name': {$ne : "Total PDB codes"}},{'Name': {$ne : "Histogram1"}},{'Name': {$ne : "PieChart1"}},{'Name': {$ne : "Total Uniprot codes"}},{'Name': {$ne : "Glossary"}}]}).lean();
     res.render('database', {statistics, activities});
 };
 indexCtrl.renderSearch = async(req,res) =>{ //ruta de about
@@ -51,7 +52,7 @@ indexCtrl.renderDetails = async(req,res) =>{ //ruta de about
             req.params.id = 'Immunological activity'
         }
         const statistics = await Statistic.find({"Name": req.params.id}).lean();
-        const statistics_full = await Statistic.find({$and:[{'Name': {$ne : "Total number of records"}},{'Name': {$ne : "Total number of organism"}},{'Name': {$ne : "Total PDB codes"}},{'Name': {$ne : "Histogram1"}},{'Name': {$ne : "PieChart1"}},{'Name': {$ne : "Total Uniprot codes"}},{'Sequences in FASTA format': {$ne : "test"}}]}).lean();
+        const statistics_full = await Statistic.find({$and:[{'Name': {$ne : "Total number of records"}},{'Name': {$ne : "Total number of organism"}},{'Name': {$ne : "Total PDB codes"}},{'Name': {$ne : "Histogram1"}},{'Name': {$ne : "PieChart1"}},{'Name': {$ne : "Total Uniprot codes"}},{'Name': {$ne : "Glossary"}}]}).lean();
         res.render('details', {statistics, statistics_full});
     }else{
         res.redirect('../');
@@ -283,7 +284,8 @@ indexCtrl.renderCharacterization = async(req,res) =>{
     const statistics = await Statistic.find().lean();
     res.render('characterization', {statistics});
 };
-indexCtrl.getCharacterization = async(req,response) =>{
+indexCtrl.getCharacterization = async(req,response) =>{    
+    path = "./src/public/jobs/service1/"+req.body.time
     postData = JSON.stringify({
         'sequences': req.body.sequences,
         'time': req.body.time
@@ -307,6 +309,10 @@ indexCtrl.getCharacterization = async(req,response) =>{
             console.log('No more data in response.');
             var str2 = JSON.parse(JSON.stringify(data));
             response.send(str2)
+            console.log("termina1")
+            setTimeout(function test(){
+                rimraf(path, function () { console.log("done"); });
+            },10000);    //10 segundos
         });
     });
     
@@ -479,5 +485,9 @@ indexCtrl.getTraining = (req,response) =>{
     //});
     //req.write(postData);    
     //req.end();
+};
+indexCtrl.renderGlossary = async(req,res) =>{ 
+    const statistics = await Statistic.find().lean();
+    res.render('glossary', {statistics});
 };
 module.exports = indexCtrl;

@@ -70,7 +70,8 @@
         
         </div>
         <div class="text-center">
-        <button id="btn1" type='button' class="btn btn-dark btn-lg">Search!</button>
+        <button id="btn1" type='button' class="btn btn-dark btn-lg" disabled>Search!</button>
+        <p id="btn1Info">You must select at least 1 activity to perform the search</p>
         </div>
         </form>
     </div>
@@ -133,6 +134,8 @@
     
     $('#activity_lvl_1.selectpicker').on('change', function(){    
         if($('#activity_lvl_1.selectpicker').selectpicker('val').length == 0){
+            $('#btn1').attr('disabled', true)
+            $('#btn1Info').attr('hidden', false)
             $.each(actuales, function(index, value) {
                 $('#activity_lvl_2 option[value="'+value+'"]').remove();
                 $('#activity_lvl_2').selectpicker('refresh');
@@ -141,7 +144,36 @@
                 $('#activity_lvl_2').selectpicker('hide');
             });
         }
-        $.each($('#activity_lvl_1.selectpicker').selectpicker('val'), function( index, value ) {         
+        if($('#activity_lvl_2.selectpicker').selectpicker('val').length == 0){
+            $.each(actuales2, function(index, value) {
+                $('#activity_lvl_3 option[value="'+value+'"]').remove();
+                $('#activity_lvl_3').selectpicker('refresh');
+                actuales2 = []
+                $('label[for="activity_lvl_3"]').hide();
+                $('#activity_lvl_3').selectpicker('hide');
+            });
+        }
+        if($('#activity_lvl_3.selectpicker').selectpicker('val').length == 0){
+            $.each(actuales3, function(index, value) {
+                $('#activity_lvl_4 option[value="'+value+'"]').remove();
+                $('#activity_lvl_4').selectpicker('refresh');
+                actuales3 = []
+                $('label[for="activity_lvl_4"]').hide();
+                $('#activity_lvl_4').selectpicker('hide');
+            });
+        }
+        if($('#activity_lvl_4.selectpicker').selectpicker('val').length == 0){
+            $.each(actuales4, function(index, value) {
+                $('#activity_lvl_5 option[value="'+value+'"]').remove();
+                $('#activity_lvl_5').selectpicker('refresh');
+                actuales4 = []
+                $('label[for="activity_lvl_5"]').hide();
+                $('#activity_lvl_5').selectpicker('hide');
+            });
+        }
+        $.each($('#activity_lvl_1.selectpicker').selectpicker('val'), function( index, value ) {     
+            $('#btn1').attr('disabled', false)
+            $('#btn1Info').attr('hidden', true)
             if ($('#activity_lvl_1.selectpicker').selectpicker('val').includes("Sensorial")){  
                 if(actuales.includes("Quorum sensing", "Chemotactic", "Cell-cell communication", "Defense") == false){
                     $("#activity_lvl_2").append('<option value="Quorum sensing">Quorum sensing</option>');
@@ -280,7 +312,24 @@
                 $('#activity_lvl_3').selectpicker('hide');
             });
         }
-        
+        if($('#activity_lvl_3.selectpicker').selectpicker('val').length == 0){
+            $.each(actuales3, function(index, value) {
+                $('#activity_lvl_4 option[value="'+value+'"]').remove();
+                $('#activity_lvl_4').selectpicker('refresh');
+                actuales3 = []
+                $('label[for="activity_lvl_4"]').hide();
+                $('#activity_lvl_4').selectpicker('hide');
+            });
+        }
+        if($('#activity_lvl_4.selectpicker').selectpicker('val').length == 0){
+            $.each(actuales4, function(index, value) {
+                $('#activity_lvl_5 option[value="'+value+'"]').remove();
+                $('#activity_lvl_5').selectpicker('refresh');
+                actuales4 = []
+                $('label[for="activity_lvl_5"]').hide();
+                $('#activity_lvl_5').selectpicker('hide');
+            });
+        }
         $.each($('#activity_lvl_2.selectpicker').selectpicker('val'), function( index, value ) {
             if ($('#activity_lvl_2.selectpicker').selectpicker('val').includes("Antimicrobial")){  
                 if(actuales2.includes("Antiviral", "Antibacterial/antibiotic", "Antifungal", "Antiprotozoal", "Anuro defense") == false){
@@ -394,6 +443,15 @@
                 actuales3 = []
                 $('label[for="activity_lvl_4"]').hide();
                 $('#activity_lvl_4').selectpicker('hide');
+            });
+        }
+        if($('#activity_lvl_4.selectpicker').selectpicker('val').length == 0){
+            $.each(actuales4, function(index, value) {
+                $('#activity_lvl_5 option[value="'+value+'"]').remove();
+                $('#activity_lvl_5').selectpicker('refresh');
+                actuales4 = []
+                $('label[for="activity_lvl_5"]').hide();
+                $('#activity_lvl_5').selectpicker('hide');
             });
         }
         
@@ -519,20 +577,6 @@ $('#activity_lvl_4.selectpicker').on('change', function(){
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     var mySlider = $("#ex2").slider({
 	tooltip: 'show',
     id: "ex2"
@@ -556,7 +600,7 @@ $("#ex2").on("slide", function(slideEvt) {
         if (!$('#customControlInline2').is(":checked")){
                 uniprot = false;
             }
-        if (all_organism.length == 4602){
+        if (all_organism.length == 4118){
             all_organism = ['all']
         }
         if (all_organism == ""){

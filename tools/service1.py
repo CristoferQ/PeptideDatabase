@@ -5,7 +5,7 @@ from modlamp.plot import plot_profile, helical_wheel
 from Bio import SeqIO
 import os
 
-def exec(peptide, time):
+def exec(peptide, time_node):
 	file = open("../src/public/jobs/service1/service1.fasta", "w") 
 	file.write(peptide)
 	file.close()
@@ -126,20 +126,17 @@ def exec(peptide, time):
 				properties[str(record.id)]["calculate_moment"] = "-"
 
 			try:
-				os.mkdir("../src/public/jobs/service1/"+time)
+				os.mkdir("../src/public/jobs/service1/"+time_node)
 			except:
 				print("Error")
 			
 			#generate plot profile
-			plot_profile(str(record.seq), scalename='eisenberg', filename= "../src/public/jobs/service1/"+time+"/profile.png")
+			plot_profile(str(record.seq), scalename='eisenberg', filename= "../src/public/jobs/service1/"+time_node+"/profile.png")
 
 			#generate helical wheel
-			helical_wheel(str(record.seq), colorcoding='charge', lineweights=False, filename= "../src/public/jobs/service1/"+time+"/helical.png")
-
+			helical_wheel(str(record.seq), colorcoding='charge', lineweights=False, filename= "../src/public/jobs/service1/"+time_node+"/helical.png")
+			
 			return(properties)
-			# with open(path_output+"summary_characterized.json", 'w') as fp:
-			# 	json.dump(properties, fp)
-
 	
 	if (cantidad > 1):
 		properties = {}

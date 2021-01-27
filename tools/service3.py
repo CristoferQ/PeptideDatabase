@@ -1,39 +1,25 @@
-import pandas as pd
-import sys
-from Bio import pairwise2
-from Bio.pairwise2 import format_alignment
-import json
-from Bio import SeqIO
+# import pandas as pd
+# import sys
+# import json
+# import edlib
 
+# sequence_input = sys.argv[1]
+# dataset = pd.read_csv(sys.argv[2])
+# path_output = sys.argv[3]
 
-def exec(peptide, time):
-	dataset = pd.read_csv("../src/public/jobs/service3/service3.csv") #bd
-	if(dataset.size > 500000):
-		print(dataset.size)
-		return({"error":"gg"})
-	else:
-		print(dataset.size)
-		time = time	#output
-		file = open("../src/public/jobs/service3/service3.fasta", "w") 
-		file.write(peptide)
-		file.close()
+# response_data = []
 
-		for record in SeqIO.parse("../src/public/jobs/service3/service3.fasta", "fasta"):
-			dict_response = []
-			for i in range(len(dataset)):
+# dict_response = []
+# for i in range(len(dataset)):
 
-				alignments = pairwise2.align.globalms(record.seq, dataset['sequence'][i], 2, -1, -.5, -.1)
-				response_format = format_alignment(*alignments[0])
-				data_format = response_format.split("\n")	
-				data_score = data_format[3].split("=")[1]
-				#dict_aligment = {"input_sequence":data_format[0], "space_format":data_format[1], "compare_sequence": data_format[2], "id_sequence" : str(dataset['idsequence'][i]), 'score_data':str(data_score)}
-				dict_aligment = {"input_sequence":data_format[0], "space_format":str(data_format[1]), "compare_sequence": str(data_format[2]), 'score_data':str(data_score)}
+# 	align_result = edlib.align(sequence_input, dataset['sequence'][i], mode = "HW", task = "path")
+# 	view_alignment = edlib.getNiceAlignment(align_result, sequence_input, dataset['sequence'][i])
+# 	dict_aligment = {"input_sequence":view_alignment['query_aligned'], "space_format":view_alignment['matched_aligned'], "compare_sequence": view_alignment['target_aligned'], "id_sequence" : str(dataset['index_sequence'][i]), 'distance_sequences':str(align_result['editDistance'])}
+	
+# 	dict_response.append(dict_aligment)
 
-				dict_response.append(dict_aligment)
+# dict_data_results = {"summary_alignment":dict_response}
 
-			dict_data_results = {"summary_alignment":dict_response}
-
-		return(dict_data_results)
-	# #export result alignment
-	# with open(path_output+"summary_alignment.json", 'w') as fp:
-	# 	json.dump(dict_data_results, fp)
+# #export result alignment
+# with open(path_output+"summary_alignment.json", 'w') as fp:
+#     json.dump(dict_data_results, fp)
