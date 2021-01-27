@@ -67,7 +67,7 @@
         $('#wait').attr('hidden', false);  
         var now = new Date().getTime();
         $.ajax({
-            'url': "http://localhost/alignment/results/?activities1="+$('#activity_lvl_1').selectpicker('val')+"&activities2="+$('#activity_lvl_2').selectpicker('val')+"&activities3="+$('#activity_lvl_3').selectpicker('val')+"&organisms="+all_organism+"&pdb="+pdb+"&uniprot="+uniprot+"&interval="+mySlider.slider('getValue')+"&time="+now,
+            'url': "http://45.7.230.112/alignment/results/?activities1="+$('#activity_lvl_1').selectpicker('val')+"&activities2="+$('#activity_lvl_2').selectpicker('val')+"&activities3="+$('#activity_lvl_3').selectpicker('val')+"&organisms="+all_organism+"&pdb="+pdb+"&uniprot="+uniprot+"&interval="+mySlider.slider('getValue')+"&time="+now,
             'method': "POST",
             'data' : { "sequences" : $("#exampleFormControlTextarea1").val(), "time": now}
         }).done(function(data) {

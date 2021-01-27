@@ -616,10 +616,7 @@ $("#ex2").on("slide", function(slideEvt) {
             dlAnchorElem.setAttribute("download", now+'.csv');
         console.log($('#activity_lvl_1').selectpicker('val'))
         $.ajax({
-            //'url': "http://localhost/api/search/?activities1="+$('#activity_lvl_1').selectpicker('val')+"&activities2="+$('#activity_lvl_2').selectpicker('val')+"&activities3="+$('#activity_lvl_3').selectpicker('val')+"&organisms="+all_organism+"&uniprot="+uniprot+"&interval="+mySlider.slider('getValue')+"&time="+now,
-            
-            //'url': "http://localhost/api/search/?activities1="+$('#activity_lvl_1').selectpicker('val')+"&organisms="+all_organism+"&uniprot="+uniprot+"&interval="+mySlider.slider('getValue')+"&time="+now,
-            'url': "http://localhost/api/search",
+            'url': "http://45.7.230.112/api/search",
             'method': "POST",
             'data' : { 
                 "activity_lvl_1" : $('#activity_lvl_1').selectpicker('val'),
