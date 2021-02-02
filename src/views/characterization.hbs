@@ -11,12 +11,14 @@
     <div class="card-body">
         <form>
             <div class="form-group">
-                <label><a tabindex="0" data-toggle="popover" class="text-primary" data-trigger="focus" title="Sequences in FASTA format:" data-content="{{#each statistics}}{{calculation Name 'Glossary' test}}{{/each}}" style="cursor:pointer;:hover{text-decoration:underline;}">Sequences in FASTA format:</a></label>
+                {{!-- <label><a tabindex="0" data-toggle="popover" class="text-primary" data-trigger="focus" title="Sequences in FASTA format:" data-content="{{#each statistics}}{{calculation Name 'Glossary' test}}{{/each}}" style="cursor:pointer;:hover{text-decoration:underline;}">Sequences in FASTA format:</a></label> --}}
+                <label>Sequences in FASTA format:</label>
                 <textarea class="form-control" id="exampleFormControlTextarea1" rows="8"></textarea>
             </div>
             <div class="text-center">
                 <button id="btn1" type='button' class="btn btn-success btn-lg">Calculate</button>
                 <button type='button' class="btn btn-dark btn-lg" onclick="javascript:eraseText();">Clear</button>
+                <div hidden id="error_alert" class="alert alert-danger mt-3" role="alert">Data entry error</div>
             </div>
         </form>
     </div>
@@ -55,9 +57,6 @@
                 <tbody></tbody>
             </table>
         </div>
-    </div>
-    <div class="text-center">
-        <button type='button' class="btn btn-dark btn-lg mt-2 mb-3" onclick="javascript:downloadResults1();">Download results</button>
     </div>
     </div>
     <div hidden id="allb" class="card-group">
@@ -120,12 +119,12 @@
 
 <br>
 <footer>[1] Müller, A. T., Gabernet, G., Hiss, J. A., & Schneider, G. (2017). modlAMP: Python for antimicrobial peptides. Bioinformatics, 33(17), 2753-2755.</footer>
-
+<script src="/js/pdfmake.min.js"></script>
+<script src="/js/vfs_fonts.js"></script>
 <script src="/js/dataTables.buttons.min.js"></script>
 <script src="/js/buttons.html5.min.js"></script>
-<script src="/js/pdfmake.min.js"></script>
 <script src="/js/buttons.flash.min.js"></script>
-<script src="/js/vfs_fonts.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.4/jspdf.min.js"></script>
 
 <script>
 $("#btn1").click(function(){
@@ -133,60 +132,72 @@ $("#btn1").click(function(){
     $('#wait').attr('hidden', false);  
      $('#images').attr('hidden', true);
      $('#all').attr('hidden', true);
+     $('#error_alert').attr('hidden', true);
         $.ajax({
-            'url': "http://45.7.230.112/characterization/results",
+            'url': "http://localhost/characterization/results",
+            //'url': "http://45.7.230.112/characterization/results",
             'method': 'POST',
             'data' : { "sequences" : $("#exampleFormControlTextarea1").val(), "time": now}
         }).done( function(data) {
-            $('#wait').attr('hidden', true);
-            $("#tabla td").remove(); 
-            //console.log(data)
-            $("#helical").attr("src", "/jobs/service1/"+now+"/helical.png");
-            $("#profile").attr("src", "/jobs/service1/"+now+"/profile.png");
-            var keys = Object.keys(data)
-            var values = Object.values(data[keys[0]])
-        
-            if(keys.length == 1){
-                $('#allb').attr('hidden', false);
-                $('#images').attr('hidden', false);
-                console.log(data[keys[0]]['aliphatic_index'])
-                $('#p_sequence_id').text(keys[0]);
-                $('#p_charge').text(data[keys[0]]['charge']);
-                $('#p_charge_density').text(data[keys[0]]['charge_density']);
-                $('#p_formula').text(data[keys[0]]['formula']);
-                $('#p_length').text(data[keys[0]]['length']);
-                $('#p_molecular_weigth').text(data[keys[0]]['molecular_weigth']);
-                $('#p_isoelectric_point').text(data[keys[0]]['isoelectric_point']);
-                
-                $('#p_aliphatic_index').text(data[keys[0]]['aliphatic_index']);
-                $('#p_aromaticity').text(data[keys[0]]['aromaticity']);
-                $('#p_boman_index').text(data[keys[0]]['boman_index']);
-                $('#p_calculate_moment').text(data[keys[0]]['calculate_moment']);
-                $('#p_hydrophobic_profile').text(data[keys[0]]['hydrophobic_profile']);
-                $('#p_hydrophobic_ratio').text(data[keys[0]]['hydrophobic_ratio']);
-                $('#p_hydrophobicity_profile').text(data[keys[0]]['hydrophobicity_profile']);
-                $('#p_instability_index').text(data[keys[0]]['instability_index']);
-            }
-
-            if(keys.length > 1){
-                $('#allb').attr('hidden', true);
-                $('#all').attr('hidden', false);
-                $('#images').attr('hidden', true);
-                for (element in keys){
-                    flag = Object.values(data[keys[element]])
-                    $('#tabla').append('<tr id=row'+element+'>'+'</tr>');
-                    $('#row'+element).append('<td>'+keys[element]+'</td>');
-                    for (element2 in flag){
-                        $('#row'+element).append('<td>'+flag[element2]+'</td>');    
-                    }
+            if (data != "error"){
+                $('#wait').attr('hidden', true);
+                $("#tabla td").remove(); 
+                //console.log(data)
+                $("#helical").attr("src", "/jobs/service1/"+now+"/helical.png");
+                $("#profile").attr("src", "/jobs/service1/"+now+"/profile.png");
+                var keys = Object.keys(data)
+                var values = Object.values(data[keys[0]])
+            
+                if(keys.length == 1){
+                    $('#allb').attr('hidden', false);
+                    $('#images').attr('hidden', false);
+                    $('#p_sequence_id').text(keys[0]);
+                    $('#p_charge').text(data[keys[0]]['charge']);
+                    $('#p_charge_density').text(data[keys[0]]['charge_density']);
+                    $('#p_formula').text(data[keys[0]]['formula']);
+                    $('#p_length').text(data[keys[0]]['length']);
+                    $('#p_molecular_weigth').text(data[keys[0]]['molecular_weigth']);
+                    $('#p_isoelectric_point').text(data[keys[0]]['isoelectric_point']);
+                    
+                    $('#p_aliphatic_index').text(data[keys[0]]['aliphatic_index']);
+                    $('#p_aromaticity').text(data[keys[0]]['aromaticity']);
+                    $('#p_boman_index').text(data[keys[0]]['boman_index']);
+                    $('#p_calculate_moment').text(data[keys[0]]['calculate_moment']);
+                    $('#p_hydrophobic_profile').text(data[keys[0]]['hydrophobic_profile']);
+                    $('#p_hydrophobic_ratio').text(data[keys[0]]['hydrophobic_ratio']);
+                    $('#p_hydrophobicity_profile').text(data[keys[0]]['hydrophobicity_profile']);
+                    $('#p_instability_index').text(data[keys[0]]['instability_index']);
                 }
-                $('#tabla').DataTable({
-                dom: 'Bfrtip',
-                buttons: [
-                    { extend: 'pdf', text: 'Download table in PDF', orientation: 'landscape', pageSize: 'LEGAL'},
-                    { extend: 'csv', text: 'Download table in CSV' }
-                ]
-                });	
+
+                if(keys.length > 1){
+                    $('#allb').attr('hidden', true);
+                    $('#all').attr('hidden', false);
+                    $('#images').attr('hidden', true);
+                    for (element in keys){
+                        flag = Object.values(data[keys[element]])
+                        $('#tabla').append('<tr id=row'+element+'>'+'</tr>');
+                        $('#row'+element).append('<td>'+keys[element]+'</td>');
+                        for (element2 in flag){
+                            $('#row'+element).append('<td>'+flag[element2]+'</td>');    
+                        }
+                    }
+                    $('#tabla').DataTable({
+                    dom: 'Bfrtip',
+                    buttons: [
+                        { extend: 'pdf', text: 'Download table in PDF', orientation: 'landscape', pageSize: 'LEGAL'},
+                        { extend: 'csv', text: 'Download table in CSV' }
+                    ]
+                    });	
+                }
+            }else{
+                console.log(data)
+                $('#wait').attr('hidden', true);  
+                $('#images').attr('hidden', true);
+                $('#all').attr('hidden', true);
+                $('#allb').attr('hidden', true);
+                $('#error_alert').fadeIn();;
+                $('#error_alert').attr('hidden', false)
+                setTimeout(function() {$('#error_alert').fadeOut();}, 3000)
             }
         });          
     });

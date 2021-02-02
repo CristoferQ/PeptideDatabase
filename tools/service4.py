@@ -25,9 +25,12 @@ def exec(peptide, time, option):
 	type_response = int(option)#type output (1 -> % 2 -> count)
 
 	matrix_response = []
+	fasta = SeqIO.parse("../src/public/jobs/service4/service4.fasta", "fasta")
+	if(any(fasta) == False): #False when `fasta` is empty
+		return "error"
 
+	
 	for record in SeqIO.parse("../src/public/jobs/service4/service4.fasta", "fasta"):
-
 		id_sequence = record.id
 
 		sequence = ""

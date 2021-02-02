@@ -1,7 +1,7 @@
 <div class="jumbotron mt-4">
     <h1 class="display-4">Database</h1>
     <br>
-    <p class="lead">Our database has 99297 registered and characterized peptides, currently the peptide database with the most extensive registrations to date. According to our system of categories proposed in this work, we classify peptides, suggesting ten main categories. Each of them has subcategories or different levels of classification, according to previously reported activities.</p>
+    <p class="lead">Our database has 92055 registered and characterized peptides, currently the peptide database with the most extensive registrations to date. According to our system of categories proposed in this work, we classify peptides, suggesting ten main categories. Each of them has subcategories or different levels of classification, according to previously reported activities.</p>
 </div>
 <div id="wait" class="text-center">
     <h1>The database is loading, this will take a few seconds</h1>
@@ -196,13 +196,15 @@ Plotly.newPlot('hist1', data, layout);
 
 
 $.ajax({
-    'url': "http://45.7.230.112/api/database",
+    'url': "http://localhost/api/database",
+    //'url': "http://45.7.230.112/api/database",
     'method': "GET",
     'contentType': 'application/json'
 }).done( function(data) {
     var example = $('#example').DataTable( {
         "scrollX": true,
         "aaData": data,
+        "deferRender": true,
         "columns": [
             { "defaultContent": "<button id='b_results' type='button' class='btn btn-success'><i class='fa fa-file'></i></button>"},
             { "data": "id_sequence" },

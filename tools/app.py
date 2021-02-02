@@ -14,7 +14,7 @@ def execCharacterization():
 @app.route('/api/alignment/', methods=['POST']) #no es necesario poner get
 def execAlignment():
     request_data = request.get_json()
-    #return service3.exec(request_data['sequences'], request_data['time'])
+    return service3.exec(request_data['sequences'], request_data['time'])
 
 @app.route('/api/frequency/', methods=['POST']) #no es necesario poner get
 def execFrequency():    

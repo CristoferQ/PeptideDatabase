@@ -285,7 +285,7 @@ indexCtrl.renderCharacterization = async(req,res) =>{
     res.render('characterization', {statistics});
 };
 indexCtrl.getCharacterization = async(req,response) =>{    
-    path = "./src/public/jobs/service1/"+req.body.time
+    path_job = "./src/public/jobs/service1/"+req.body.time
     postData = JSON.stringify({
         'sequences': req.body.sequences,
         'time': req.body.time
@@ -309,10 +309,9 @@ indexCtrl.getCharacterization = async(req,response) =>{
             console.log('No more data in response.');
             var str2 = JSON.parse(JSON.stringify(data));
             response.send(str2)
-            console.log("termina1")
             setTimeout(function test(){
-                rimraf(path, function () { console.log("done"); });
-            },10000);    //10 segundos
+                rimraf(path_job, function () { console.log("done"); });
+            },1800000);    //30min
         });
     });
     
@@ -330,7 +329,7 @@ indexCtrl.renderAlignment = async(req,res) =>{
     res.render('alignment', {organisms});
 };
 indexCtrl.getAlignment = async(req,response) =>{
-    response.setTimeout(3600000) // no timeout
+    path = "./src/public/jobs/service3/"+req.body.time
     postData = JSON.stringify({
         'sequences': req.body.sequences,
         'time': req.body.time
@@ -352,9 +351,8 @@ indexCtrl.getAlignment = async(req,response) =>{
         });
         res.on('end', () => {
             console.log('No more data in response.');
-            //var str2 = JSON.parse(Buffer.concat(data).toString());
-            //var str2 = JSON.parse(JSON.stringify(data.replace('\n','\\n')));
-            response.send(JSON.parse(data))
+            var str2 = JSON.parse(JSON.stringify(data));
+            response.send(str2)
         });
     });
     
@@ -364,20 +362,21 @@ indexCtrl.getAlignment = async(req,response) =>{
     req.write(postData);    
     req.end();
 };
-async function exportCSVForAlignment(data){
-    const csvWriter = createCsvWriter({
-        path: './src/public/jobs/service3/service3.csv',
-        header: [
-            {id: 'sequence', title: 'sequence'}
-        ]
-      });      
-    await csvWriter.writeRecords(data)
-    console.log("The CSV file was written successfully")
-}
+// async function exportCSVForAlignment(data){
+//     const csvWriter = createCsvWriter({
+//         path: './src/public/jobs/service3/service3.csv',
+//         header: [
+//             {id: 'sequence', title: 'sequence'}
+//         ]
+//       });      
+//     await csvWriter.writeRecords(data)
+//     console.log("The CSV file was written successfully")
+// }
 indexCtrl.renderFrequency = async(req,res) =>{
     res.render('frequency');
 };
 indexCtrl.getFrequency = async(req,response) =>{
+    path_job = "./src/public/jobs/service4/"+req.body.time
     postData = JSON.stringify({
         'sequences': req.body.sequences,
         'option': req.body.option,
@@ -402,10 +401,14 @@ indexCtrl.getFrequency = async(req,response) =>{
             console.log('No more data in response.');
             var str2 = JSON.parse(JSON.stringify(data));
             response.send(str2)
+            setTimeout(function test(){
+                rimraf(path_job, function () { console.log("done"); });
+            },10000);    //10sec
         });
     });
     
     req.on('error', (e) => {
+        console.log("ok")
         console.error(`problem with request: ${e.message}`);
     });
     req.write(postData);    
@@ -415,6 +418,7 @@ indexCtrl.renderEncoding = async(req,res) =>{
     res.render('encoding');
 };
 indexCtrl.getEncoding = async(req,response) =>{
+    path_job = "./src/public/jobs/service5/"+req.body.time
     postData = JSON.stringify({
         'sequences': req.body.sequences,
         'option': req.body.option,
@@ -438,7 +442,11 @@ indexCtrl.getEncoding = async(req,response) =>{
         res.on('end', () => {
             console.log('No more data in response.');
             var str2 = JSON.parse(JSON.stringify(data));
-            response.send(str2)
+            response.send(str2);
+            setTimeout(function test(){
+                rimraf(path_job, function () { console.log("done"); });
+                rimraf(path_job+".tar.gz", function () { console.log("done"); });
+            },10000);    //10sec
         });
     });
     

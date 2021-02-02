@@ -9,6 +9,9 @@ def exec(peptide, time_node):
 	file = open("../src/public/jobs/service1/service1.fasta", "w") 
 	file.write(peptide)
 	file.close()
+	fasta = SeqIO.parse("../src/public/jobs/service1/service1.fasta", "fasta")
+	if(any(fasta) == False): #False when `fasta` is empty
+		return "error"
 	cantidad = 0
 	for record in SeqIO.parse("../src/public/jobs/service1/service1.fasta", "fasta"):
 		cantidad = cantidad+1

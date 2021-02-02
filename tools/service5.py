@@ -49,9 +49,9 @@ def exec(peptide, time, option):
 					command = "python encoding_using_Fourier_Transform.py %sphysicochemical_properties/ %s" % (path_output, path_output)
 					os.system(command)
 
-				# else:			
-				# 	command = "python encoding_using_TAPE.py %s %s" % (path_output+"input_sequences_to_process.csv", path_output)
-				# 	os.system(command)
+				else:			
+					command = "python encoding_using_TAPE.py %s %s" % (path_output+"input_sequences_to_process.csv", path_output)
+					os.system(command)
 
 				#compress dir
 				#command = "tar -czvf %s.tar.gz %s" % (path_output[:-1], path_output)
