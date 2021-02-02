@@ -57,8 +57,8 @@ $("#btn1").click(function(){
     $('#wait').attr('hidden', false);       
     $('#all').attr('hidden', true);     
         $.ajax({
-            'url': "http://localhost/encoding/results",
-            //'url': "http://45.7.230.112/encoding/results",
+            //'url': "http://localhost/encoding/results",
+            'url': "http://45.7.230.112/encoding/results",
             'method': 'POST',
             'data' : { "sequences" : $("#exampleFormControlTextarea1").val(), "time": now, "option" : $("#exampleFormControlSelect1").val()}
         }).done( function(data) {
