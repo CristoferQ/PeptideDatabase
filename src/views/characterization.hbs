@@ -134,8 +134,8 @@ $("#btn1").click(function(){
      $('#all').attr('hidden', true);
      $('#error_alert').attr('hidden', true);
         $.ajax({
-            //'url': "http://localhost/characterization/results",
-            'url': "http://45.7.230.112/characterization/results",
+            'url': "http://localhost/characterization/results",
+            //'url': "http://45.7.230.112/characterization/results",
             'method': 'POST',
             'data' : { "sequences" : $("#exampleFormControlTextarea1").val(), "time": now}
         }).done( function(data) {

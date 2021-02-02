@@ -616,8 +616,8 @@ $("#ex2").on("slide", function(slideEvt) {
             dlAnchorElem.setAttribute("download", now+'.csv');
         console.log($('#activity_lvl_1').selectpicker('val'))
         $.ajax({
-            //'url': "http://localhost/api/search",
-            'url': "http://45.7.230.112/api/search",
+            'url': "http://localhost/api/search",
+            //'url': "http://45.7.230.112/api/search",
             'method': "POST",
             'data' : { 
                 "activity_lvl_1" : $('#activity_lvl_1').selectpicker('val'),

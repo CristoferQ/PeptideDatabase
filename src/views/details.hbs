@@ -388,8 +388,8 @@ if(actual_url[actual_url.length-1] == 'Immunologicalactivity'){
   actual_url[actual_url.length-1] = 'Immunological activity'
 }
 $.ajax({
-    //'url': "http://localhost/api/database/"+actual_url[actual_url.length-1],
-    'url': "http://45.7.230.112/api/database/"+actual_url[actual_url.length-1],
+    'url': "http://localhost/api/database/"+actual_url[actual_url.length-1],
+    //'url': "http://45.7.230.112/api/database/"+actual_url[actual_url.length-1],
     'method': "GET",
     'contentType': 'application/json'
 }).done( function(data) {

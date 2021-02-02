@@ -10,8 +10,8 @@
 <div class="card">
     <h5 class="card-header">Inputs</h5>    
     <div class="card-body">
-      {{!-- <form method="post" action="http://localhost/training/results" class="dropzone" id="uploader" enctype="multipart/form-data"></form> --}}
-      <form method="post" action="http://45.7.230.112/training/results" class="dropzone" id="uploader" enctype="multipart/form-data"></form>
+      <form method="post" action="http://localhost/training/results" class="dropzone" id="uploader" enctype="multipart/form-data"></form>
+      {{!-- <form method="post" action="http://45.7.230.112/training/results" class="dropzone" id="uploader" enctype="multipart/form-data"></form> --}}
   
             <div class="form-group">
                 <label for="exampleFormControlSelect1">Select the type of analysis:</label>
@@ -101,8 +101,8 @@ Dropzone.options.uploader = {
         $('#wait').attr('hidden', false);  
         var now = new Date().getTime();
         $.ajax({
-            //'url': "http://localhost/training/results",
-            'url': "http://45.7.230.112/training/results",
+            'url': "http://localhost/training/results",
+            //'url': "http://45.7.230.112/training/results",
             'method': 'POST',
             //'data' : { "sequences" : $("#exampleFormControlTextarea1").val(), "time": now, "option" : $("#exampleFormControlSelect1").val()}
             'data' : { "test": "1"}
