@@ -21,16 +21,16 @@
     <h5 class="card-header">Inputs</h5>
     <div class="card-body">
         <form>
-         <div class="form-group">
-                <label for="exampleFormControlTextarea1">Sequence in FASTA format</label>
+            <div class="form-group">
+                {{!-- <label><a tabindex="0" data-toggle="popover" class="text-primary" data-trigger="focus" title="Sequences in FASTA format:" data-content="{{#each statistics}}{{calculation Name 'Glossary' test}}{{/each}}" style="cursor:pointer;:hover{text-decoration:underline;}">Sequences in FASTA format:</a></label> --}}
+                <label>Sequences in FASTA format:</label>
                 <textarea class="form-control" id="exampleFormControlTextarea1" rows="8"></textarea>
-        </div>
-        
-        </div>
-        <div class="text-center">
-            <button id="btn1" type='button' class="btn btn-success btn-lg">Calculate</button>
-            <button type='button' class="btn btn-dark btn-lg" onclick="javascript:eraseText();">Clear</button>
-        </div>
+            </div>
+            <div class="text-center">
+                <button id="btn1" type='button' class="btn btn-success btn-lg">Calculate</button>
+                <button type='button' class="btn btn-dark btn-lg" onclick="javascript:eraseText();">Clear</button>
+                <div hidden id="error_alert" class="alert alert-danger mt-3" role="alert">Data entry error</div>
+            </div>
         </form>
     </div>
     <div hidden id="wait" class="text-center">
@@ -40,26 +40,8 @@
     <br>
     </div>
     <h5 id="resultsh5" hidden class="card-header">Results</h5>
-    <div id="resultsdiv" hidden class="card-body">
-            <div class="table-responsive">
-            <table class="table table-dark" id="tabla">
-                <thead>
-                    <tr>
-                    {{!-- <th scope="col">Sequence id</th> --}}
-                    <th scope="col">Alignment</th>
-                    <th scope="col">Score</th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
-        </div>       
-    </div>
+    <div id="resultsdiv" hidden class="card-body mx-0"></div>
 </div>
-
-
-
-
-
 
 
 <script>
@@ -67,27 +49,39 @@
         $('#wait').attr('hidden', false);  
         var now = new Date().getTime();
         $.ajax({
-            'url': "http://localhost/alignment/results/?activities1="+$('#activity_lvl_1').selectpicker('val')+"&activities2="+$('#activity_lvl_2').selectpicker('val')+"&activities3="+$('#activity_lvl_3').selectpicker('val')+"&organisms="+all_organism+"&pdb="+pdb+"&uniprot="+uniprot+"&interval="+mySlider.slider('getValue')+"&time="+now,
+            'url': "http://localhost/alignment/results",
             //'url': "http://45.7.230.112/alignment/results",
             'method': "POST",
             'data' : { "sequences" : $("#exampleFormControlTextarea1").val(), "time": now}
         }).done(function(data) {
             console.log(data)
-            $('#wait').attr('hidden', true);  
-            $('#resultsh5').attr('hidden', false); 
-            $('#resultsdiv').attr('hidden', false);
-            var keys = Object.keys(data)
-            var values = Object.values(data[keys[0]])
-            console.log(values)
-            for (element in values){
-                //console.log(values[element].compare_sequence) //trae los diccionarios por separado
-                //console.log(values[element]['compare_sequence']) //trae los valores de la key
-                //input_sequence
-                //space_format
-                $('#tabla').append('<tr id=row'+[element]+'>'+'</tr>');
+            if (data != "error"){
+                $('#wait').attr('hidden', true);  
+                $('#resultsh5').attr('hidden', false); 
+                $('#resultsdiv').attr('hidden', false);
                 
-                $('#row'+element).append('<td>'+values[element]['input_sequence']+'</td>');
-                $('#row'+element).append('<td>'+values[element]['score_data']+'</td>');
+                //console.log(data.summary_alignment)
+                //console.log(data.summary_alignment[0])
+                //console.log(data.summary_alignment[0].input_sequence)
+                //console.log(data.summary_alignment.length)
+                function comparar(a, b) {
+                    return parseInt(a.distance_sequences) - parseInt(b.distance_sequences);
+                }
+                console.log('ordenado con función:', data.summary_alignment.sort(comparar));
+                var i;
+                for (i = 0; i < 100; i++) {
+                    //console.log(data.summary_alignment[i]['input_sequence'])
+                    var templateString = "<div class='card text-center my-4'><div class='card-header'>ID sequence: "+data.summary_alignment[i]['id_sequence']+"</div><div class='card-body'><div class='table-responsive'><table class='table'><tbody><tr><th class='col-1' scope='row'>Input sequence:</th><td style='font-family: monospace;'>"+data.summary_alignment[i]['input_sequence']+"</td></tr><tr><th scope='row'>Space format:</th><td style='font-family: monospace;'>"+data.summary_alignment[i]['space_format']+"</td></tr><tr><th scope='row'>Compare sequence:</th><td style='font-family: monospace;'>"+data.summary_alignment[i]['compare_sequence']+"</td></tr></tbody></table></div><div class='card-footer'>Score of distance between sequences: "+data.summary_alignment[i]['distance_sequences']+"</div></div></div>"
+                    //var templateString = "<div class='card text-center my-4'><div class='card-header'>"+data.summary_alignment[i]['id_sequence']+"</div><div class='card-body'><p class='my-0 card-text' style='font-family: monospace;'>"+data.summary_alignment[i]['input_sequence']+"</p><p class='my-0 card-text' style='font-family: monospace;'>"+data.summary_alignment[i]['space_format']+"</p><p class='my-0 card-text' style='font-family: monospace;'>"+data.summary_alignment[i]['compare_sequence']+"</p></div><div class='card-footer text-muted'>"+data.summary_alignment[i]['distance_sequences']+"</div></div>"
+                    $('#resultsdiv').append(templateString);
+                } 
+            }else{
+                $('#wait').attr('hidden', true);  
+                $('#resultsh5').attr('hidden', true); 
+                $('#resultsdiv').attr('hidden', true);
+                $('#error_alert').fadeIn();;
+                $('#error_alert').attr('hidden', false)
+                setTimeout(function() {$('#error_alert').fadeOut();}, 3000)
             }
         });
 

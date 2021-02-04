@@ -2,12 +2,23 @@ import pandas as pd
 import sys
 import json
 import edlib
+from Bio import SeqIO
 
 def exec(peptide, time_node):
-    file = open("../src/public/jobs/service1/service1.fasta", "w") 
+    file = open("../src/public/jobs/service3/service3.fasta", "w") 
     file.write(peptide)
     file.close()
-    sequence_input = "../src/public/jobs/service1/service1.fasta"
+    fasta = SeqIO.parse("../src/public/jobs/service3/service3.fasta", "fasta")
+    if(any(fasta) == False): #False when `fasta` is empty
+        return "error"
+    count = 0
+    for record in SeqIO.parse("../src/public/jobs/service3/service3.fasta", "fasta"):
+        sequence_input = str(record.seq)
+        count = count+1
+    print(count)
+    print(sequence_input)
+    if (count > 1):
+        return "error"
     dataset = pd.read_csv("data_values_activity_non_modified.csv")
 
     dict_response = []

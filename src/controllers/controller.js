@@ -311,7 +311,7 @@ indexCtrl.getCharacterization = async(req,response) =>{
             response.send(str2)
             setTimeout(function test(){
                 rimraf(path_job, function () { console.log("done"); });
-            },1800000);    //30min
+            },10000);    // 1800000 = 30min
         });
     });
     
@@ -351,7 +351,7 @@ indexCtrl.getAlignment = async(req,response) =>{
         });
         res.on('end', () => {
             console.log('No more data in response.');
-            var str2 = JSON.parse(JSON.stringify(data));
+            var str2 = JSON.parse(data);
             response.send(str2)
         });
     });
