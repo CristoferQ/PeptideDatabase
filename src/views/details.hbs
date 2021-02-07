@@ -1,5 +1,5 @@
 <div class="jumbotron mt-4">
-    <h1 class="display-4">Description of "{{#each statistics}}{{Name}}{{/each}}"</h1>
+    <h1 class="display-4">{{#each statistics}}{{Name}}{{/each}}</h1>
     <br>
     <p class="lead">{{#each statistics}}{{'Full_description'}}{{/each}}</p>
 </div>
@@ -169,9 +169,12 @@
             </tbody>
         </table>
     </div>
-    </div>
+    
     <h5 class="card-header">Database of {{#each statistics}}{{Name}}{{/each}}</h5>
-    <div class="card-body">
+    <div hidden id="wait" class="text-center">
+      <i class="fa-5x fas fa-cog fa-spin"></i>
+    </div>
+    <div hidden id="datatable" class="card-body">
         <a id="dl_csv"  target="_blank" class="btn btn-secondary btn-lg">Download in CSV</a>
         <a id="dl_json" target="_blank" class="btn btn-secondary btn-lg">Download in JSON</a>
         <a id="dl_fasta"  target="_blank" class="btn btn-secondary btn-lg">Download in FASTA</a>
@@ -219,8 +222,10 @@
         </div>
     </div>
 </div>
+</div>
 <script>
-  
+  $('#wait').attr('hidden', false);  
+  $('#datatable').attr('hidden', true);  
   function myFunction(elem) {
         //location.href = 'details?activity='+elem.id;
         if(elem.id == 'Drug delivery vehicle'){
@@ -408,6 +413,9 @@ $.ajax({
         ]
     })
     getSecForDetail("#example tbody", example);
+    $('#wait').attr('hidden', true);  
+    $('#datatable').attr('hidden', false);  
+    $('#example').DataTable().columns.adjust()
 });
 var getSecForDetail = function(tbody, table){
     $(tbody).on("click", "#b_results", function(){

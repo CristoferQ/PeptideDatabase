@@ -418,7 +418,7 @@ indexCtrl.renderEncoding = async(req,res) =>{
     res.render('encoding');
 };
 indexCtrl.getEncoding = async(req,response) =>{
-    path_job = "./src/public/jobs/service5/"+req.body.time
+    path_job = "./src/public/jobs/service5/"+req.body.time+".tar.gz"
     postData = JSON.stringify({
         'sequences': req.body.sequences,
         'option': req.body.option,
@@ -443,10 +443,9 @@ indexCtrl.getEncoding = async(req,response) =>{
             console.log('No more data in response.');
             var str2 = JSON.parse(JSON.stringify(data));
             response.send(str2);
-            setTimeout(function test(){
-                rimraf(path_job, function () { console.log("done"); });
-                rimraf(path_job+".tar.gz", function () { console.log("done"); });
-            },10000);    //10sec
+            //setTimeout(function test(){
+            //    rimraf(path_job, function () { console.log("done"); });
+            //},10000);    //10sec
         });
     });
     

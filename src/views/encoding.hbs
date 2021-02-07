@@ -26,6 +26,7 @@
             <div class="text-center">
                 <button id="btn1" type='button' class="btn btn-success btn-lg">Calculate</button>
                 <button type='button' class="btn btn-dark btn-lg" onclick="javascript:eraseText();">Clear</button>
+                <div hidden id="error_alert" class="alert alert-danger mt-3" role="alert">Data entry error</div>
             </div>
             
         </form>
@@ -55,7 +56,8 @@
 $("#btn1").click(function(){
     var now = new Date().getTime();
     $('#wait').attr('hidden', false);       
-    $('#all').attr('hidden', true);     
+    $('#all').attr('hidden', true);
+    $('#error_alert').attr('hidden', true);   
         $.ajax({
             'url': "http://localhost/encoding/results",
             //'url': "http://45.7.230.112/encoding/results",
@@ -63,11 +65,20 @@ $("#btn1").click(function(){
             'data' : { "sequences" : $("#exampleFormControlTextarea1").val(), "time": now, "option" : $("#exampleFormControlSelect1").val()}
         }).done( function(data) {
             $('#wait').attr('hidden', true);
-            var dlAnchorElem = document.getElementById('download');
-            dlAnchorElem.setAttribute("href", "jobs/service5/"+now+".tar.gz");
-            dlAnchorElem.setAttribute("download",now+".tar.gz");
-            console.log(data)
-            $('#all').attr('hidden', false);
+            if (data != "error"){
+                var dlAnchorElem = document.getElementById('download');
+                dlAnchorElem.setAttribute("href", "jobs/service5/"+now+".tar.gz");
+                dlAnchorElem.setAttribute("download",now+".tar.gz");
+                $('#all').attr('hidden', false);
+            }
+            else{
+                $('#all').attr('hidden', true);
+                $('#error_alert').fadeIn();;
+                $('#error_alert').attr('hidden', false)
+                setTimeout(function() {$('#error_alert').fadeOut();}, 3000)
+            }
+            
+            
         });          
 });
     

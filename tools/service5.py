@@ -2,6 +2,7 @@ import sys
 import os
 import json
 import tarfile
+from Bio import SeqIO
 
 def createJob(time):
 	try:
@@ -13,12 +14,15 @@ def exec(peptide, time, option):
 	file = open("../src/public/jobs/service5/service5.fasta", "w") 
 	file.write(peptide)
 	file.close()
+	fasta = SeqIO.parse("../src/public/jobs/service5/service5.fasta", "fasta")
+	if(any(fasta) == False): #False when `fasta` is empty
+		return "error"
 	input_sequence = "../src/public/jobs/service5/service5.fasta"
 	path_output = "../src/public/jobs/service5/"+time+"/"
 	encoding_select = int(option)
 	try:
 		#first, prepare dataset removing sequences with non clasical residues
-		command = "python process_input_file.py %s %s" % (input_sequence, path_output)
+		command = "python3 process_input_file.py %s %s" % (input_sequence, path_output)
 		os.system(command)
 
 		#check process status
@@ -32,25 +36,25 @@ def exec(peptide, time, option):
 				#	os.system(command)
 
 				if encoding_select == 2:#one hot encoding			
-					command = "python encoding_one_hot.py %s %s" % (path_output+"input_sequences_to_process.csv", path_output)
+					command = "python3 encoding_one_hot.py %s %s" % (path_output+"input_sequences_to_process.csv", path_output)
 					os.system(command)
 
 				elif encoding_select == 3:#encoding frequency			
-					command = "python encoding_frequency_residues.py %s %s" % (path_output+"input_sequences_to_process.csv", path_output)
+					command = "python3 encoding_frequency_residues.py %s %s" % (path_output+"input_sequences_to_process.csv", path_output)
 					os.system(command)
 
 				elif encoding_select == 4:#encoding physicochemical properties			
-					command = "python encoding_using_physicochemical_properties.py %s encoding_AAIndex/ %s" % (path_output+"input_sequences_to_process.csv", path_output)
+					command = "python3 encoding_using_physicochemical_properties.py %s encoding_AAIndex/ %s" % (path_output+"input_sequences_to_process.csv", path_output)
 					os.system(command)
 
 				elif encoding_select == 5:#encoding using digital signal processing
-					command = "python encoding_using_physicochemical_properties.py %s encoding_AAIndex/ %s" % (path_output+"input_sequences_to_process.csv", path_output)
+					command = "python3 encoding_using_physicochemical_properties.py %s encoding_AAIndex/ %s" % (path_output+"input_sequences_to_process.csv", path_output)
 					os.system(command)
-					command = "python encoding_using_Fourier_Transform.py %sphysicochemical_properties/ %s" % (path_output, path_output)
+					command = "python3 encoding_using_Fourier_Transform.py %sphysicochemical_properties/ %s" % (path_output, path_output)
 					os.system(command)
 
 				else:			
-					command = "python encoding_using_TAPE.py %s %s" % (path_output+"input_sequences_to_process.csv", path_output)
+					command = "python3 encoding_using_TAPE.py %s %s" % (path_output+"input_sequences_to_process.csv", path_output)
 					os.system(command)
 
 				#compress dir
@@ -60,8 +64,9 @@ def exec(peptide, time, option):
 					tar.add(path_output, arcname=os.path.basename(path_output))
 				
 				#remove dir
-				#command = "rm -rf %s" % (path_output)
-				#os.system(command)
+				command = "rm -rf %s" % (path_output)
+				os.system(command)
+
 			else:
 				return ({"process": "error"})
 		return ({"process": "ok"})
