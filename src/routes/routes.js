@@ -12,7 +12,7 @@ const storage = multer.diskStorage({
 })
 const upload = multer({storage})
 
-const {renderGlossary, getTraining, renderTraining, getEncoding, renderEncoding, getFrequency, renderFrequency, getAlignment, getCharacterization, renderAlignment, renderClassification, renderCharacterization, renderDatabaseInformation,renderSequence, getSearch, getDatabasePerActivity, renderDetails, renderAbout, renderSearch, renderTools, renderIndex, renderDatabase, getDatabase} = require('../controllers/controller');
+const {getClassification, renderGlossary, getTraining, renderTraining, getEncoding, renderEncoding, getFrequency, renderFrequency, getAlignment, getCharacterization, renderAlignment, renderClassification, renderCharacterization, renderDatabaseInformation,renderSequence, getSearch, getDatabasePerActivity, renderDetails, renderAbout, renderSearch, renderTools, renderIndex, renderDatabase, getDatabase} = require('../controllers/controller');
 
 router.get('/', renderIndex); 
 router.get('/about', renderAbout);
@@ -28,6 +28,7 @@ router.get('/database_information', renderDatabaseInformation);
 router.get('/characterization', renderCharacterization);
 router.post('/characterization/results', getCharacterization);
 router.get('/classification', renderClassification);
+router.post('/classification/results', getClassification);
 router.get('/alignment', renderAlignment);
 router.post('/alignment/results', getAlignment);
 router.get('/frequency', renderFrequency);

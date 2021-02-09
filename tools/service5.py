@@ -4,12 +4,6 @@ import json
 import tarfile
 from Bio import SeqIO
 
-def createJob(time):
-	try:
-		os.mkdir("../src/public/jobs/service5/"+time, mode=0o777)
-	except:
-		print("error al crear carpeta")
-
 def exec(peptide, time, option):
 	file = open("../src/public/jobs/service5/service5.fasta", "w") 
 	file.write(peptide)
@@ -17,6 +11,12 @@ def exec(peptide, time, option):
 	fasta = SeqIO.parse("../src/public/jobs/service5/service5.fasta", "fasta")
 	if(any(fasta) == False): #False when `fasta` is empty
 		return "error"
+	else:
+		try:
+			os.mkdir("../src/public/jobs/service5/"+time, mode=0o777)
+		except:
+			print("error al crear carpeta")
+
 	input_sequence = "../src/public/jobs/service5/service5.fasta"
 	path_output = "../src/public/jobs/service5/"+time+"/"
 	encoding_select = int(option)
