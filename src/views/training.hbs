@@ -10,25 +10,54 @@
 <div class="card">
     <h5 class="card-header">Inputs</h5>    
     <div class="card-body">
-      <form method="post" action="http://localhost/training/results" class="dropzone" id="uploader" enctype="multipart/form-data"></form>
-      {{!-- <form method="post" action="http://45.7.230.112/training/results" class="dropzone" id="uploader" enctype="multipart/form-data"></form> --}}
-  
+      <form enctype="multipart/form-data" id="formuploadajax" method="post">
+        <input  type="file" id="dataset" name="dataset"/>
+        <br />
+        <input  type="file" id="response" name="response"/>
+        <br />
+    </form>
+      </form>
             <div class="form-group">
-                <label for="exampleFormControlSelect1">Select the type of analysis:</label>
-                <select class="form-control" id="typeAnalysis">
-                <option value="none">None selected</option>
-                <option value="1">Clasificacion</option>
-                <option value="0">Regresion</option>
+                <label for="exampleFormControlSelect1">Select the type of encoding:</label>
+                <select class="form-control">
+                <option value="1">One hot encoding</option>
+                <option value="2">Ordinal encoding</option>
+                <option value="3">Frequency of residues</option>
+                <option value="4">Physicochemical properties</option>
+                <option value="5">Digital signal</option>
+                <option value="6">Tape</option>
                 </select>
             </div>
-            <div class="form-group" id="s_validation" style="display:none;">
+            <div class="form-group">
+                <label for="exampleFormControlSelect2">Select the type of property:</label>
+                <select class="form-control">
+                <option value="1">Alpha-structure group</option>
+                <option value="2">betha-structure_group</option>
+                <option value="3">energetic_group</option>
+                <option value="4">hydropathy_group</option>
+                <option value="5">hydrophobicity_group</option>
+                <option value="6">index_group</option>
+                <option value="6">secondary_structure_properties_group</option>
+                <option value="6">volume_group</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="exampleFormControlSelect3">Select the type of response:</label>
+                <select class="form-control" id="typeAnalysis">
+                <option value="none">None selected</option>
+                <option value="0">Regresion</option>
+                <option value="1">Clasificacion</option>
+                </select>
+            </div>
+            <!--<div class="form-group" id="s_validation" style="display:none;">
                 <label >Validation (K-Fold Cross Validation):</label>
                   <select class="form-control" name="validation" id="validation">
                     <option value="2">2</option> 
                     <option value="5">5</option>
                     <option value="10">10</option>
                   </select>
-            </div>
+            </div>-->
 
            <div class="form-group" name="p_algorithm" id="p_algorithm" style="display:none;">
               <label>Select the prediction algorithm*</label>
@@ -71,15 +100,11 @@
   </div>
 </div>
       
-<script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.5.1/min/dropzone.min.js"></script>
+
 <script>
-Dropzone.options.uploader = {
-    paramName: "file",
-    maxFilesize: 10, // MB
-    maxFiles : 1,
-    uploadMultiple : false,
-    dictDefaultMessage : "Drop files here or click to upload"
-};
+  $(document).ready(function() {
+
+  
   var option = $('#typeAnalysis').val()    
 
   $('#typeAnalysis').change(function(){
@@ -97,24 +122,47 @@ Dropzone.options.uploader = {
   });
 
   $("#btn1").click(function(){
+    var now = new Date().getTime();
+    var data = new FormData(document.getElementById("formuploadajax")); //your form ID
+
+    $.ajax({
+        type: "POST",
+        url: 'http://localhost/training/upload?time='+now,
+        data:  data,
+        enctype: 'multipart/form-data',
+        processData: false,  // tell jQuery not to process the data
+        contentType: false,   // tell jQuery not to set contentType
+        dataType: "json",
+        success: function(response)
+        {
+          console.log(response)
+        }
+    });
+
     
-        $('#wait').attr('hidden', false);  
-        var now = new Date().getTime();
-        $.ajax({
-            'url': "http://localhost/training/results",
-            //'url': "http://45.7.230.112/training/results",
-            'method': 'POST',
-            //'data' : { "sequences" : $("#exampleFormControlTextarea1").val(), "time": now, "option" : $("#exampleFormControlSelect1").val()}
-            'data' : { "test": "1"}
-        }).done(function(data) {
-            console.log(data)
-            $('#wait').attr('hidden', true);  
-            $('#resultsh5').attr('hidden', false); 
-            $('#resultsdiv').attr('hidden', false);
-            var keys = Object.keys(data)
-            var values = Object.values(data[keys[0]])
-            
-            
-        });
+
+
+
+
+
+    //$('#wait').attr('hidden', false);  
+    //$.ajax({
+    //    'url': "http://localhost/training/results",
+    //    //'url': "http://45.7.230.112/training/results",
+    //    'method': 'POST',
+    //    'data' : {"time": now}
+    //}).done(function(data) {
+    //    console.log(data)
+    //    $('#wait').attr('hidden', true);  
+    //    $('#resultsh5').attr('hidden', false); 
+    //    $('#resultsdiv').attr('hidden', false);
+    //    var keys = Object.keys(data)
+    //    var values = Object.values(data[keys[0]])
+    //});
+  });
+
+
+
+
   });
 </script>
