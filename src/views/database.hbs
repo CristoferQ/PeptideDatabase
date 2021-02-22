@@ -4,7 +4,7 @@
     <p class="lead">Our database has 92055 registered and characterized peptides, currently the peptide database with the most extensive registrations to date. According to our system of categories proposed in this work, we classify peptides, suggesting ten main categories. Each of them has subcategories or different levels of classification, according to previously reported activities.</p>
 </div>
 <div id="wait" class="text-center">
-    <h1>The database is loading, this will take a few seconds</h1>
+    <h1>The database is loading, this will take a few minutes</h1>
     <br>
     <i class="fa-7x fas fa-cog fa-spin"></i>  
 </div>
@@ -27,11 +27,11 @@
 
     <h5 class="card-header">Pie Chart of the number of sequences per activity</h5>
     <div class="card-body">
-        <div class="col-sm-12" id="pie1"></div>
+        <div class="col-lg-12" id="pie1"></div>
     </div>
     <h5 class="card-header">Histogram of the lenght of total sequences</h5>
-    <div class="card-body">
-        <div class="col-sm-12" id="hist1"></div>
+    <div class="card-body text-center">
+        <div class="col-lg-12" id="hist1"></div>
     </div>
     <h5 class="card-header">Database</h5>
     <div class="card-body">
@@ -217,15 +217,15 @@ $.ajax({
     })    
     
     var dlAnchorElem = document.getElementById('dl_csv');
-    dlAnchorElem.setAttribute("href", 'attachment/database.csv');
+    dlAnchorElem.setAttribute("href", 'attachment/database/database.csv');
     dlAnchorElem.setAttribute("download", "database.csv");
     
     var dlAnchorElem = document.getElementById('dl_json');
-    dlAnchorElem.setAttribute("href", 'attachment/database.json');
+    dlAnchorElem.setAttribute("href", 'attachment/database/database.json');
     dlAnchorElem.setAttribute("download", "database.json");
 
     var dlAnchorElem = document.getElementById('dl_fasta');
-    dlAnchorElem.setAttribute("href", 'attachment/database.fasta');
+    dlAnchorElem.setAttribute("href", 'attachment/database/database.fasta');
     dlAnchorElem.setAttribute("download", "database.fasta");
 
     $('#wait').attr('hidden', true);

@@ -608,13 +608,17 @@ $("#ex2").on("slide", function(slideEvt) {
         }
         var now = new Date().getTime();
         var dlAnchorElem = document.getElementById('dl_json');
-            dlAnchorElem.setAttribute("href", '/attachment/querys/'+now+'.json');
-            dlAnchorElem.setAttribute("download", now+'.json');
+            dlAnchorElem.setAttribute("href", '/attachment/querys/'+now+'/search.json');
+            dlAnchorElem.setAttribute("download", 'search_'+now+'.json');
 
         var dlAnchorElem = document.getElementById('dl_csv');
-            dlAnchorElem.setAttribute("href", '/attachment/querys/'+now+'.csv');
-            dlAnchorElem.setAttribute("download", now+'.csv');
-        console.log($('#activity_lvl_1').selectpicker('val'))
+            dlAnchorElem.setAttribute("href", '/attachment/querys/'+now+'/search.csv');
+            dlAnchorElem.setAttribute("download", 'search_'+now+'.csv');
+        
+        var dlAnchorElem = document.getElementById('dl_fasta');
+            dlAnchorElem.setAttribute("href", '/attachment/querys/'+now+'/search.fasta');
+            dlAnchorElem.setAttribute("download", 'search_'+now+'.fasta');
+        
         $.ajax({
             'url': "http://localhost/api/search",
             //'url': "http://45.7.230.112/api/search",

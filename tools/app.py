@@ -4,6 +4,8 @@ import service2
 import service3
 import service4
 import service5
+import service6
+import exports
 
 app = Flask(__name__) #se crea el obj
 
@@ -36,7 +38,12 @@ def execEncoding():
 @app.route('/api/training/', methods=['POST'])
 def execTraining():
     request_data = request.get_json()
-    return jsonify(service6.exec(request_data['sequences'], request_data['time']))
+    return jsonify(service6.exec(request_data['time']))
+
+@app.route('/api/exports/', methods=['POST'])
+def execFasta():
+    request_data = request.get_json()
+    return jsonify(exports.exec(request_data['activities'], request_data['time']))
 
 
 if (__name__ == "__main__"):#si se esta ejecutando como archivo principal

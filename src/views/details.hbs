@@ -52,6 +52,7 @@
     </div>
     <h5 class="card-header">Average property values ​​for each activity</h5>
     <div class="card-body">
+      <div class="table-responsive">
         <table class="table table-striped">
             <thead>
                 <tr>
@@ -168,6 +169,7 @@
                 </tr>
             </tbody>
         </table>
+      </div>
     </div>
     
     <h5 class="card-header">Database of {{#each statistics}}{{Name}}{{/each}}</h5>
@@ -211,7 +213,7 @@
     <div class="card-body">
         <div class="row mb-2">
         {{#each statistics_full}}
-        <div class="card col-3">
+        <div class="card col-md-3 col-lg-3 col-sm-1 col-xs-1">
                 <div class="card-body">
                     <h5 class="card-title activity_names">{{matrix Name Name}}</h5>
                     <p class="card-text">{{matrix Name Description}}</p>
@@ -430,14 +432,14 @@ var getSecForDetail = function(tbody, table){
       actual_url[actual_url.length-1] = 'SignalPeptide'
     }
     var dlAnchorElem = document.getElementById('dl_csv');
-    dlAnchorElem.setAttribute("href", '/attachment/activities/'+actual_url[actual_url.length-1]+'/'+actual_url[actual_url.length-1]+'.csv');
+    dlAnchorElem.setAttribute("href", '/attachment/database/csv/'+actual_url[actual_url.length-1]+'.csv');
     dlAnchorElem.setAttribute("download", actual_url[actual_url.length-1]+'.csv');
     
     var dlAnchorElem = document.getElementById('dl_json');
-    dlAnchorElem.setAttribute("href", '/attachment/activities/'+actual_url[actual_url.length-1]+'/'+actual_url[actual_url.length-1]+'.json');
+    dlAnchorElem.setAttribute("href", '/attachment/database/json/'+actual_url[actual_url.length-1]+'.json');
     dlAnchorElem.setAttribute("download", actual_url[actual_url.length-1]+'.json');
 
     var dlAnchorElem = document.getElementById('dl_fasta');
-    dlAnchorElem.setAttribute("href", '/attachment/activities/'+actual_url[actual_url.length-1]+'/'+actual_url[actual_url.length-1]+'.fasta');
+    dlAnchorElem.setAttribute("href", '/attachment/database/fasta/'+actual_url[actual_url.length-1]+'.fasta');
     dlAnchorElem.setAttribute("download", actual_url[actual_url.length-1]+'.fasta');
 </script>
