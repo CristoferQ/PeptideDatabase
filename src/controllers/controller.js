@@ -329,11 +329,8 @@ indexCtrl.getClassification = async(req,response) =>{
         });
         res.on('end', () => {
             console.log('No more data in response.');
-            if (data == "error"){
-                response.send(JSON.stringify(data))
-            }else{
-                response.send(data)
-            }
+            var str2 = JSON.parse(data);
+            response.send(str2)
         });
     });
     
@@ -370,11 +367,8 @@ indexCtrl.getAlignment = async(req,response) =>{
         });
         res.on('end', () => {
             console.log('No more data in response.');
-            if (data == "error"){
-                response.send(JSON.stringify(data))
-            }else{
-                response.send(data)
-            }
+            var str2 = JSON.parse(data);
+            response.send(str2)
         });
     });
     
