@@ -8,6 +8,7 @@ const Organism = require('../models/Organism');
 const rimraf = require("rimraf");
 var multer = require("multer");
 var url = require('url');
+const { response } = require('express');
 
 indexCtrl.renderIndex = async(req,res) =>{ //ruta de index
     const statistics_full = await Statistic.find({$and:[{'Name': {$ne : "Total number of records"}},{'Name': {$ne : "Total number of organism"}},{'Name': {$ne : "Total PDB codes"}},{'Name': {$ne : "Histogram1"}},{'Name': {$ne : "PieChart1"}},{'Name': {$ne : "Total Uniprot codes"}},{'Name': {$ne : "Glossary"}}]}).lean();
@@ -184,7 +185,7 @@ indexCtrl.getSearch = async(req, res) =>{
             delete all_activities[flag];
         }
     }
-    all_activities = all_activities.filter(function(e){return e});
+    //all_activities = all_activities.filter(function(e){return e});
     
     if (req.body['organisms[]'].includes('all') == true){
         if (req.body.uniprot == 'false'){
@@ -219,8 +220,8 @@ indexCtrl.getSearch = async(req, res) =>{
         }
     }
 }
-async function exportData(activities, time){
-    path_job = "./src/public/attachment/querys/"+req.body.time;
+async function exportData(activities, time, response, req){
+    path_job = "./src/public/attachment/querys/"+time;
     postData = JSON.stringify({
         'activities': activities,
         'time': time
