@@ -58,7 +58,7 @@ $("#btn1").click(function(){
             $('#wait').attr('hidden', true);
             if (data != "error"){
                 var dlAnchorElem = document.getElementById('download');
-                dlAnchorElem.setAttribute("href", "jobs/service2/"+now+"/export_category_data.csv");
+                dlAnchorElem.setAttribute("href", "/jobs/service2/"+now+"/export_category_data.csv");
                 dlAnchorElem.setAttribute("download","export_category_data.csv");
                 $('#all').attr('hidden', false);
             }
