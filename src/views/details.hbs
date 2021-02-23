@@ -432,14 +432,14 @@ var getSecForDetail = function(tbody, table){
       actual_url[actual_url.length-1] = 'SignalPeptide'
     }
     var dlAnchorElem = document.getElementById('dl_csv');
-    dlAnchorElem.setAttribute("href", '../../../database/csv_resources/'+actual_url[actual_url.length-1]+'.csv');
+    dlAnchorElem.setAttribute("href", '../database/csv/'+actual_url[actual_url.length-1]+'.csv');
     dlAnchorElem.setAttribute("download", actual_url[actual_url.length-1]+'.csv');
     
     var dlAnchorElem = document.getElementById('dl_json');
-    dlAnchorElem.setAttribute("href", '../../../database/json_resources/'+actual_url[actual_url.length-1]+'.json');
+    dlAnchorElem.setAttribute("href", '../database/json/'+actual_url[actual_url.length-1]+'.json');
     dlAnchorElem.setAttribute("download", actual_url[actual_url.length-1]+'.json');
 
     var dlAnchorElem = document.getElementById('dl_fasta');
-    dlAnchorElem.setAttribute("href", '../../database/fasta_resources/'+actual_url[actual_url.length-1]+'.fasta');
+    dlAnchorElem.setAttribute("href", '../database/fasta/'+actual_url[actual_url.length-1]+'.fasta');
     dlAnchorElem.setAttribute("download", actual_url[actual_url.length-1]+'.fasta');
 </script>
