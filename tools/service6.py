@@ -37,7 +37,7 @@ def exec(time):
 
 	dict_response_service = {}
 
-	path_encodings_properties = "../encoding_service/encoding_AAIndex/"
+	path_encodings_properties = "encoding_AAIndex/"
 
 	#process fasta file
 	data_sequences = []

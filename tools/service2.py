@@ -204,13 +204,17 @@ def exec(peptide, time):
 	path_output = "../src/public/jobs/service2/"+time+"/"#carpeta donde se guardan los resultados.
 
 	#path to read models
-	path_read_models = "/media/ceql/Externo/training_process/" #carpeta donde se encuentran todos los modelos.
 
+	#path_read_models = "/media/ceql/Externo/training_process/" #carpeta donde se encuentran todos los modelos.
+	path_read_models = "../../training_process/" 
+	
 	#path to read encoding strategie
 	path_encoding_data = "encoding_AAIndex/"
 
 	#path to read csv resources 
-	path_csv_resources = "/media/ceql/Externo/csv_resources/"
+
+	#path_csv_resources = "/media/ceql/Externo/csv_resources/"
+	path_csv_resources = "../../csv_resources/"
 
 	#process fasta file input and get sequences to make classification data
 	print("Preprocessing data input")
@@ -343,8 +347,6 @@ def exec(peptide, time):
 			dict_summary.update({"status":"PROCESS_OK"})
 			print("Export summary responses")
 			dataset_export_responses.to_csv(path_output+"export_category_data.csv", index=False)
-
-			return dict_summary
 			
 		else:
 			dict_summary.update({"status":"NO_SEQUENCE_TO_ENCODING"})	

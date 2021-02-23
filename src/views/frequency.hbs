@@ -24,6 +24,7 @@
             <div class="text-center">
                 <button id="btn1" type='button' class="btn btn-success btn-lg">Calculate</button>
                 <button type='button' class="btn btn-dark btn-lg" onclick="javascript:eraseText();">Clear</button>
+                <div hidden id="error_alert" class="alert alert-danger mt-3" role="alert">Data entry error</div>
             </div>
             
         </form>
@@ -88,45 +89,54 @@ $("#btn1").click(function(){
     $('#wait').attr('hidden', false);       
     $('#all').attr('hidden', true);     
         $.ajax({
-            'url': "http://localhost/frequency/results",
-            //'url': "http://45.7.230.112/frequency/results",
+            //'url': "http://localhost/frequency/results",
+            'url': "http://45.7.230.112/frequency/results",
             'method': 'POST',
             'data' : { "sequences" : $("#exampleFormControlTextarea1").val(), "time": now, "option" : $("#exampleFormControlSelect1").val()}
         }).done( function(data) {
-            $('#wait').attr('hidden', true);
-            $("#tabla td").remove();
-            $('#all').attr('hidden', false);   
-            var json = jQuery.parseJSON(data[0]);
-            for (element in json.data){
-                $('#tabla').append('<tr id=row'+element+'>'+'</tr>');
-                for (i in json.data[element]){
-                    $('#row'+element).append('<td>'+json.data[element][i]+'</td>');    
+            if (data != "error"){
+                $('#wait').attr('hidden', true);
+                $("#tabla td").remove();
+                $('#all').attr('hidden', false);   
+                var json = jQuery.parseJSON(data[0]);
+                for (element in json.data){
+                    
+                    $('#tabla').append('<tr id=row'+element+'>'+'</tr>');
+                    for (i in json.data[element]){
+                        $('#row'+element).append('<td>'+json.data[element][i]+'</td>');    
+                    }
                 }
+                    var trace1 = {
+                    x: data[1][0].x,
+                    y: data[1][0].y,
+                    name: 'Control',
+                    error_y: {
+                        type: 'data',
+                        array: data[1][0].error_y.array,
+                        visible: true
+                    },
+                    type: 'bar'
+                    };
+                    var data = [trace1];
+                    var layout = {barmode: 'group'};
+                    Plotly.newPlot('graph', data, layout);
+                
+                $('#tabla').DataTable({
+                    dom: 'Bfrtip',
+                    "bDestroy": true,
+                    buttons: [
+                        { extend: 'pdf', text: 'Download table in PDF', orientation: 'landscape', pageSize: 'LEGAL'},
+                        { extend: 'csv', text: 'Download table in CSV' }
+                    ]
+                });	   
+            }else{
+                $('#wait').attr('hidden', true);  
+                $('#all').attr('hidden', true);
+                $('#error_alert').fadeIn();;
+                $('#error_alert').attr('hidden', false)
+                setTimeout(function() {$('#error_alert').fadeOut();}, 3000)
             }
-            $('#tabla').DataTable({
-                dom: 'Bfrtip',
-                "bDestroy": true,
-                buttons: [
-                    { extend: 'pdf', text: 'Download table in PDF', orientation: 'landscape', pageSize: 'LEGAL'},
-                    { extend: 'csv', text: 'Download table in CSV' }
-                ]
-            });	
-            console.log(data[1][0].error_y.array)
-            var trace1 = {
-            x: data[1][0].x,
-            y: data[1][0].y,
-            name: 'Control',
-            error_y: {
-                type: 'data',
-                array: data[1][0].error_y.array,
-                visible: true
-            },
-            type: 'bar'
-            };
-            var data = [trace1];
-            var layout = {barmode: 'group'};
-            Plotly.newPlot('graph', data, layout);
-        });          
+        });       
 });
     
 function eraseText() {

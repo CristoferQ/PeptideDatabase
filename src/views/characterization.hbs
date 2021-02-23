@@ -94,7 +94,7 @@
                 <div style="text-align: center;">
                     <img id="helical" class="card-img-top" src="" alt="Card image cap" style="max-width: 50%;">
                 <div class="card-body">
-                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                    <p class="card-text">A helical wheel is a type of plot or visual representation used to illustrate the properties of alpha helices in proteins. The sequence of amino acids that make up a helical region of the protein's secondary structure are plotted in a rotating manner where the angle of rotation between consecutive amino acids is 100°, so that the final representation looks down the helical axis.</p>
                 </div>
                 </div>
             </div>
@@ -105,7 +105,7 @@
                 <div style="text-align: center;">
                 <img id="profile" class="card-img-top" src="" alt="Card image cap" style="max-width: 70%;">
                 <div class="card-body">
-                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                    <p class="card-text">Function to generate sequence profile plots of a given amino acid scale or a moment thereof. It tool can only plot one-dimensional amino acid scales given.</p>
                 </div>
             </div>
         </div>
@@ -134,8 +134,8 @@ $("#btn1").click(function(){
      $('#all').attr('hidden', true);
      $('#error_alert').attr('hidden', true);
         $.ajax({
-            'url': "http://localhost/characterization/results",
-            //'url': "http://45.7.230.112/characterization/results",
+            //'url': "http://localhost/characterization/results",
+            'url': "http://45.7.230.112/characterization/results",
             'method': 'POST',
             'data' : { "sequences" : $("#exampleFormControlTextarea1").val(), "time": now}
         }).done( function(data) {

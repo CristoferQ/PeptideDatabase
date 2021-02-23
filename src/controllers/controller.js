@@ -244,7 +244,7 @@ async function exportData(activities, time){
             console.log('No more data in response.');
             setTimeout(function test(){
                 rimraf(path_job, function () { console.log("done"); });
-            },120000);    // 1800000 = 30min
+            },3600000);    // 3600000 = 1 hora
         });
     });
     req.on('error', (e) => {
@@ -291,7 +291,7 @@ indexCtrl.getCharacterization = async(req,response) =>{
             response.send(str2)
             setTimeout(function test(){
                 rimraf(path_job, function () { console.log("done"); });
-            },120000);    // 1800000 = 30min
+            },3600000);    // 1800000 = 30min
         });
     });
     
@@ -407,7 +407,7 @@ indexCtrl.getFrequency = async(req,response) =>{
             response.send(str2)
             setTimeout(function test(){
                 rimraf(path_job, function () { console.log("done"); });
-            },120000);    //10sec
+            },3600000);    //10sec
         });
     });
     
@@ -449,7 +449,7 @@ indexCtrl.getEncoding = async(req,response) =>{
             response.send(str2);
             setTimeout(function test(){
                 rimraf(path_job, function () { console.log("done"); });
-            },120000);    //10sec
+            },3600000);    //10sec
         });
     });
     
@@ -503,7 +503,7 @@ indexCtrl.getTraining = async(req,response) =>{
             }
             setTimeout(function test(){
                 rimraf(path_job, function () { console.log("done"); });
-            },120000);    //10sec
+            },3600000);    //10sec
         });
     });
     req.on('error', (e) => {

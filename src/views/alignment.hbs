@@ -2,12 +2,6 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/css/bootstrap-select.min.css">
 <!-- Latest compiled and minified JavaScript -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/bootstrap-select.min.js"></script>
-<!-- Slider JS -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/11.0.2/bootstrap-slider.min.js" integrity="sha512-f0VlzJbcEB6KiW8ZVtL+5HWPDyW1+nJEjguZ5IVnSQkvZbwBt2RfCBY0CBO1PsMAqxxrG4Di6TfsCPP3ZRwKpA==" crossorigin="anonymous"></script>
-<!-- Slider CSS -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/11.0.2/css/bootstrap-slider.css" integrity="sha512-SZgE3m1he0aEF3tIxxnz/3mXu/u/wlMNxQSnE0Cni9j/O8Gs+TjM9tm1NX34nRQ7GiLwUEzwuE3Wv2FLz2667w==" crossorigin="anonymous" />
-
-
 
 <div class="jumbotron mt-4">
     <h1 class="display-4">Alignment sequences</h1>
@@ -40,17 +34,22 @@
     <br>
     </div>
     <h5 id="resultsh5" hidden class="card-header">Results</h5>
+    <div class="text-center" id="resultsdownload" hidden>
+        <button type='button' class="btn btn-dark btn-lg mt-3" onclick="javascript:downloadResults2();">Download results</button>
+    </div> 
     <div id="resultsdiv" hidden class="card-body mx-0"></div>
+    <div id="resultsdownload" hidden></div>
 </div>
 
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.4/jspdf.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.14/jspdf.plugin.autotable.min.js" integrity="sha512-m4dz/cB+GDbGitRXh/Ppt8vsDpD2nqhviX1eoD7wgu3xSO2B9EUKjZKsZLbmyUS0d43vLzakJcPFzxi7eHlmBw==" crossorigin="anonymous"></script>
 <script>
     $("#btn1").click(function(){
         $('#wait').attr('hidden', false);  
         var now = new Date().getTime();
         $.ajax({
-            'url': "http://localhost/alignment/results",
-            //'url': "http://45.7.230.112/alignment/results",
+            //'url': "http://localhost/alignment/results",
+            'url': "http://45.7.230.112/alignment/results",
             'method': "POST",
             'data' : { "sequences" : $("#exampleFormControlTextarea1").val(), "time": now}
         }).done(function(data) {
@@ -70,10 +69,11 @@
                 var i;
                 for (i = 0; i < 100; i++) {
                     //console.log(data.summary_alignment[i]['input_sequence'])
-                    var templateString = "<div class='card text-center my-4'><div class='card-header'>ID sequence: "+data.summary_alignment[i]['id_sequence']+"</div><div class='card-body'><div class='table-responsive'><table class='table'><tbody><tr><th class='col-1' scope='row'>Input sequence:</th><td style='font-family: monospace;'>"+data.summary_alignment[i]['input_sequence']+"</td></tr><tr><th scope='row'>Space format:</th><td style='font-family: monospace;'>"+data.summary_alignment[i]['space_format']+"</td></tr><tr><th scope='row'>Compare sequence:</th><td style='font-family: monospace;'>"+data.summary_alignment[i]['compare_sequence']+"</td></tr></tbody></table></div><div class='card-footer'>Score of distance between sequences: "+data.summary_alignment[i]['distance_sequences']+"</div></div></div>"
+                    var templateString = "<div class='card text-center my-4'><div class='card-header'>ID sequence: "+data.summary_alignment[i]['id_sequence']+"</div><div class='card-body'><div class='table-responsive'><table id='mytable_"+i+"' class='table'><tbody><tr><th class='col-1' scope='row'>Input sequence:</th><td style='font-family: monospace;'>"+data.summary_alignment[i]['input_sequence']+"</td></tr><tr><th scope='row'>Space format:</th><td style='font-family: monospace;'>"+data.summary_alignment[i]['space_format']+"</td></tr><tr><th scope='row'>Compare sequence:</th><td style='font-family: monospace;'>"+data.summary_alignment[i]['compare_sequence']+"</td></tr></tbody></table></div><div class='card-footer'>Score of distance between sequences: "+data.summary_alignment[i]['distance_sequences']+"</div></div></div>"
                     //var templateString = "<div class='card text-center my-4'><div class='card-header'>"+data.summary_alignment[i]['id_sequence']+"</div><div class='card-body'><p class='my-0 card-text' style='font-family: monospace;'>"+data.summary_alignment[i]['input_sequence']+"</p><p class='my-0 card-text' style='font-family: monospace;'>"+data.summary_alignment[i]['space_format']+"</p><p class='my-0 card-text' style='font-family: monospace;'>"+data.summary_alignment[i]['compare_sequence']+"</p></div><div class='card-footer text-muted'>"+data.summary_alignment[i]['distance_sequences']+"</div></div>"
                     $('#resultsdiv').append(templateString);
-                } 
+                }
+                $('#resultsdownload').attr('hidden', false);
             }else{
                 $('#wait').attr('hidden', true);  
                 $('#resultsh5').attr('hidden', true); 
@@ -89,5 +89,17 @@
 function eraseText() {
     document.getElementById("exampleFormControlTextarea1").value = "";
     $("#exampleFormControlTextarea1").focus();
+}
+function downloadResults2() {
+    var doc = new jsPDF('p', 'pt');
+    var width = doc.internal.pageSize.width;
+    var height = doc.internal.pageSize.height; 
+    
+    //doc.fromHTML($('#resultsdiv')[0],15,30)
+    var i = 0
+    for (i = 0; i < 100; i++) {
+        doc.autoTable({ html: '#mytable_'+i })
+    }
+    doc.save("Results.pdf");
 }
 </script>
