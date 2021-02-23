@@ -206,7 +206,7 @@ def exec(peptide, time):
 	#path to read models
 
 	#path_read_models = "/media/ceql/Externo/training_process/" #carpeta donde se encuentran todos los modelos.
-	path_read_models = "../../training_process/" 
+	path_read_models = "../training_process/" 
 	
 	#path to read encoding strategie
 	path_encoding_data = "encoding_AAIndex/"
@@ -214,7 +214,7 @@ def exec(peptide, time):
 	#path to read csv resources 
 
 	#path_csv_resources = "/media/ceql/Externo/csv_resources/"
-	path_csv_resources = "../../csv_resources/"
+	path_csv_resources = "../csv_resources/"
 
 	#process fasta file input and get sequences to make classification data
 	print("Preprocessing data input")
