@@ -328,8 +328,11 @@ indexCtrl.getClassification = async(req,response) =>{
         });
         res.on('end', () => {
             console.log('No more data in response.');
-            var str2 = JSON.parse(data);
-            response.send(str2)
+            if (data == "error"){
+                response.send(JSON.stringify(data))
+            }else{
+                response.send(data)
+            }
         });
     });
     
