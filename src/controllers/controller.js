@@ -306,6 +306,7 @@ indexCtrl.renderClassification = async(req,res) =>{
     res.render('classification');
 };
 indexCtrl.getClassification = async(req,response) =>{
+    response.setTimeout(3600000) // no timeout
     path = "./src/public/jobs/service2/"+req.body.time
     postData = JSON.stringify({
         'sequences': req.body.sequences,
@@ -429,6 +430,7 @@ indexCtrl.renderEncoding = async(req,res) =>{
     res.render('encoding');
 };
 indexCtrl.getEncoding = async(req,response) =>{
+    response.setTimeout(3600000) // no timeout
     path_job = "./src/public/jobs/service5/"+req.body.time+".tar.gz"
     postData = JSON.stringify({
         'sequences': req.body.sequences,
@@ -470,6 +472,7 @@ indexCtrl.renderTraining = async(req,res) =>{
     res.render('training');
 };
 indexCtrl.getTraining = async(req,response) =>{
+    response.setTimeout(3600000) // no timeout
     path_job = "./src/public/jobs/service6/"+req.body.time
     data = {
         "type_encoding" : req.body.encoding,
