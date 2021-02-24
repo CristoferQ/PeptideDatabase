@@ -606,8 +606,8 @@ $("#ex2").on("slide", function(slideEvt) {
         var now = new Date().getTime();
         
         $.ajax({
-            'url': "http://localhost/api/search",
-            //'url': "http://peptipedia.cl/api/search",
+            //'url': "http://localhost/api/search",
+            'url': "http://peptipedia.cl/api/search",
             'method': "POST",
             'data' : { 
                 "activity_lvl_1" : $('#activity_lvl_1').selectpicker('val'),
