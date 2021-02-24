@@ -337,7 +337,7 @@
       $.ajax({
           type: "POST",
           //url: 'http://localhost/training/upload?time='+now,
-          url: 'http://45.7.230.112/training/upload?time='+now,
+          url: 'http://peptipedia.cl/training/upload?time='+now,
           data:  data,
           enctype: 'multipart/form-data',
           processData: false,  // tell jQuery not to process the data
@@ -349,7 +349,7 @@
               if ($("#exampleFormControlSelect3").val() == "0"){
                 $.ajax({
                 //'url': "http://localhost/training/results",
-                'url': "http://45.7.230.112/training/results",
+                'url': "http://peptipedia.cl/training/results",
                 'method': 'POST',
                 'data' : {"time": now, "encoding": $("#exampleFormControlSelect1").val(), "properties": $("#exampleFormControlSelect2").val(), "response": $("#exampleFormControlSelect3").val(), "algorithm": $("#exampleFormControlSelect4").val()}
               }).done(function(data) { //PREDICCION
@@ -398,7 +398,7 @@
               }else{
                 $.ajax({
                 //'url': "http://localhost/training/results",
-                'url': "http://45.7.230.112/training/results",
+                'url': "http://peptipedia.cl/training/results",
                 'method': 'POST',
                 'data' : {"time": now, "encoding": $("#exampleFormControlSelect1").val(), "properties": $("#exampleFormControlSelect2").val(), "response": $("#exampleFormControlSelect3").val(), "algorithm": $("#exampleFormControlSelect5").val()}
               }).done(function(data) {  //CLASIFICACION
