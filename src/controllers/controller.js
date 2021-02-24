@@ -185,20 +185,17 @@ indexCtrl.getSearch = async(req, res) =>{
             delete all_activities[flag];
         }
     }
-    //all_activities = all_activities.filter(function(e){return e});
     
     if (req.body['organisms[]'].includes('all') == true){
         if (req.body.uniprot == 'false'){
             if (all_activities != ''){
                 const activities = await Activity.find({$and:[{"activity" : {"$in": all_activities}},{ "length": { $gte : parseInt(req.body['interval[]'][0])}},{ "length": { $lte : parseInt(req.body['interval[]'][1])}}]}).lean();
-                await exportData(activities, req.body.time);
                 res.send(activities);
             }
         }
         if (req.body.uniprot == 'true'){
             if (all_activities != ''){
                 const activities = await Activity.find({$and:[{"activity" : {"$in": all_activities}}, {'uniprot_code': {$ne : ""}},{'uniprot_code': {$ne : "0"}}, { "length": { $gte : parseInt(req.body['interval[]'][0])}},{ "length": { $lte : parseInt(req.body['interval[]'][1])}}]}).lean();
-                await exportData(activities, req.body.time);
                 res.send(activities);
             }
         }
@@ -207,52 +204,16 @@ indexCtrl.getSearch = async(req, res) =>{
         if (req.body.uniprot == 'false'){
             if (all_activities != ''){
                 const activities = await Activity.find({$and:[{"activity" : {"$in": all_activities}},{"organism_value" : {"$in": req.body['organisms[]']}},{ "length": { $gte : parseInt(req.body['interval[]'][0])}},{ "length": { $lte : parseInt(req.body['interval[]'][1])}}]}).lean();
-                await exportData(activities, req.body.time);
                 res.send(activities);
             }
         }
         if (req.body.uniprot == 'true'){
             if (all_activities != ''){
                 const activities = await Activity.find({$and:[{"activity" : {"$in": all_activities}},{"organism_value" : {"$in": req.body['organisms[]']}}, {'uniprot_code': {$ne : ""}},{'uniprot_code': {$ne : "0"}}, { "length": { $gte : parseInt(req.body['interval[]'][0])}},{ "length": { $lte : parseInt(req.body['interval[]'][1])}}]}).lean();
-                await exportData(activities, req.body.time);
                 res.send(activities);
             }
         }
     }
-}
-async function exportData(activities, time, response, req){
-    path_job = "./src/public/attachment/querys/"+time;
-    postData = JSON.stringify({
-        'activities': activities,
-        'time': time
-    });    
-    const options = {
-        host: 'localhost',
-        port: 4000,
-        method: 'POST',
-        path: '/api/exports/',
-        headers: {
-            'Content-Type': 'application/json',
-            'Content-Length': Buffer.byteLength(postData)
-        }
-    };
-    var req = http.request(options, (res) => {
-        var data = ''
-        res.on('data', (chunk) => {
-            data = JSON.parse(chunk);
-        });
-        res.on('end', () => {
-            console.log('No more data in response.');
-            setTimeout(function test(){
-                rimraf(path_job, function () { console.log("done"); });
-            },3600000);    // 3600000 = 1 hora
-        });
-    });
-    req.on('error', (e) => {
-        console.error(`problem with request: ${e.message}`);
-    });
-    req.write(postData);    
-    req.end();
 }
 indexCtrl.renderSequence = async(req,res) =>{
     const peptides = await Peptide.find({"id_sequence":req.query.id_sec}).lean();

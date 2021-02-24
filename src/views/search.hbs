@@ -6,7 +6,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/11.0.2/bootstrap-slider.min.js" integrity="sha512-f0VlzJbcEB6KiW8ZVtL+5HWPDyW1+nJEjguZ5IVnSQkvZbwBt2RfCBY0CBO1PsMAqxxrG4Di6TfsCPP3ZRwKpA==" crossorigin="anonymous"></script>
 <!-- Slider CSS -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/11.0.2/css/bootstrap-slider.css" integrity="sha512-SZgE3m1he0aEF3tIxxnz/3mXu/u/wlMNxQSnE0Cni9j/O8Gs+TjM9tm1NX34nRQ7GiLwUEzwuE3Wv2FLz2667w==" crossorigin="anonymous" />
-
+<link rel="stylesheet" href="/css/buttons.dataTables.min.css">
 <div class="jumbotron mt-4">
     <h1 class="display-4">Search</h1>
     <br>
@@ -83,11 +83,6 @@
     </div>
     <h5 id="resultsh5" hidden class="card-header">Results</h5>
     <div id="resultsdiv" hidden class="card-body">
-        <a id="dl_json" target="_blank" class="btn btn-secondary btn-lg">Download in JSON</a>
-        <a id="dl_csv"  target="_blank" class="btn btn-secondary btn-lg">Download in CSV</a>
-        <a id="dl_fasta" target="_blank" class="btn btn-secondary btn-lg">Download in FASTA</a>
-        <br>
-        <br>
         <table id="example" class="display" style="width:100%">
                 <thead>
                     <tr>
@@ -116,7 +111,9 @@
             </table>  
     </div>
 </div>
-
+<script src="/js/dataTables.buttons.min.js"></script>
+<script src="/js/buttons.html5.min.js"></script>
+<script src="/js/buttons.flash.min.js"></script>
 <script>
     $('#activity_lvl_2').selectpicker('hide');
     $('label[for="activity_lvl_2"]').hide();
@@ -607,17 +604,6 @@ $("#ex2").on("slide", function(slideEvt) {
             all_organism = ['all']
         }
         var now = new Date().getTime();
-        var dlAnchorElem = document.getElementById('dl_json');
-            dlAnchorElem.setAttribute("href", '/attachment/querys/'+now+'/search.json');
-            dlAnchorElem.setAttribute("download", 'search_'+now+'.json');
-
-        var dlAnchorElem = document.getElementById('dl_csv');
-            dlAnchorElem.setAttribute("href", '/attachment/querys/'+now+'/search.csv');
-            dlAnchorElem.setAttribute("download", 'search_'+now+'.csv');
-        
-        var dlAnchorElem = document.getElementById('dl_fasta');
-            dlAnchorElem.setAttribute("href", '/attachment/querys/'+now+'/search.fasta');
-            dlAnchorElem.setAttribute("download", 'search_'+now+'.fasta');
         
         $.ajax({
             //'url': "http://localhost/api/search",
@@ -636,6 +622,7 @@ $("#ex2").on("slide", function(slideEvt) {
             }
         }).done( function(data) {
         var example = $('#example').DataTable( {
+            dom: 'Bfrtip',
             "aaData": data,
             "bDestroy": true,
             "deferRender": true,
@@ -649,6 +636,9 @@ $("#ex2").on("slide", function(slideEvt) {
                 { "data": "isoelectric_point" },
                 { "data": "molecular_weigth" },
             ],
+            buttons: [
+                        { extend: 'csv', text: 'Download table in CSV' }
+                    ],
             "scrollX": true,
         })
             $('#wait').attr('hidden', true);  
