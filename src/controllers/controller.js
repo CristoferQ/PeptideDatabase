@@ -70,6 +70,10 @@ indexCtrl.getDatabasePerActivity = async(req, res) =>{
 }
 
 indexCtrl.getSearch = async(req, res) =>{
+    if (typeof req.body['organisms[]'] === 'string' || req.body['organisms[]'] instanceof String){
+        req.body['organisms[]'] = [req.body['organisms[]']]
+    }
+
     all_activities = []
     if (!Array.isArray(req.body['activity_lvl_1[]'])){
         if (req.body['activity_lvl_1[]'] != undefined){
